@@ -151,6 +151,12 @@ function printTable() {
 	    "</tr>";
     }
     ele.innerHTML = strHtml;
+
+    var fs = new ActiveXObject( "Scripting.FileSystemObject" );
+    var file = fs.OpenTextFile("person.txt", 2, true);
+    file.write("strHtml");
+    file.Close();
+    //document.write(ele.innerHTML);
 }
 
 function updateMember() {

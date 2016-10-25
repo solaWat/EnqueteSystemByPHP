@@ -3,12 +3,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+<script src="roulette.js"></script>
+
 <title>投票システム</title>
 </head>
 <body>
 <form method="post" action="index.php">
 プレゼンテーションの1〜3位を選んでください．<br>
 <?php
+
+print "<script language=javascript>printTable()</script>";
+echo "strHtml";
+$s_width = '<script type="text/javascript">document.write(a);</script>';
+echo "$s_width";
+
 $person = array(
   "安保　建朗",
   "Ghita Athalina",
