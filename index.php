@@ -12,39 +12,66 @@
 プレゼンテーションの1〜3位を選んでください．<br>
 <?php
 
-print "<script language=javascript>printTable()</script>";
-echo "strHtml";
-$s_width = '<script type="text/javascript">document.write(a);</script>';
-echo "$s_width";
+// echo $_POST['body']; //post受信用
+// $ed2 = file('person.txt');
+// if ($_POST['body']) {
 
-$person = array(
-  "安保　建朗",
-  "Ghita Athalina",
-  "倉嶋　俊",
-  "小林　優稀",
-  "室井　健一",
-  "森田　和貴",
-  "渡辺　宇",
-  "荒木　香名",
-  "柴沢　弘樹"
-  );
+//   $fp2 = fopen('person.txt', 'w');
+//   //for ($i = 0; $i < count($person); $i++) {
+//     fwrite($fp2, body . "\n");
+//   //}
+//   fclose($fp);
+// }
+
+
+// $fp = fopen("exOrder.txt", "r");
+// while ($person = fgets($fp)) {
+//   echo "$person<br />";
+// }
+//fclose($fp);
+
+
+$person = file('exOrder.txt');
+
+// // デバッグ用
+// foreach ($person as $l) {
+//   print $l . "<br>\n";
+// }
+// // デバッグ用
+
+
+// $person = array(
+//   "安保　建朗",
+//   "Ghita Athalina",
+//   "倉嶋　俊",
+//   "小林　優稀",
+//   "室井　健一",
+//   "森田　和貴",
+//   "渡辺　宇",
+//   "荒木　香名",
+//   "柴沢　弘樹"
+//   );
+
 for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
   print(" <br>");
   print "$h 位 \n " ;
   print("<br>");
     for ($i = 0; $i < count($person); $i++) { // 人数分のradio表示
-      print "<input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n";
+      print "<label><input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n</label>";
     }
 }
+
 
 ?>
 <br>
  <!-- ボタンの種類 -->
 <input type="submit" name="submit" value="投票">
 <input type="submit" name="reload" value="更新">
-<input type="submit" name="submit2" value="リセット(のち，要更新)">
+
 </form>
+
 <table border='1'>
+
 <?php
 // 同フォルダ中のテキストファイルにデータを保存する仕組み
 $ed = file('enquete.txt');
@@ -61,7 +88,7 @@ if ($_POST['submit']) {
   }
   fclose($fp);
 }
-// リセットボタン 1クリックでは反映されない問題がある．
+// リセットボタン ただし，1クリックでは反映されない問題がある．
 if ($_POST['submit2']) {
   $fp = fopen('enquete.txt', 'w');
   for ($i = 0; $i < count($person); $i++) {
@@ -92,9 +119,11 @@ for ($i = 0; $i < count($person); $i++) {
 
 ?>
 
-</table>
-<br>
-<p><font color="red">次の課題　ルーレット結果(出席者，発表順)を取ってきて，投票対象として表示する．ファシリテーター投票につなげるのも楽．</font></p>
+</table><br>
+<form method="post" action="index.php"><input type="submit" name="submit2" value="※重要※　総計結果をリセット"></form>
+
+<p><font color="red">　</font></p>
+<a href= resultVis.php > 総計画面へ行く </a><br>
 <a href= ../ > TOP </a>
 </body>
-</html
+</html>

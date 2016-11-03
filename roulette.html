@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>順番決めルーレット</title>
+
+    <link rel="stylesheet" href="roulette.css">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="roulette.js"></script>
+    
+  </head>
+  <body>
+    <form name="nameform">
+      <fieldset id="namelist">
+	<legend>名簿</legend>
+	<!-- <p><label><input type="checkbox" name="exist" checked>Member1</label></p> -->
+
+      </fieldset>
+      <p>
+	<input type="button" value="START!!" onclick="start()">
+	<!-- <input type="button" value="Stop!!" onclick="stop()"> -->
+
+      </p>
+    </form>
+
+    <table id="resultTable">
+      <!-- <tr><th>1</th><td><div class="frame"><p>Member1</p></div></td></tr> -->
+    </table>
+
+    <br>
+
+    <!-- <form action="./index.php">
+    <input type="submit" value="投票ページへ">
+    </form> -->
+
+    
+    <!-- <a href=“javascript:sampleForm('samplepost')”>クリックしたら“samplepost”をPOST送信</a>
+ -->
+    <input type="button" value="phpへ投稿" onclick="postJump();">
+
+    <br>
+
+    <br>
+
+    <a href="index.html">前に戻る</a>
+    
+  </body>
+</html>
+

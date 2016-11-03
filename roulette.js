@@ -36,6 +36,7 @@ function Roulette(ele, idx) {
     this.memlist = existMember;
     this._idx = idx;
     this._y = 0;
+    this.randomIdx = null;
 };
 
 Roulette.prototype = {
@@ -59,6 +60,18 @@ Roulette.prototype = {
 	    "<p>" + this.memlist[this.idx] + "</p>" +
 	    "<p>" + this.memlist[this.getShiftIdx(1)] + "</p>";
     },
+
+//     postJump : function(_url, _keys, _vals){
+//     var html = '<form method="post" action="'+_url+'" id="postjump" style="display: none;">';
+//     for(var cnt=0;cnt<_keys.length;cnt++){
+//         html += '<input type="hidden" name="'+_keys[cnt]+'" value="'+_vals[cnt]+'" >';
+//     }
+//     html += '</form>';
+//     $("body").append(html);
+//     $('#postjump').submit();
+//     $('#postjump').remove();
+// 　　},
+
     stepMove : function () {
 	this.y += this.dy;
 	for( var i = 0; i < this.element.childNodes.length; i++ ) {
@@ -88,6 +101,21 @@ Roulette.prototype = {
 	this.stepMove();
 	setTimeout( this.stoploop.bind(this), this.dt );
     },
+
+    // postJump : function(){
+    // var _url = 'index.php' ;
+    // var _keys = randomIdx ;
+    // var _vals = randomIdx ;
+
+    // var html = '<form method="post" action="'+_url+'" id="postjump" style="display: none;">';
+    // for(var cnt=0;cnt<_keys.length;cnt++){
+    //     html += '<input type="hidden" name="'+_keys[cnt]+'" value="'+_vals[cnt]+'" >';
+    // }
+    // html += '</form>';
+    // $("body").append(html);
+    // $('#postjump').submit();
+    // $('#postjump').remove();
+    // },
 };
 
 Object.defineProperties(Roulette.prototype, {
@@ -152,17 +180,33 @@ function printTable() {
     }
     ele.innerHTML = strHtml;
 
-    var fs = new ActiveXObject( "Scripting.FileSystemObject" );
-    var file = fs.OpenTextFile("person.txt", 2, true);
-    file.write("strHtml");
-    file.Close();
+    // for ( var i = 0; i < existMember.length; i++ ) {
+    //     person += existMember[i];
+    // }
+
     //document.write(ele.innerHTML);
 }
+
+
+// function sampleForm( value ){
+//     var form = document.createElement( ‘form’ );
+//     document.body.appendChild( form );
+//     var input = document.createElement( ‘input’ );
+//     input.setAttribute( ‘type’ , ‘hidden’ );
+//     input.setAttribute( ‘name’ , ‘name’ );
+//     input.setAttribute( ‘value’ , value );
+//     form.appendChild( input );
+//     form.setAttribute( ‘action’ , ‘/index.php’ );
+//     form.setAttribute( ‘method’ , ‘post’ );
+//     form.submit();
+
+// }
 
 function updateMember() {
     getExistMember();
     printTable();
-    printTable().document.write(ele.innerHTML);
+    //postJump(./index.php, strHtml2,  );
+    //sampleForm();
 }
 
 
@@ -184,6 +228,11 @@ function start() {
     randSort(randomIdx);
 	
     roulette = new Array(elelen);
+
+    
+
+
+
     for ( var i = 0; i < elelen; i++ ) {
 	roulette[i] = new Roulette(ele[i], i);
 	roulette[i].setInnerHTML();
@@ -191,6 +240,9 @@ function start() {
 	roulette[i].startRoll();
     }
     
+    //postJump('index.php', randomIdx, randomIdx);
+
+
     //todo: set ymax
 
     if ( 0 < autoStopTime ) { setTimeout(stop, autoStopTime*1000); }
@@ -235,6 +287,23 @@ function randSort(a) {
     }
 
 }
+
+function postJump(){
+    var _url = 'index.php' ;
+    var _keys = this.randomIdx ;
+    var _vals = this.randomIdx ;
+
+    var html = '<form method="post" action="'+_url+'" id="postjump" style="display: none;">';
+    for(var cnt=0;cnt<_keys.length;cnt++){
+        html += '<input type="hidden" name="'+_keys[cnt]+'" value="'+_vals[cnt]+'" >';
+    }
+    html += '</form>';
+    $("body").append(html);
+    $('#postjump').submit();
+    $('#postjump').remove();
+    
+}
+
 
 function randTest(n, m) {
     var a = new Array(n);
