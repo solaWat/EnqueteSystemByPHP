@@ -5,11 +5,13 @@
 
 
 <title>発表順</title>
+<link rel="stylesheet" href="roulette.css">
 </head>
 <body>
 
 <form method="post" action="exMember.php">
 <h1>○出席者を選んでください</h1>
+<div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
 
 $person = array(
@@ -35,16 +37,20 @@ for ($i = 0; $i < count($person); $i++) {
 // echo "$food";
 
 ?>
+</div><br>
+
  <!-- ボタンの種類 -->
-<input type="submit" name="sort" value="ランダムソート実行">
+<input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
+<!-- <button type="submit" name="sort" ><big>発表順を決める 　(＆　残っている投票結果をクリアする)</big></button> -->
 
 </form>
 
-<table border='10'>
+
 
 
 <h1>○今日の発表順</h1>
 
+<table border='10'>
 <?php
 
 
@@ -77,9 +83,9 @@ if ($_POST['sort']) {
 
 // リセットボタン ただし，1クリックでは反映されない問題がある．
 if ($_POST['sort']) {
-  $num = file('enquete.txt');
+  $num = file('enquete.txt'); //前回の投票結果を読み取る
   $fp = fopen('enquete.txt', 'w');
-  for ($i = 0; $i < count($num); $i++) {
+  for ($i = 0; $i < count($person); $i++) {
     fwrite($fp, 0 . "\n");
   }
   fclose($fp);
@@ -116,10 +122,9 @@ for ($i = 0; $i < count($food); $i++) {
   // print "</tr></table></td>";
   print "</tr>\n";
 }
-
 ?>
 
 </table><br>
-<a href= index.html > 投票しに行く </a>
+<a href= index.html ><font color="orange"> 投票しに行く </font></a>
 </body>
 </html

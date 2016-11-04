@@ -8,8 +8,9 @@
 <title>投票システム</title>
 </head>
 <body>
+
 <form method="post" action="index.php">
-プレゼンテーションの1〜3位を選んでください．<br>
+プレゼンテーションの1〜3位を選んでください．<br><br>
 <?php
 
 // echo $_POST['body']; //post受信用
@@ -51,26 +52,57 @@ $person = file('exOrder.txt');
 //   "荒木　香名",
 //   "柴沢　弘樹"
 //   );
+echo "1位  　2位  　3位<br>";
 
-for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
-  print(" <br>");
-  print "$h 位 \n " ;
-  print("<br>");
-    for ($i = 0; $i < count($person); $i++) { // 人数分のradio表示
-      print "<label><input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n</label>";
+for ($i = 0; $i < count($person); $i++){ // 何位まで取得するか．
+  // print(" <br>");
+  // print "$h 位 \n " ;
+  // print("<br>");
+    for  ($h = 1; $h < 3; $h++){ // 人数分のradio表示
+      // print "<label><input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n</label>";
+      print "<label><input type='radio' name='cn$h' value='$i'></label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
     }
+    print "<label><input type='radio' name='cn$h' value='$i'>　{$person[$i]}</label>";
+    print "<br>\n";print "<br>\n";
 }
 
 
+// print("<span id="select">
+//     <input type="radio" name="select" /> Item1
+//     <input type="radio" name="select" /> Item2
+// </span>");
+
+// print("<table id="select">
+//     <tr>
+//         <td>
+//             <label><input type="radio" name="form:select" value="A" />AAAA</label>
+//         </td>
+//         <td>
+//             <label><input type="radio" name="form:select" value="B" />BBBB</label>
+//         </td>
+//         <td>
+//             <label><input type="radio" name="form:select" value="C" />CCCC</label>
+//         </td>
+//     </tr>
+// </table>");
+
+
 ?>
+
+
 <br>
+
  <!-- ボタンの種類 -->
-<input type="submit" name="submit" value="投票">
-<input type="submit" name="reload" value="更新">
+<input type="submit" name="submit" value="投票する" onClick="return confirm('ボタンが3つ押されていますか？同じ人に投票しようとしていませんか？')" >
+<!-- <input type="submit" name="submit" value="投票する" onclick="location.href='resultVis.php'"> -->
+<!-- ページ遷移に失敗している -->
+
+<!-- <input type="submit" name="reload" value="更新"> -->
 
 </form>
 
-<table border='1'>
+
+<!-- <table border='1'> -->
 
 <?php
 // 同フォルダ中のテキストファイルにデータを保存する仕組み
@@ -86,44 +118,46 @@ if ($_POST['submit']) {
   for ($i = 0; $i < count($person); $i++) {
     fwrite($fp, $ed[$i] . "\n");
   }
-  fclose($fp);
+  fclose($fp); 
 }
-// リセットボタン ただし，1クリックでは反映されない問題がある．
-if ($_POST['submit2']) {
-  $fp = fopen('enquete.txt', 'w');
-  for ($i = 0; $i < count($person); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
-}
-// 更新ボタン
-$rel = $_GET['reload'];
-    if ($rel == 'true') {
-      header("Location: " . $_SERVER['PHP_SELF']);
-    }
-    /*デバッグ用*/
-    // echo($_SERVER['PHP_SELF'].'<br/>');
-    // echo($_SERVER['SCRIPT_NAME'].'<br/>');
 
-// 投票結果表示
-for ($i = 0; $i < count($person); $i++) {
-  print "<tr>";
-  print "<td>{$person[$i]}</td>";
-  print "<td><table><tr>";
-  $w = $ed[$i] * 10;
-  print "<td width='$w' bgcolor='green'> </td>";
-  print "<td>{$ed[$i]} 票</td>";
-  print "</tr></table></td>";
-  print "</tr>\n";
-}
+// // リセットボタン ただし，1クリックでは反映されない問題がある．
+// if ($_POST['submit2']) {
+//   $fp = fopen('enquete.txt', 'w');
+//   for ($i = 0; $i < count($person); $i++) {
+//     fwrite($fp, 0 . "\n");
+//   }
+//   fclose($fp);
+// }
+// // 更新ボタン
+// $rel = $_GET['reload'];
+//     if ($rel == 'true') {
+//       header("Location: " . $_SERVER['PHP_SELF']);
+//     }
+//     /*デバッグ用*/
+//     // echo($_SERVER['PHP_SELF'].'<br/>');
+//     // echo($_SERVER['SCRIPT_NAME'].'<br/>');
+
+// // 投票結果表示
+// for ($i = 0; $i < count($person); $i++) {
+//   print "<tr>";
+//   print "<td>{$person[$i]}</td>";
+//   print "<td><table><tr>";
+//   $w = $ed[$i] * 10;
+//   print "<td width='$w' bgcolor='green'> </td>";
+//   print "<td>{$ed[$i]} 票</td>";
+//   print "</tr></table></td>";
+//   print "</tr>\n";
+// }
 
 ?>
 
-</table><br>
-<form method="post" action="index.php"><input type="submit" name="submit2" value="※重要※　総計結果をリセット"></form>
+<!-- </table><br> -->
 
-<p><font color="red">　</font></p>
-<a href= resultVis.php > 総計画面へ行く </a><br>
+<!-- <form method="post" action="index.php"><input type="submit" name="submit2" value="※重要※　総計結果をリセット"></form> -->
+
+<p><font color="red">　</font></p><br><br>
+<a href= resultVis.php > （投票が終わったので）集計結果画面へ行く </a><br><br>
 <a href= ../ > TOP </a>
 </body>
 </html>

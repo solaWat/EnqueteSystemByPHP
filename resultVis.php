@@ -7,7 +7,7 @@
 
 <script src="roulette.js"></script>
 
-<title>投票結果の総計表示</title>
+<title>集計結果の表示</title>
 </head>
 <body>このページは自動更新されます．(6秒ごと)
 <br><br><br>
@@ -26,6 +26,11 @@ for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]);
 
 // 投票結果表示
 for ($i = 0; $i < count($person); $i++) {
+  if ($ed) {
+    # code...
+  }
+
+
   print "<tr>";
   print "<td>{$person[$i]}</td>";
   print "<td><table><tr>";
@@ -36,14 +41,33 @@ for ($i = 0; $i < count($person); $i++) {
   print "</tr>\n";
 }
 
+
 for ($i = 0; $i < count($ed); $i++) {
   $sum += $ed[$i];
 }
 $hito = $sum / 6 ;
-echo "現在『 $hito 人』の投票が終わっています．";
+$perNum = count($person);
+echo "現在，$perNum 人中『 $hito 人』の投票が終わっています．"; // 票の総計を6で割っているだけである．
+
+//リセットボタン ただし，1クリックでは反映されない問題がある．
+if ($_POST['submit2']) {
+  $fp = fopen('enquete.txt', 'w');
+  for ($i = 0; $i < count($person); $i++) {
+    fwrite($fp, 0 . "\n");
+  }
+  fclose($fp);
+}
+
+
 ?>
-<p><font color="red">(※票の合計を6で割っているだけ)</font></p>
-</table><br>
-<a href= ../ > TOP </a>
+
+
+</table><br><br><br>
+
+
+
+<a href= ../ > TOP </a><br><br><br><br><br><br><br><br><br><br>
+<form method="post" action="resultVis.php"><input type="submit" name="submit2" value="※押すな※　集計結果をリセット　※"></form>
+<p><font color="red">管理人のつぶやき「アラートはうざい……」</font></p>
 </body>
 </html>
