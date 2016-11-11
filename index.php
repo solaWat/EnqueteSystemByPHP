@@ -2,37 +2,16 @@
 <html lang="ja">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<script src="roulette.js"></script>
-
+<div style="background: #F0FFF0;">
 <title>投票システム</title>
 </head>
 <body>
-
 <form method="post" action="index.php">
-プレゼンテーションの1〜3位を選んでください．<br><br>
+以下の2つの表から，それぞれ自分以外の名前を選んで，投票を行ってください．<br><br>
 <?php
 
-// echo $_POST['body']; //post受信用
-// $ed2 = file('person.txt');
-// if ($_POST['body']) {
-
-//   $fp2 = fopen('person.txt', 'w');
-//   //for ($i = 0; $i < count($person); $i++) {
-//     fwrite($fp2, body . "\n");
-//   //}
-//   fclose($fp);
-// }
-
-
-// $fp = fopen("exOrder.txt", "r");
-// while ($person = fgets($fp)) {
-//   echo "$person<br />";
-// }
-//fclose($fp);
-
-
-$person = file('exOrder.txt');
+$person = file('exOrder_prz.txt');// file関数：txtの中身を簡単に吸ってこれる
+$person_fg = file('exOrder_fg.txt'); // 現状，プレゼンとファシグラで異なる投票データベーすを使用している．
 
 // // デバッグ用
 // foreach ($person as $l) {
@@ -40,124 +19,129 @@ $person = file('exOrder.txt');
 // }
 // // デバッグ用
 
-
-// $person = array(
-//   "安保　建朗",
-//   "Ghita Athalina",
-//   "倉嶋　俊",
-//   "小林　優稀",
-//   "室井　健一",
-//   "森田　和貴",
-//   "渡辺　宇",
-//   "荒木　香名",
-//   "柴沢　弘樹"
-//   );
-echo "1位  　2位  　3位<br>";
-
-for ($i = 0; $i < count($person); $i++){ // 何位まで取得するか．
-  // print(" <br>");
-  // print "$h 位 \n " ;
-  // print("<br>");
-    for  ($h = 1; $h < 3; $h++){ // 人数分のradio表示
-      // print "<label><input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n</label>";
-      print "<label><input type='radio' name='cn$h' value='$i'></label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+// 2つのテーブルを並列させるための透明テーブル．
+print"<table>";
+  print"<tr>";
+  print"<td>";
+  // プレゼンテーション用投票テーブル
+  print"<table border='1' cellpadding='8' style='background:#F0F8FF'>";
+    print"<caption>プレゼンテーション";
+    print"<tr >";
+    print"<th>1位</th><th>2位</th><th>3位</th><th>　</th>";
+    print"</tr>";
+    for ($i = 0; $i < count($person); $i++){ // 何位まで取得するか．
+      $j = $i + 1; // 発表順を見せるための変数．
+      print"<tr>";
+          for  ($h = 1; $h < 3; $h++){ // 人数分のradio表示
+          // print "<label><input type='radio' name='co$h' value='$i'>{$person[$i]}<br>\n</label>";
+          print "<td>&nbsp<input type='radio' name='cn$h' value='$i'></td>";
+          }
+        print "<td>&nbsp<input type='radio' name='cn$h' value='$i'></td><td>$j.{$person[$i]}</td>";
+        print"</tr>";
     }
-    print "<label><input type='radio' name='cn$h' value='$i'>　{$person[$i]}</label>";
-    print "<br>\n";print "<br>\n";
-}
+    print"</tr>";
+  print"</table>";
+  print"</td>";
+  print"<td>";
 
+  // ファシグラ用投票テーブル
+  print"<table border='1' cellpadding='8' style='background:#F8F8FF'>";
+    print"<caption>ファシとグラ";
+    print"<tr>";
+    print"<th>　</th><th>1位</th><th>2位</th><th>3位</th>";
+    print"</tr>";
+    for ($i = 0; $i < count($person); $i++){ // 何位まで取得するか．
+      print"<tr>";
+      print"<td>→ {$person_fg[$i]}</td>";
+          for  ($h = 1; $h < 3; $h++){ // 人数分のradio表示
+          print "<td>&nbsp<input type='radio' name='co$h' value='$i'></td>";
+          }
+        print "<td>&nbsp<input type='radio' name='co$h' value='$i'></td>";
+        print"</tr>";
+    }
+    print"</tr>";
+  print"</table>";
 
-// print("<span id="select">
-//     <input type="radio" name="select" /> Item1
-//     <input type="radio" name="select" /> Item2
-// </span>");
-
-// print("<table id="select">
-//     <tr>
-//         <td>
-//             <label><input type="radio" name="form:select" value="A" />AAAA</label>
-//         </td>
-//         <td>
-//             <label><input type="radio" name="form:select" value="B" />BBBB</label>
-//         </td>
-//         <td>
-//             <label><input type="radio" name="form:select" value="C" />CCCC</label>
-//         </td>
-//     </tr>
-// </table>");
+  print"</td>";
+  print"</tr>";
+print"</table>";
 
 
 ?>
-
+<!-- フォームを並列したい時に使うもの．
+<div style="display:inline-flex">
+<form><input type="text"><input type="submit"></form>
+<form><input type="text"><input type="submit"></form>
+</div> -->
 
 <br>
 
  <!-- ボタンの種類 -->
-<input type="submit" name="submit" value="投票する" onClick="return confirm('ボタンが3つ押されていますか？同じ人に投票しようとしていませんか？')" >
-<!-- <input type="submit" name="submit" value="投票する" onclick="location.href='resultVis.php'"> -->
-<!-- ページ遷移に失敗している -->
-
-<!-- <input type="submit" name="reload" value="更新"> -->
-
+<input type="submit" name="submit" value="投票する" >
+<!-- onClick="return confirm('ボタンが3つ押されていますか？同じ人に投票しようとしていませんか？')" -->
 </form>
 
-
-<!-- <table border='1'> -->
-
 <?php
-// 同フォルダ中のテキストファイルにデータを保存する仕組み
-$ed = file('enquete.txt');
-for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]);
+
 // 投票ボタン
 if ($_POST['submit']) {
+
+  // 同フォルダ中のテキストファイルにデータを保存する仕組み
+  $ed = file('enquete_prz.txt'); //　まず開く．
+  $ee = file('enquete_fg.txt');
+  for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); // 取り出した配列のクレンジング
+  for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
+
+  //ラジオボタン選択のエラー表示用
+  if ($_POST['cn1']==null or $_POST['cn2']==null or $_POST['cn3']==null) {
+    $error_msg = "<h4><font color='red'>※プレゼンテーションの全ての順位を埋めてください</font></h4>";
+    print $error_msg;
+    exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
+  }
+  if ($_POST['co1']==null or $_POST['co2']==null or $_POST['co3']==null) {
+    $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
+    print $error_msg;
+    exit;
+  }
+  if ($_POST['cn1']==$_POST['cn2'] || $_POST['cn2']==$_POST['cn3'] || $_POST['cn1']==$_POST['cn3']) {
+    $error_msg = "<h4><font color='red'>※一人の人物に，重複して順位を与えることはできません（プレゼンテーション）</font></h4>";
+    print $error_msg;
+    exit;
+  }
+  if ($_POST['co1']==$_POST['co2'] || $_POST['co2']==$_POST['co3'] || $_POST['co1']==$_POST['co3']) {
+    $error_msg = "<h4><font color='red'>※一人の人物に，重複して順位を与えることはできません（ファシとグラ）</font></h4>";
+    print $error_msg;
+    exit;
+  }
+
+  // 投票の重み付け
+  // プレゼンテーション用
   $ed[$_POST['cn1']] += 3; // 1位から順にポイントが高くなる
   $ed[$_POST['cn2']] += 2;
   $ed[$_POST['cn3']] ++;
 
-  $fp = fopen('enquete.txt', 'w');
+  $fp = fopen('enquete_prz.txt', 'w'); // txtを開いて書き込み，正確には足しこみ．
   for ($i = 0; $i < count($person); $i++) {
     fwrite($fp, $ed[$i] . "\n");
   }
   fclose($fp); 
+
+  // ファシグラ用
+  $ee[$_POST['co1']] += 3; // 1位から順にポイントが高くなる
+  $ee[$_POST['co2']] += 2;
+  $ee[$_POST['co3']] ++;
+
+  $fp = fopen('enquete_fg.txt', 'w');
+  for ($i = 0; $i < count($person); $i++) {
+    fwrite($fp, $ee[$i] . "\n");
+  }
+  fclose($fp); 
+
 }
-
-// // リセットボタン ただし，1クリックでは反映されない問題がある．
-// if ($_POST['submit2']) {
-//   $fp = fopen('enquete.txt', 'w');
-//   for ($i = 0; $i < count($person); $i++) {
-//     fwrite($fp, 0 . "\n");
-//   }
-//   fclose($fp);
-// }
-// // 更新ボタン
-// $rel = $_GET['reload'];
-//     if ($rel == 'true') {
-//       header("Location: " . $_SERVER['PHP_SELF']);
-//     }
-//     /*デバッグ用*/
-//     // echo($_SERVER['PHP_SELF'].'<br/>');
-//     // echo($_SERVER['SCRIPT_NAME'].'<br/>');
-
-// // 投票結果表示
-// for ($i = 0; $i < count($person); $i++) {
-//   print "<tr>";
-//   print "<td>{$person[$i]}</td>";
-//   print "<td><table><tr>";
-//   $w = $ed[$i] * 10;
-//   print "<td width='$w' bgcolor='green'> </td>";
-//   print "<td>{$ed[$i]} 票</td>";
-//   print "</tr></table></td>";
-//   print "</tr>\n";
-// }
-
 ?>
 
-<!-- </table><br> -->
-
-<!-- <form method="post" action="index.php"><input type="submit" name="submit2" value="※重要※　総計結果をリセット"></form> -->
-
-<p><font color="red">　</font></p><br><br>
-<a href= resultVis.php > （投票が終わったので）集計結果画面へ行く </a><br><br>
-<a href= ../ > TOP </a>
-</body>
+<br><br>
+<h3><a href= resultVis.php > 集計結果を見る </a></h3><br><br>
+<a href= index.html > TOP </a>
+</body></div>
 </html>
