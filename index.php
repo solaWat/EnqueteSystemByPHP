@@ -45,7 +45,7 @@ print"<table>";
   print"<td>";
 
   // ファシグラ用投票テーブル
-  print"<table border='1' cellpadding='8' style='background:#F8F8FF'>";
+  print"<table border='1' cellpadding='8' style='background:  #F5F5F5'>";
     print"<caption>ファシとグラ";
     print"<tr>";
     print"<th>　</th><th>1位</th><th>2位</th><th>3位</th>";
@@ -112,6 +112,10 @@ if ($_POST['submit']) {
     $error_msg = "<h4><font color='red'>※一人の人物に，重複して順位を与えることはできません（ファシとグラ）</font></h4>";
     print $error_msg;
     exit;
+  }
+  else{
+    $error_msg = "<h4><font color='blue'>投票に成功しました．ブラウザの更新はしないでください．</font></h4>";
+    print $error_msg;
   }
 
   // 投票の重み付け

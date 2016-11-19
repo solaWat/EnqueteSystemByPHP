@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- 6秒ごとにページを自動更新 -->
-<META HTTP-EQUIV="Refresh" CONTENT="6"> 
+<META HTTP-EQUIV="Refresh" CONTENT="11"> 
 <title>集計結果の表示</title>
 </head>
 <body>
@@ -72,7 +72,7 @@ print"<table>";
   print"</td>";
   print"<td>";
 
-  print"<table border='1' style='background:#F8F8FF'>";
+  print"<table border='1' style='background:#F5F5F5'>";
     print"<caption>ファシグラ";
     print"<tr>";
     // ファシグラ
