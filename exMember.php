@@ -4,9 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>発表順</title>
 <!-- 柴沢くんのroulette.jsの見た目に似せるために，このcssファイルを引用している -->
-<link rel="stylesheet" href="roulette.css">
+<!-- <link rel="stylesheet" href="roulette.css"> -->
+
 </head>
 <body>
+<div style="background-color: #cff;">
 <form method="post" action="exMember.php">
 <h2>○出席者を選んでください</h2>
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
@@ -128,6 +130,10 @@ print"</table>";
 ?>
 
 <br>
-<h4><a href= index.html ><font color="green"> 投票しに行く（TOP） </font></a><h4>
+<!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
+<h3><a href= withTimer.php#t1=5:00&t2=20:00&t3=30:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
+<h4><a href= index.html ><font color="green"> TOP </font>
+</a><h4>
+<br><br><br>
 </body>
 </html
