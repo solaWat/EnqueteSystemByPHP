@@ -3,12 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>発表順</title>
-<!-- 柴沢くんのroulette.jsの見た目に似せるために，このcssファイルを引用している -->
-<!-- <link rel="stylesheet" href="roulette.css"> -->
-
+<div style="background-color: #cff;">
 </head>
 <body>
-<div style="background-color: #cff;">
 <form method="post" action="exMember.php">
 <h2>○出席者を選んでください</h2>
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">

@@ -11,7 +11,7 @@
 <?php
 
 $person = file('exOrder_prz.txt');// file関数：txtの中身を簡単に吸ってこれる
-$person_fg = file('exOrder_fg.txt'); // 現状，プレゼンとファシグラで異なる投票データベーすを使用している．
+$person_fg = file('exOrder_fg.txt'); // 現状，プレゼンとファシグラで異なる投票データベースを使用している．
 
 // // デバッグ用
 // foreach ($person as $l) {
@@ -101,7 +101,7 @@ if ($_POST['submit']) {
   if ($_POST['co1']==null or $_POST['co2']==null or $_POST['co3']==null) {
     $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
     print $error_msg;
-    exit;
+    exit; //die関数にしてもいいかも．
   }
   if ($_POST['cn1']==$_POST['cn2'] || $_POST['cn2']==$_POST['cn3'] || $_POST['cn1']==$_POST['cn3']) {
     $error_msg = "<h4><font color='red'>※一人の人物に，重複して順位を与えることはできません（プレゼンテーション）</font></h4>";

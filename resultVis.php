@@ -12,6 +12,9 @@
 <img src="rest_nobita.jpg"></img><br><br><br>
 
 <?php
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y/m/d');
+
 $person = file('exOrder_prz.txt');
 $person_fg = file('exOrder_fg.txt'); // 結局，ファシグラの並び順はこのページでは使わなくなったが，一応残しておく．
 
@@ -47,7 +50,7 @@ print"<br><br>";
 
 // 2つのテーブルと並列表示させるための透明テーブル
 print"<table>";
-  print"<caption>投票結果（個人の評価）";
+  print"<caption>投票結果 ( $date )";
   print"<tr>";
   print"<td>";
   ////////////ここから
