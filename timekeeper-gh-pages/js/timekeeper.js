@@ -26,8 +26,8 @@ $(function(){
 	var loadedcss = '';
 	// ここから，編集．デフォルトの時間を変更．
 	$('#time1').val('5:00');
-	$('#time2').val('20:00');
-	$('#time3').val('30:00');
+	$('#time2').val('10:00');
+	$('#time3').val('20:00');
 	// ここまで，編集．
 	$('#info').html("Click to edit this message.");
 	function getHashParams() {
