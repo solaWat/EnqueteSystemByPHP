@@ -7,7 +7,7 @@
 <title>集計結果の表示</title>
 </head>
 <body>
-投票結果は自動的に更新されます．<br><br>
+お疲れ様でした．投票結果は自動的に更新されます．<br><br>
 <!-- 休憩してて良いことを示す画像 -->
 <img src="rest_nobita.jpg"></img><br><br><br>
 
@@ -112,12 +112,12 @@ if ($_POST['submit2']) {
 }
 ?>
 <br><br>
-<p><font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてくだい．(mac)</font></p><br><br>
+<p><font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてください．(mac)</font></p><br><br>
 
 <a href= index.html > TOP </a>
 <br><br><br><br><br><br><br><br><br><br>
 <form method="post" action="resultVis.php"><input type="submit" name="submit2" value="※押すな※　集計結果をリセット　※"></form>
-<p><font color="red">管理人のつぶやき「このページはなんだか殺風景だ……」</font></p>
+<p><font color="red">管理人のつぶやき「なんか，全体的に殺風景だ……」</font></p>
 
 </body>
 </html>

@@ -32,12 +32,11 @@ for ($i = 0; $i < count($person); $i++) {
 </div><br>
  <!-- 出席者から今日の発表順がソートされる時点で，これより前の投票結果を削除する．投票の反映は上書きではなく，足し込みのため． -->
 <input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
-<!-- <button type="submit" name="sort" ><big>発表順を決める 　(＆　残っている投票結果をクリアする)</big></button> -->
 </form>
 
 <?php
 
-print"<h2>○今日の発表順</h2>";
+print"<h2>○今日の発表順はこちら</h2>";
 
 // // デバッグ用
 // echo "$food";
