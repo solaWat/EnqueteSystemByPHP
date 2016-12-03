@@ -137,38 +137,35 @@ if ($_POST['submit']) {
     print $error_msg;
     exit;
   }
-  else{
-    $error_msg = "<h4><font color='blue'>投票に成功しました．ブラウザの更新はしないでください．</font></h4>";
-    print $error_msg;
-  }
-
-
 
   // セッションを開始する
-if (!isset($_SESSION)) {
-  session_start();
-}
-// セッションに入れておいたトークンを取得
-$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
-// POSTの値からトークンを取得
-$token = isset($_POST['token']) ? $_POST['token'] : '';
+  if (!isset($_SESSION)) {
+    session_start();
+  }
+  // セッションに入れておいたトークンを取得
+  $session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
+  // POSTの値からトークンを取得
+  $token = isset($_POST['token']) ? $_POST['token'] : '';
 
-// echo "$session_token";
-// echo "<br>";
-// echo "$token";
+  // echo "$session_token";
+  // echo "<br>";
+  // echo "$token";
 
-// トークンがない場合は不正扱い
-if ($token === '') {
-    die("不正な処理ですよ。1");
-}
-// セッションに入れたトークンとPOSTされたトークンの比較
-if ($token !== $session_token) {
-    die("不正な処理ですよ。2");
-}
-// セッションに保存しておいたトークンの削除
-unset($_SESSION['token']);
+  // トークンがない場合は不正扱い
+  if ($token === '') {
+    echo "<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>";
+      die("<h4><font color='red'>（※多重投票が検知されました．初回投票以外は，集計に反映されません．）</font></h4>");
+  }
+  // セッションに入れたトークンとPOSTされたトークンの比較
+  if ($token !== $session_token) {
+    echo "<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>";
+      die("<h4><font color='red'>（※多重投票が検知されました．初回投票以外は，集計に反映されません．）</font></h4>");
+  }
+  // セッションに保存しておいたトークンの削除
+  unset($_SESSION['token']);
 
-
+  
+  print "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
 
   // 投票の重み付け
   // プレゼンテーション用
@@ -195,7 +192,7 @@ unset($_SESSION['token']);
 }
 ?>
 
-<br><br>
+<br>
 <h3><a href= resultVis.php > 集計結果を見る </a></h3><br><br>
 <a href= index.html > TOP </a>
 </body></div>
