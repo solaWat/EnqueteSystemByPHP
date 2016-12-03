@@ -1,7 +1,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>セッションCookieの消去</title>
 <?php
-//session_start();
+session_start();
 
 //session_unset(); // 特定のセッション変数のみを消したい場合に使うのが良いらしい．
 // 以下の処理は，冗長という意見がある．
