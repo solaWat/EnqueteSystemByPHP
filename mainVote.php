@@ -208,7 +208,8 @@ unset($_SESSION['token']);
   for ($i = 0; $i < count($person); $i++) {
     fwrite($fp, $ee[$i] . "\n");
   }
-  fclose($fp); 
+  fclose($fp);
+}
 ?>
 
 <br><br>
