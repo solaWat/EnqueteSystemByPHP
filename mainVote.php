@@ -6,8 +6,6 @@
 <title>投票システム</title>
 </head>
 <body>
-
-<form method="post" action="mainVote.php">
 <?php
 session_start();
 session_regenerate_id(); // セキュリティ向上のため，セッションIDを振り直している．
@@ -15,22 +13,13 @@ session_regenerate_id(); // セキュリティ向上のため，セッションI
 if(isset($_POST['my_id'])){ // 「inputName.php」で選ばれた名前を抽出．
     $_SESSION['my_id'] = $_POST['my_id'];
 }
-
-
-
-// // トークンを発行する
-// $token = md5(uniqid(rand(), true));
-// // トークンをセッションに保存
-// $_SESSION['token'] = $token;
  $token = $_SESSION['token'];
-echo "$token";
-
-
+ //echo "$token";
 ?>
-
 <h4>こんにちは <font color='#696969'><big><?php echo htmlspecialchars($_SESSION['my_id']); ?></big></font> さん</h4>
 <p>こちらの2つの表から，それぞれ投票を行ってください．</p><br>
 
+<form method="post" action="mainVote.php">
 <?php
 $person = file('exOrder_prz.txt');// file関数：txtの中身を簡単に吸ってこれる
 $person_fg = file('exOrder_fg.txt'); // 現状，プレゼンとファシグラで異なる投票データベースを使用している．
@@ -104,9 +93,8 @@ print"<table>";
   print"</td>";
   print"</tr>";
 print"</table>";
-
-
 ?>
+
 <!-- フォームを並列したい時に使うもの．
 <div style="display:inline-flex">
 <form><input type="text"><input type="submit"></form>
@@ -157,33 +145,28 @@ if ($_POST['submit']) {
 
 
   // セッションを開始する
-session_start();
-
+if (!isset($_SESSION)) {
+  session_start();
+}
 // セッションに入れておいたトークンを取得
 $session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
-
 // POSTの値からトークンを取得
 $token = isset($_POST['token']) ? $_POST['token'] : '';
 
-echo "$session_token";
-echo "<br>";
-echo "$token";
+// echo "$session_token";
+// echo "<br>";
+// echo "$token";
 
 // トークンがない場合は不正扱い
 if ($token === '') {
     die("不正な処理ですよ。1");
 }
-
 // セッションに入れたトークンとPOSTされたトークンの比較
 if ($token !== $session_token) {
     die("不正な処理ですよ。2");
 }
-
 // セッションに保存しておいたトークンの削除
 unset($_SESSION['token']);
-
-
-
 
 
 
