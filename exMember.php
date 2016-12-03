@@ -10,7 +10,7 @@
 <h2>○出席者を選んでください</h2>
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
-phpinfo();
+//phpinfo();
 // /private/var/log/apache2/error_log
 
 // 研究室所属メンバー
