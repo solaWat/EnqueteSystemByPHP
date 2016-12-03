@@ -33,7 +33,7 @@ $person = array(
   );
 // リストの中から，自分の名前を選んでもらう．
 for ($i = 0; $i < count($person); $i++) {
-  print "<label><input type='radio' name='my_id' value='$person[$i]'>{$person[$i]}<br><br></label>";
+  print "<label><input type='radio' name='my_id' value='$person[$i]'checked>{$person[$i]}<br><br></label>";
 }
 ?>
 <input type="submit" value="送信する" onClick="return confirm('名前を再度確認したのち，[OK]を押してください．')" />

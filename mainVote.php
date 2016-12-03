@@ -8,6 +8,8 @@
 <body>
 <?php
 session_start();
+ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
+ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
 session_regenerate_id(); // セキュリティ向上のため，セッションIDを振り直している．
 
 if(isset($_POST['my_id'])){ // 「inputName.php」で選ばれた名前を抽出．
