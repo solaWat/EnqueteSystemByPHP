@@ -24,12 +24,7 @@ $person = array(
   "Ghita Athalina",
   "倉嶋　俊",
   "小林　優稀",
-  
-<<<<<<< HEAD
   "室井　健二",
-=======
->>>>>>> marge_test_battle2
-  
   "森田　和貴",
   "渡辺　宇",
   "荒木　香名",
