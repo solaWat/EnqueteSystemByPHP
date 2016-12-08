@@ -24,6 +24,7 @@ $person = array(
   "Ghita Athalina",
   "倉嶋　俊",
   "小林　優稀",
+  
   "室井　健一",
   "森田　和貴",
   "渡辺　宇",
