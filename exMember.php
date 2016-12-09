@@ -131,6 +131,7 @@ print"</table>";
 <br>
 <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
 <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
+<h4><a href= request_exOrder.php ><font color="blue"> 発表順を編集 </font>
 <h4><a href= index.html ><font color="green"> TOP </font>
 </a><h4>
 <br><br><br>

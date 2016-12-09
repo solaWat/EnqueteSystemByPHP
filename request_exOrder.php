@@ -5,24 +5,19 @@
 <title>発表順の編集</title>
 </head>
 <body>
-<h2>＜編集＞</h2>
-
-<h3>発表が最後の人の名前を消去する</h3>
-<form method="post" action="request_exOrder.php">
-<input type="submit" name="delete" value="最後を消去" >
-</form>
 <?php
-if ($_POST['delete']) {
+if ($_POST['delete']) { // デリートが押されたら．
 
+	// プレゼン順を書き換える．
 	$file = file('exOrder_prz.txt');
-	//for ($i = 0; $i < count($file); $i++) $file[$i] = rtrim($file[$i]); // 取り出した配列のクレンジング
-	$a = count($file) - 1 ;
-	unset($file[$a]);
-	file_put_contents('exOrder_prz.txt', $file);
+	$a = count($file) - 1 ; 
+	unset($file[$a]); // 配列の最後の要素を削除する．
+	$file = array_values($file); // indexを詰める．
+	file_put_contents('exOrder_prz.txt', $file); // 処理が終わったら，反映させる．
 
 	$cgd = file('exOrder_prz.txt');
 	for ($i = 0; $i < count($cgd); $i++) $cgd[$i] = rtrim($cgd[$i]); // 取り出した配列のクレンジング
-	  // ファシグラ順のtxt書き込み
+	// ファシグラ順のtxt書き込み
 	  $person_fg = $cgd;
 	  $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
 	  $person_two = $person_fg[1];
@@ -45,9 +40,9 @@ if ($_POST['delete']) {
 	  }
 	  fclose($fp);
 
-  // 集計のリセット．トラブル回避のため．
+  // 投票集計のリセット．トラブル回避のため．
   $fp = fopen('enquete_prz.txt', 'w');
-  for ($i = 0; $i < count($person); $i++) {
+  for ($i = 0; $i < count($person_fg); $i++) {
     fwrite($fp, 0 . "\n");
   }
   fclose($fp);
@@ -57,40 +52,13 @@ if ($_POST['delete']) {
     fwrite($fp, 0 . "\n");
   }
   fclose($fp);
-
 }
-?>
 
-<br>
-<h3>順番の最後に新しい人の名前を追加する</h3>
-<form method="post" action="request_exOrder.php">
-<?php
-// 研究室所属メンバー
-$person = array(
-  "安保　建朗",
-  "Ghita Athalina",
-  "倉嶋　俊",
-  "小林　優稀",
-  "室井　健二",
-  "森田　和貴",
-  "渡辺　宇",
-  "荒木　香名",
-  "柴沢　弘樹",
-  "[ゲスト]" // 有事の際は，これで凌ぐ．
-  );
-// リストの中から，自分の名前を選んでもらう．
-for ($i = 0; $i < count($person); $i++) {
-  print "<label><input type='radio' name='my_id' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
-}
-?>
-<input type="submit" name="add" value="名前を追加" >
-</form>
-<?php
-if ($_POST['add']) {
+if ($_POST['add']) { // 追加が押されたら．
 
   $addname = $_POST['my_id'];
-  // プレゼン順のtxt書き込み
-  $fp = fopen('exOrder_prz.txt', 'a');
+  // プレゼン順を書き換える．
+  $fp = fopen('exOrder_prz.txt', 'a'); // txtへの追加書き込み処理．
   fwrite($fp, "$addname" . "\n");
   fclose($fp);
 
@@ -119,9 +87,9 @@ if ($_POST['add']) {
 	  }
 	  fclose($fp);
 
-	  // 集計のリセット．トラブル回避のため．
+	  // 投票集計のリセット．トラブル回避のため．
   $fp = fopen('enquete_prz.txt', 'w');
-  for ($i = 0; $i < count($person); $i++) {
+  for ($i = 0; $i < count($person_fg); $i++) {
     fwrite($fp, 0 . "\n");
   }
   fclose($fp);
@@ -135,10 +103,50 @@ if ($_POST['add']) {
 ?>
 
 
+<h2>＜編集＞</h2>
+
+<!-- addname -->
+<h3>[順番の最後に新しい人の名前を追加する]</h3>
+<form method="post" action="request_exOrder.php">
+<?php
+// 研究室所属メンバー
+$personOrsn = array(
+  "安保　建朗",
+  "Ghita Athalina",
+  "倉嶋　俊",
+  "小林　優稀",
+  "室井　健一",
+  "森田　和貴",
+  "渡辺　宇",
+  "荒木　香名",
+  "柴沢　弘樹",
+  "[ゲスト]" // 有事の際は，これで凌ぐ．
+  );
+$file = file('exOrder_prz.txt');
+for ($i = 0; $i < count($file); $i++) $file[$i] = rtrim($file[$i]); // 取り出した配列のクレンジング
+$person = array_diff($personOrsn, $file); // 研究室所属メンバーと，出席していたメンバーとの，差分を取る．
+$person = array_values($person); // 配列の要素の削除後には，indexを詰める必要がある．
+
+// すでに発表順に入っていた者以外の名前を表示する．
+for ($i = 0; $i < count($person); $i++) {
+  print "<label><input type='radio' name='my_id' value='$person[$i]'>{$person[$i]}<br><br></label>";
+}
+?>
+<input type="submit" name="add" value="名前を追加" >
+</form>
+
+<!-- delete -->
+<br><h3>[発表が最後の人の名前を消去する]</h3>
+<form method="post" action="request_exOrder.php">
+<input type="submit" name="delete" value="最後を消去" >
+</form>
+
+
 <br>
-<h2>＜現在の内容＞</h2>
+<h2>＜現在の設定＞</h2>
 <?php include('current_exOrder.php'); ?>
 
+<h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
 <p><a href= index.html > TOP </a></p><br><br>
 </body>
 </html
