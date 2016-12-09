@@ -57,7 +57,7 @@ for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
 if ($_POST['sort']) {
 
   $food = $_POST['cn'];
-  srand(time()); //乱数列初期化 ???
+  srand(time()); //乱数列初期化．冗長の可能性あり．
   shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
 
   // プレゼン順のtxt書き込み
@@ -91,7 +91,7 @@ if ($_POST['sort']) {
   fclose($fp);
 }
 
-// リセットボタン 今回の発表順が決められると同時に，前回の投票結果をクリアするためのもの．
+// リセット機能 今回の発表順が決められると同時に，前回の投票結果をクリアするためのもの．
 if ($_POST['sort']) {
   $fp = fopen('enquete_prz.txt', 'w');
   for ($i = 0; $i < count($person); $i++) {

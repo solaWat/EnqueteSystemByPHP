@@ -8,19 +8,20 @@
 <br>
 <?php
 
-$person = file('exOrder_prz.txt');
+include('current_exOrder.php');
+// $person = file('exOrder_prz.txt');
 
-  print"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
-    print"<caption>発表順";
+//   print"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
+//     print"<caption>発表順";
     
-    for ($i = 0; $i < count($person); $i++){ // 何位まで取得するか．
-      $j = $i + 1; // 発表順を見せるための変数．
-      print"<tr>";
-      print "<td>$j.{$person[$i]}</td>";
-      print"</tr>";
-    }
-    print"</tr>";
-  print"</table>";
+//     for ($i = 0; $i < count($person); $i++){ // 何位まで取得するか．
+//       $j = $i + 1; // 発表順を見せるための変数．
+//       print"<tr>";
+//       print "<td>$j.{$person[$i]}</td>";
+//       print"</tr>";
+//     }
+//     print"</tr>";
+//   print"</table>";
 
 include('timekeeper-gh-pages/index.html');
 ?>

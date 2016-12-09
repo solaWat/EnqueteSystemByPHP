@@ -113,7 +113,7 @@ print"</table>";
 if ($_POST['submit']) {
 
   // 同フォルダ中のテキストファイルにデータを保存する仕組み
-  $ed = file('enquete_prz.txt'); //　まず開く．
+  $ed = file('enquete_prz.txt'); //　まず開く．あらかじめ，現在のtxtファイルの内容を記憶しておく．理由は後述．
   $ee = file('enquete_fg.txt');
   for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); // 取り出した配列のクレンジング
   for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
@@ -175,7 +175,7 @@ if ($_POST['submit']) {
   $ed[$_POST['cn2']] += 2;
   $ed[$_POST['cn3']] ++;
 
-  $fp = fopen('enquete_prz.txt', 'w'); // txtを開いて書き込み，正確には足しこみ．
+  $fp = fopen('enquete_prz.txt', 'w'); // txtを開いて書き込み，正確には足しこみ．もっと正確に言うと，あらかじめファイルから記憶しておいた値に今回の結果を足し込んでいる．この関数は，元あった内容を上書きしてしまうため．
   for ($i = 0; $i < count($person); $i++) {
     fwrite($fp, $ed[$i] . "\n");
   }
