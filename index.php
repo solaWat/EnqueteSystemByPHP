@@ -28,8 +28,8 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
       print "<input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n";
     }
 }
-
 ?>
+
 <br>
  <!-- ボタンの種類 -->
 <input type="submit" name="submit" value="投票">
@@ -81,7 +81,6 @@ for ($i = 0; $i < count($person); $i++) {
   print "</tr></table></td>";
   print "</tr>\n";
 }
-
 ?>
 
 </table>
