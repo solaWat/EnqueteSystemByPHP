@@ -54,7 +54,12 @@ if ($_POST['delete']) { // デリートが押されたら．
   fclose($fp);
 }
 
+
 if ($_POST['add']) { // 追加が押されたら．
+
+  if ($_POST['my_id'] == null) { // ボタンはcheckedされてるので，出番ないかも．
+  	exit(名前が選択されていません．);
+  }
 
   $addname = $_POST['my_id'];
   // プレゼン順を書き換える．
@@ -105,8 +110,8 @@ if ($_POST['add']) { // 追加が押されたら．
 
 <h2>＜編集＞</h2>
 
-<!-- addname -->
-<h3>[順番の最後に新しい人の名前を追加する]</h3>
+<!-- addname form -->
+<h3>[名前を追加する]</h3>
 <form method="post" action="request_exOrder.php">
 <?php
 // 研究室所属メンバー
@@ -119,26 +124,26 @@ $personOrsn = array(
   "森田　和貴",
   "渡辺　宇",
   "荒木　香名",
-  "柴沢　弘樹",
-  "[ゲスト]" // 有事の際は，これで凌ぐ．
+  "柴沢　弘樹"
   );
 $file = file('exOrder_prz.txt');
 for ($i = 0; $i < count($file); $i++) $file[$i] = rtrim($file[$i]); // 取り出した配列のクレンジング
 $person = array_diff($personOrsn, $file); // 研究室所属メンバーと，出席していたメンバーとの，差分を取る．
 $person = array_values($person); // 配列の要素の削除後には，indexを詰める必要がある．
+$person[] = '[ゲスト]'; // 配列の最後にゲストを仕込む．array_diffで消えずに，ずっと残る．
 
 // すでに発表順に入っていた者以外の名前を表示する．
 for ($i = 0; $i < count($person); $i++) {
-  print "<label><input type='radio' name='my_id' value='$person[$i]'>{$person[$i]}<br><br></label>";
+  print "<label><input type='radio' name='my_id' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
 }
 ?>
-<input type="submit" name="add" value="名前を追加" >
+<input type="submit" name="add" value="決定" >
 </form>
 
-<!-- delete -->
-<br><h3>[発表が最後の人の名前を消去する]</h3>
+<!-- delete form -->
+<br><h3>[名前を削除する]（※一名ずつ）</h3>
 <form method="post" action="request_exOrder.php">
-<input type="submit" name="delete" value="最後を消去" >
+<input type="submit" name="delete" value="DELETE" >
 </form>
 
 

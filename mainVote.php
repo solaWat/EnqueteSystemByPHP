@@ -156,12 +156,12 @@ if ($_POST['submit']) {
   // トークンがない場合は不正扱い
   if ($token === '') {
     echo "<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>";
-      die("<h4><font color='red'>（※多重投票が検知されました．初回投票以外は，集計に反映されません．）</font></h4>");
+      die("<h4><font color='red'>（※多重投票が検知されました．初回の投票以外は，集計に反映されません．）</font></h4>");
   }
   // セッションに入れたトークンとPOSTされたトークンの比較
   if ($token !== $session_token) {
     echo "<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>";
-      die("<h4><font color='red'>（※多重投票が検知されました．初回投票以外は，集計に反映されません．）</font></h4>");
+      die("<h4><font color='red'>（※多重投票が検知されました．初回の投票以外は，集計に反映されません．）</font></h4>");
   }
   // セッションに保存しておいたトークンの削除
   unset($_SESSION['token']);
