@@ -1,6 +1,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>名前を選択</title>
 <?php
+// ini_set( 'session.save_path', '/var/tmp_enqueteSystem' );
+
+ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
+ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
+
 session_start(); // session_start() は、セッションを作成します。 もしくは、リクエスト上で GET, POST またはクッキーにより渡されたセッション ID に基づき現在のセッションを復帰します。
 
 // トークンを発行する
