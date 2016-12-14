@@ -6,6 +6,52 @@
 <title>投票システム</title>
 </head>
 <body>
+<?php
+$dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1';
+//$dsn = 'mysql:dbname=forDataSciClass;host=127.0.0.1';
+//$dsn = 'mysql:dbname=mysql;host=127.0.0.1';
+$user = 'root';
+$password = 'root';
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1', $user, $password);
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_simple");
+    //$dbh = new PDO($dsn, $user, $password);
+    $dbh->query("USE enquete_simple");
+
+$string = <<< EOM
+  ID    int(11) unsigned AUTO_INCREMENT NOT NULL,
+  score int(11) default '0',
+  name  text NOT NULL,
+  PRIMARY KEY (ID)
+EOM;
+
+    $dbh->query("CREATE TABLE IF NOT EXISTS Test2 ($string);");
+
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+ 
+    // $sql = "SELECT count(*) as cnt FROM test2";
+    // foreach ($dbh->query($sql) as $row) {
+    //     echo $row['cnt'] ."\n";
+    // }
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+<!-- <?php
+// header("Content-Type: text/plain");
+// $db = mysql_connect("localhost", "root", "root");
+// mysql_select_db("forDataSciClass");
+// $sql = "SELECT * FROM receipts where receipt_number = '2834'";
+// $stm = mysql_query($sql);
+// while( $rec = mysql_fetch_array($stm) ) {
+//   $id = (string)$rec["id"];
+//   $name = $rec["name"];
+//   print("$id:$name\n");
+// }
+// mysql_close($db);
+?> -->
+
 <form method="post" action="index.php">
 プレゼンテーションの1〜3位を選んでください．<br>
 <?php
