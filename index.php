@@ -7,50 +7,120 @@
 </head>
 <body>
 <?php
-$dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1';
+$dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1;charset=utf8';
 //$dsn = 'mysql:dbname=forDataSciClass;host=127.0.0.1';
 //$dsn = 'mysql:dbname=mysql;host=127.0.0.1';
 $user = 'root';
 $password = 'root';
 try {
-    $dbh = new PDO('mysql:host=127.0.0.1', $user, $password);
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_simple");
-    //$dbh = new PDO($dsn, $user, $password);
-    $dbh->query("USE enquete_simple");
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_simple"); // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh = new PDO($dsn, $user, $password);
+    //$dbh->query("USE enquete_simple"); // こっちでも良い．
 
 $string = <<< EOM
   ID    int(11) unsigned AUTO_INCREMENT NOT NULL,
-  score int(11) default '0',
-  name  text NOT NULL,
+  name1  int(11) default '0',
+  name2  int(11) default '0',
+  name3  int(11) default '0',
+  name4  int(11) default '0',
+  name5  int(11) default '0',
+  name6  int(11) default '0',
+  name7  int(11) default '0',
+  name8  int(11) default '0',
+  name9  int(11) default '0',
   PRIMARY KEY (ID)
 EOM;
 
-    $dbh->query("CREATE TABLE IF NOT EXISTS Test2 ($string);");
-
+    $dbh->query("CREATE TABLE IF NOT EXISTS Test5 ($string);");
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
- 
-    // $sql = "SELECT count(*) as cnt FROM test2";
-    // foreach ($dbh->query($sql) as $row) {
-    //     echo $row['cnt'] ."\n";
-    // }
+
+
+    $dbh->query('SET NAMES sjis');
+
+    $sql = 'select * from Test5';
+    foreach ($dbh->query($sql) as $row) {
+        print($row['id']);
+        print($row['name1'].'<br>');
+    }
+
+
+    $sql = 'select id, name1 from Test5';
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+
+    while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+        print($result['id']);
+        print($result['name1'].'<br>');
+    }
+
+
+    // $sql = 'insert into Test5 (id, name1) values (?, ?)';
+    // $stmt = $dbh->prepare($sql);
+    // $flag = $stmt->execute(array(4, 3));
+
+    $sql = 'select * from Test5';
+    foreach ($dbh->query($sql) as $row) {
+        print($row['id']);
+        print($row['name1'].'<br>');
+    }
+
+
+    $sql = 'select * from Test5';
+    foreach ($dbh->query($sql) as $row) {
+        print($row['name1']);
+        print($row['name2'].'<br>');
+    }
+
+
+    $sql = 'select name1, name2 from Test5';
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+
+    while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+        print($result['name1']);
+        print($result['name2'].'<br>');
+    }
+
+
+    // $sql = 'insert into Test5 (name1, name2) values (?, ?)';
+    // $stmt = $dbh->prepare($sql);
+    // $flag = $stmt->execute(array(5, 5));
+
+    $sql = 'select * from Test5';
+    foreach ($dbh->query($sql) as $row) {
+        print($row['name1']);
+        print($row['name2'].'<br>');
+    }
+
+
+
+
+
+
 } catch (PDOException $e){
     print('Error:'.$e->getMessage());
     die();
 }
 ?>
-<!-- <?php
-// header("Content-Type: text/plain");
-// $db = mysql_connect("localhost", "root", "root");
-// mysql_select_db("forDataSciClass");
-// $sql = "SELECT * FROM receipts where receipt_number = '2834'";
-// $stm = mysql_query($sql);
-// while( $rec = mysql_fetch_array($stm) ) {
-//   $id = (string)$rec["id"];
-//   $name = $rec["name"];
-//   print("$id:$name\n");
-// }
-// mysql_close($db);
-?> -->
+
+
+<table border="1">
+<tr><th>名前</th><th>価格</th></tr>
+<?php
+  //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  $dbh->query("USE enquete_simple");
+  $st = $dbh->query("SELECT * FROM Test5");
+  while ($row = $st->fetch()) {
+    $name = htmlspecialchars($row['name1']);
+    $price = htmlspecialchars($row['name2']);
+    echo "<tr><td>$name</td><td>$price 円</td></tr>";
+  }
+?>
+</table>
+
+
 
 <form method="post" action="index.php">
 プレゼンテーションの1〜3位を選んでください．<br>
@@ -82,8 +152,83 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
 <input type="submit" name="reload" value="更新">
 <input type="submit" name="submit2" value="リセット(のち，要更新)">
 </form>
+
+
+
 <table border='1'>
 <?php
+
+if ($_POST['submit']) {
+
+  $a = $_POST['cn1'];
+  $b = $_POST['cn2'];
+  $c = $_POST['cn3'];
+  $nameA = "name$a";
+  $nameB = "name$b";
+  $nameC = "name$c";
+  echo "$nameA";
+  echo "$nameB";
+  echo "$nameC";
+
+  //$pdo = new PDO("mysql:dbname=men", "root");
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  $dbh->query("USE enquete_simple");
+  $st = $dbh->query("SELECT * FROM Test5");
+  //$st = $pdo->prepare("INSERT INTO udon VALUES(?,?)");
+  $sql = "insert into Test5 (".$nameA.", ".$nameB.", ".$nameC.") values (?, ?, ?)";
+  echo "$sql";
+  //$sql = "insert into Test5 ('{$nameA}', '{$nameB}', '{$nameC}') values (?, ?, ?)";
+  $st = $dbh->prepare($sql);
+  //$st->execute(array($_POST['cn1'], $_POST['cn2'], $_POST['cn3']));
+  $st->execute(array(3, 2, 1));
+
+  // // 投票結果表示
+  // for ($i = 0; $i < count($person); $i++) {
+  //   print "<tr>";
+  //   print "<td>{$person[$i]}</td>";
+  //   print "<td><table><tr>";
+  //   $w = $ed[$i] * 10;
+  //   print "<td width='$w' bgcolor='green'> </td>";
+  //   print "<td>{$ed[$i]} 票</td>";
+  //   print "</tr></table></td>";
+  //   print "</tr>\n";
+  // }
+
+  
+
+print"<table border='1'>";
+print"<tr><th>名前</th><th>価格</th></tr>";
+  //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  $dbh->query("USE enquete_simple");
+  $st = $dbh->query("SELECT * FROM Test5 WHERE ID = 15");
+  while ($row = $st->fetch()) {
+    $name = htmlspecialchars($row['name3']);
+    $price = htmlspecialchars($row['name4']);
+    echo "<tr><td>$name</td><td>$price 円</td></tr>";
+  }
+print"</table>";
+
+
+
+
+  // $stmt = $dbh->prepare("INSERT INTO Test5 (ID, name1, name2, name3, name4, name5, name6, name7, name8, name9) VALUES (2, :name1, :name2, :name3, :name4, :name5, :name6, :name7, :name8, :name9)");
+  // $stmt -> bindValue(':name . $_POST['cn1']', += 3, PDO::PARAM_INT);
+  // $stmt -> bindValue(':name . $_POST['cn2']', :name . $_POST['cn2'] + 2, PDO::PARAM_INT);
+  // $stmt -> bindValue(':name . $_POST['cn3']', :name . $_POST['cn3'] + 1, PDO::PARAM_INT);
+  // $stmt->execute();
+
+  //$stmt = $dbh -> prepare("INSERT INTO Test5 ('ID', name1', 'name2') VALUES (1, 1, 2);");
+  // $stmt->bindValue(':name1', 1, PDO::PARAM_INT);
+  // $stmt->bindValue(':name2', 2, PDO::PARAM_INT);
+
+  //$name = 'one';
+  //$stmt->execute();
+
+  //UPDATE test_table SET point = point+1 WHERE id = $id;
+}
+
+
 // 同フォルダ中のテキストファイルにデータを保存する仕組み
 $ed = file('enquete.txt');
 for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]);
@@ -116,17 +261,17 @@ $rel = $_GET['reload'];
     // echo($_SERVER['PHP_SELF'].'<br/>');
     // echo($_SERVER['SCRIPT_NAME'].'<br/>');
 
-// 投票結果表示
-for ($i = 0; $i < count($person); $i++) {
-  print "<tr>";
-  print "<td>{$person[$i]}</td>";
-  print "<td><table><tr>";
-  $w = $ed[$i] * 10;
-  print "<td width='$w' bgcolor='green'> </td>";
-  print "<td>{$ed[$i]} 票</td>";
-  print "</tr></table></td>";
-  print "</tr>\n";
-}
+// // 投票結果表示
+// for ($i = 0; $i < count($person); $i++) {
+//   print "<tr>";
+//   print "<td>{$person[$i]}</td>";
+//   print "<td><table><tr>";
+//   $w = $ed[$i] * 10;
+//   print "<td width='$w' bgcolor='green'> </td>";
+//   print "<td>{$ed[$i]} 票</td>";
+//   print "</tr></table></td>";
+//   print "</tr>\n";
+// }
 ?>
 
 </table>
