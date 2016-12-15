@@ -8,17 +8,15 @@
 <body>
 <?php
 $dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1;charset=utf8';
-//$dsn = 'mysql:dbname=forDataSciClass;host=127.0.0.1';
-//$dsn = 'mysql:dbname=mysql;host=127.0.0.1';
 $user = 'root';
 $password = 'root';
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_simple"); // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh = new PDO($dsn, $user, $password);
-    //$dbh->query("USE enquete_simple"); // こっちでも良い．
-
-$string = <<< EOM
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_simple"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
   ID    int(11) unsigned AUTO_INCREMENT NOT NULL,
   name1  int(11) default '0',
   name2  int(11) default '0',
@@ -31,11 +29,10 @@ $string = <<< EOM
   name9  int(11) default '0',
   PRIMARY KEY (ID)
 EOM;
-
-    $dbh->query("CREATE TABLE IF NOT EXISTS Test6 ($string);");
+    $dbh->query("CREATE TABLE IF NOT EXISTS enq_table_beta ($col_set);"); // 無ければTABLEを作成する．
+    $st = $dbh->prepare("INSERT INTO enq_table_beta (ID) VALUES(1)"); // 投票用のレコードを無ければ作成．
+    $st->execute();
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-
 
     // $dbh->query('SET NAMES sjis');
 
@@ -94,35 +91,13 @@ EOM;
     //     print($row['name2'].'<br>');
     // }
 
-
-
-
-
-
 } catch (PDOException $e){
     print('Error:'.$e->getMessage());
     die();
 }
 ?>
 
-<!-- 
-<table border="1">
-<tr><th>名前</th><th>価格</th></tr>
-<?php
-  // //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
-  // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
-  // $dbh->query("USE enquete_simple");
-  // $st = $dbh->query("SELECT * FROM Test5");
-  // while ($row = $st->fetch()) {
-  //   $name = htmlspecialchars($row['name1']);
-  //   $price = htmlspecialchars($row['name2']);
-  //   echo "<tr><td>$name</td><td>$price 円</td></tr>";
-  // }
-?>
-</table>
- -->
-
-
+<!-- 投票用に選択ボタンを表示する． -->
 <form method="post" action="index.php">
 プレゼンテーションの1〜3位を選んでください．<br>
 <?php
@@ -151,14 +126,10 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
  <!-- ボタンの種類 -->
 <input type="submit" name="submit" value="投票">
 <input type="submit" name="reload" value="更新">
-<input type="submit" name="submit2" value="リセット(のち，要更新)">
-</form>
+<br><br>
 
 
-
-<table border='1'>
 <?php
-
 if ($_POST['submit']) {
 
   $a = $_POST['cn1'] + 1;
@@ -167,47 +138,52 @@ if ($_POST['submit']) {
   $nameA = "name$a";
   $nameB = "name$b";
   $nameC = "name$c";
-  echo "$nameA";
-  echo "$nameB";
-  echo "$nameC";
 
-  //$pdo = new PDO("mysql:dbname=men", "root");
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
   $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM Test6");
-  //$st = $pdo->prepare("INSERT INTO udon VALUES(?,?)");
-  $st = $dbh->prepare("INSERT INTO Test6 (ID) VALUES(1)");
-  $st->execute();
+  $st = $dbh->query("SELECT * FROM enq_table_beta");
 
-  //$sql = "insert into Test5 (".$nameA.", ".$nameB.", ".$nameC.") values (?, ?, ?)";
-  $sql = "UPDATE Test6 SET $nameA = $nameA + 3 WHERE ID = 1";
-  echo "$sql";
-
-  //$sql = "insert into Test5 ('{$nameA}', '{$nameB}', '{$nameC}') values (?, ?, ?)";
+  $sql = "UPDATE enq_table_beta SET $nameA = $nameA + 3 WHERE ID = 1"; // 1位は3票足し込む．
   $st = $dbh->prepare($sql);
   //$st->execute(array($_POST['cn1'], $_POST['cn2'], $_POST['cn3']));
   //$st->execute(array(3, 2, 1));
   $st->execute();
 
-  $sql = "UPDATE Test6 SET $nameB = $nameB + 2 WHERE ID = 1";
+  $sql = "UPDATE enq_table_beta SET $nameB = $nameB + 2 WHERE ID = 1"; // 2位は2票足し込む．
   $st = $dbh->prepare($sql);
   $st->execute();
-  $sql = "UPDATE Test6 SET $nameC = $nameC + 1 WHERE ID = 1";  
+  $sql = "UPDATE enq_table_beta SET $nameC = $nameC + 1 WHERE ID = 1"; // 3位は1票足し込む．
   $st = $dbh->prepare($sql);
   $st->execute();
+}
 
-  
+// リセットボタン 
+if ($_POST['submit2']) {
+  for ($i = 0; $i < count($person); $i++) {
+    $h = $i + 1;
+    $nameA = "name$h";
+    $sql = "UPDATE enq_table_beta SET $nameA = 0 WHERE ID = 1"; // 全てを0でアップデート．
+    $st = $dbh->prepare($sql);
+    $st->execute();
+    }
+}
 
-print"<table border='1'>";
-//print"<tr><th>名前</th><th>価格</th></tr>";
-  //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
+// 更新ボタン　ブラウザでの更新はさせたくない．
+$rel = $_GET['reload'];
+    if ($rel == 'true') {
+      header("Location: " . $_SERVER['PHP_SELF']);
+    }
+?>
+
+<?php
+print"<table border='1'>"; // 投票結果を集計して，表示するためのテーブル．
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
   $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM Test6 WHERE ID = 1");
+  $st = $dbh->query("SELECT * FROM enq_table_beta WHERE ID = 1"); // 今は，とりあえずID＝1にしておく．
   while ($row = $st->fetch()) {
-    $name = htmlspecialchars($row['name3']);
-    $price = htmlspecialchars($row['name4']);
-    //echo "<tr><td>$name</td><td>$price 円</td></tr>";
+      //$name = htmlspecialchars($row['name3']);
+      //$price = htmlspecialchars($row['name4']);
+      //echo "<tr><td>$name</td><td>$price 円</td></tr>";
     for ($i = 0; $i < count($person); $i++) {
       $h = $i +1;
       print "<tr>";
@@ -221,95 +197,30 @@ print"<table border='1'>";
     }
   }
 print"</table>";
-
-
-
-
-  // $stmt = $dbh->prepare("INSERT INTO Test5 (ID, name1, name2, name3, name4, name5, name6, name7, name8, name9) VALUES (2, :name1, :name2, :name3, :name4, :name5, :name6, :name7, :name8, :name9)");
-  // $stmt -> bindValue(':name . $_POST['cn1']', += 3, PDO::PARAM_INT);
-  // $stmt -> bindValue(':name . $_POST['cn2']', :name . $_POST['cn2'] + 2, PDO::PARAM_INT);
-  // $stmt -> bindValue(':name . $_POST['cn3']', :name . $_POST['cn3'] + 1, PDO::PARAM_INT);
-  // $stmt->execute();
-
-  //$stmt = $dbh -> prepare("INSERT INTO Test5 ('ID', name1', 'name2') VALUES (1, 1, 2);");
-  // $stmt->bindValue(':name1', 1, PDO::PARAM_INT);
-  // $stmt->bindValue(':name2', 2, PDO::PARAM_INT);
-
-  //$name = 'one';
-  //$stmt->execute();
-
-  //UPDATE test_table SET point = point+1 WHERE id = $id;
-}
-
-
-// 同フォルダ中のテキストファイルにデータを保存する仕組み
-$ed = file('enquete.txt');
-for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]);
-// 投票ボタン
-if ($_POST['submit']) {
-  $ed[$_POST['cn1']] += 3; // 1位から順にポイントが高くなる
-  $ed[$_POST['cn2']] += 2;
-  $ed[$_POST['cn3']] ++;
-
-  $fp = fopen('enquete.txt', 'w');
-  for ($i = 0; $i < count($person); $i++) {
-    fwrite($fp, $ed[$i] . "\n");
-  }
-  fclose($fp);
-}
-// リセットボタン 1クリックでは反映されない問題がある．
-if ($_POST['submit2']) {
-
-  for ($i = 0; $i < count($person); $i++) {
-    
-    $h = $i +1;
-    $nameA = "name$h";
-    $sql = "UPDATE Test6 SET $nameA = 0 WHERE ID = 1";  
-    $st = $dbh->prepare($sql);
-    $st->execute();
-    }
-  // $sql = "UPDATE Test5 SET $nameA = 0 WHERE ID = 27";  
-  // $st = $dbh->prepare($sql);
-  // $st->execute();
-  // $sql = "UPDATE Test5 SET $nameB = $nameB + 2 WHERE ID = 27";  
-  // $st = $dbh->prepare($sql);
-  // $st->execute();
-  // $sql = "UPDATE Test5 SET $nameC = $nameC + 1 WHERE ID = 27";  
-  // $st = $dbh->prepare($sql);
-  // $st->execute();
-
-
-  // $fp = fopen('enquete.txt', 'w');
-  // for ($i = 0; $i < count($person); $i++) {
-  //   fwrite($fp, 0 . "\n");
-  // }
-  // fclose($fp);
-}
-// 更新ボタン
-$rel = $_GET['reload'];
-    if ($rel == 'true') {
-      header("Location: " . $_SERVER['PHP_SELF']);
-    }
-    /*デバッグ用*/
-    // echo($_SERVER['PHP_SELF'].'<br/>');
-    // echo($_SERVER['SCRIPT_NAME'].'<br/>');
-
-// // 投票結果表示
-// for ($i = 0; $i < count($person); $i++) {
-//   print "<tr>";
-//   print "<td>{$person[$i]}</td>";
-//   print "<td><table><tr>";
-//   $w = $ed[$i] * 10;
-//   print "<td width='$w' bgcolor='green'> </td>";
-//   print "<td>{$ed[$i]} 票</td>";
-//   print "</tr></table></td>";
-//   print "</tr>\n";
-// }
 ?>
 
+<!-- 
+<table border="1">
+<tr><th>名前</th><th>価格</th></tr>
+<?php
+  // //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
+  // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  // $dbh->query("USE enquete_simple");
+  // $st = $dbh->query("SELECT * FROM Test5");
+  // while ($row = $st->fetch()) {
+  //   $name = htmlspecialchars($row['name1']);
+  //   $price = htmlspecialchars($row['name2']);
+  //   echo "<tr><td>$name</td><td>$price 円</td></tr>";
+  // }
+?>
 </table>
+ -->
+
 <br>
-<!-- <p><font color="red">次の課題　ルーレット結果(出席者，発表順)を取ってきて，投票対象として表示する．ファシリテーター投票につなげるのも楽．</font></p> -->
-<a href= ../ > TOP </a>
+<input type="submit" name="submit2" value="集計をリセット">
+</form>
+
+<br>
+<a href= ../ > TOP </a><br><br>
 </body>
 </html
