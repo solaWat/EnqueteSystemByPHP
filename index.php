@@ -32,66 +32,67 @@ $string = <<< EOM
   PRIMARY KEY (ID)
 EOM;
 
-    $dbh->query("CREATE TABLE IF NOT EXISTS Test5 ($string);");
+    $dbh->query("CREATE TABLE IF NOT EXISTS Test6 ($string);");
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-    $dbh->query('SET NAMES sjis');
 
-    $sql = 'select * from Test5';
-    foreach ($dbh->query($sql) as $row) {
-        print($row['id']);
-        print($row['name1'].'<br>');
-    }
+    // $dbh->query('SET NAMES sjis');
 
-
-    $sql = 'select id, name1 from Test5';
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute();
-
-    while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
-        print($result['id']);
-        print($result['name1'].'<br>');
-    }
+    // $sql = 'select * from Test5';
+    // foreach ($dbh->query($sql) as $row) {
+    //     print($row['id']);
+    //     print($row['name1'].'<br>');
+    // }
 
 
-    // $sql = 'insert into Test5 (id, name1) values (?, ?)';
+    // $sql = 'select id, name1 from Test5';
     // $stmt = $dbh->prepare($sql);
-    // $flag = $stmt->execute(array(4, 3));
+    // $stmt->execute();
 
-    $sql = 'select * from Test5';
-    foreach ($dbh->query($sql) as $row) {
-        print($row['id']);
-        print($row['name1'].'<br>');
-    }
-
-
-    $sql = 'select * from Test5';
-    foreach ($dbh->query($sql) as $row) {
-        print($row['name1']);
-        print($row['name2'].'<br>');
-    }
+    // while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+    //     print($result['id']);
+    //     print($result['name1'].'<br>');
+    // }
 
 
-    $sql = 'select name1, name2 from Test5';
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute();
+    // // $sql = 'insert into Test5 (id, name1) values (?, ?)';
+    // // $stmt = $dbh->prepare($sql);
+    // // $flag = $stmt->execute(array(4, 3));
 
-    while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
-        print($result['name1']);
-        print($result['name2'].'<br>');
-    }
+    // $sql = 'select * from Test5';
+    // foreach ($dbh->query($sql) as $row) {
+    //     print($row['id']);
+    //     print($row['name1'].'<br>');
+    // }
 
 
-    // $sql = 'insert into Test5 (name1, name2) values (?, ?)';
+    // $sql = 'select * from Test5';
+    // foreach ($dbh->query($sql) as $row) {
+    //     print($row['name1']);
+    //     print($row['name2'].'<br>');
+    // }
+
+
+    // $sql = 'select name1, name2 from Test5';
     // $stmt = $dbh->prepare($sql);
-    // $flag = $stmt->execute(array(5, 5));
+    // $stmt->execute();
 
-    $sql = 'select * from Test5';
-    foreach ($dbh->query($sql) as $row) {
-        print($row['name1']);
-        print($row['name2'].'<br>');
-    }
+    // while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+    //     print($result['name1']);
+    //     print($result['name2'].'<br>');
+    // }
+
+
+    // // $sql = 'insert into Test5 (name1, name2) values (?, ?)';
+    // // $stmt = $dbh->prepare($sql);
+    // // $flag = $stmt->execute(array(5, 5));
+
+    // $sql = 'select * from Test5';
+    // foreach ($dbh->query($sql) as $row) {
+    //     print($row['name1']);
+    //     print($row['name2'].'<br>');
+    // }
 
 
 
@@ -104,22 +105,22 @@ EOM;
 }
 ?>
 
-
+<!-- 
 <table border="1">
 <tr><th>名前</th><th>価格</th></tr>
 <?php
-  //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
-  $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM Test5");
-  while ($row = $st->fetch()) {
-    $name = htmlspecialchars($row['name1']);
-    $price = htmlspecialchars($row['name2']);
-    echo "<tr><td>$name</td><td>$price 円</td></tr>";
-  }
+  // //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
+  // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  // $dbh->query("USE enquete_simple");
+  // $st = $dbh->query("SELECT * FROM Test5");
+  // while ($row = $st->fetch()) {
+  //   $name = htmlspecialchars($row['name1']);
+  //   $price = htmlspecialchars($row['name2']);
+  //   echo "<tr><td>$name</td><td>$price 円</td></tr>";
+  // }
 ?>
 </table>
-
+ -->
 
 
 <form method="post" action="index.php">
@@ -173,11 +174,13 @@ if ($_POST['submit']) {
   //$pdo = new PDO("mysql:dbname=men", "root");
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
   $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM Test5");
+  $st = $dbh->query("SELECT * FROM Test6");
   //$st = $pdo->prepare("INSERT INTO udon VALUES(?,?)");
+  $st = $dbh->prepare("INSERT INTO Test6 (ID) VALUES(1)");
+  $st->execute();
 
   //$sql = "insert into Test5 (".$nameA.", ".$nameB.", ".$nameC.") values (?, ?, ?)";
-  $sql = "UPDATE Test5 SET $nameA = $nameA + 3 WHERE ID = 27";
+  $sql = "UPDATE Test6 SET $nameA = $nameA + 3 WHERE ID = 1";
   echo "$sql";
 
   //$sql = "insert into Test5 ('{$nameA}', '{$nameB}', '{$nameC}') values (?, ?, ?)";
@@ -186,25 +189,12 @@ if ($_POST['submit']) {
   //$st->execute(array(3, 2, 1));
   $st->execute();
 
-  $sql = "UPDATE Test5 SET $nameB = $nameB + 2 WHERE ID = 27";  
+  $sql = "UPDATE Test6 SET $nameB = $nameB + 2 WHERE ID = 1";
   $st = $dbh->prepare($sql);
   $st->execute();
-  $sql = "UPDATE Test5 SET $nameC = $nameC + 1 WHERE ID = 27";  
+  $sql = "UPDATE Test6 SET $nameC = $nameC + 1 WHERE ID = 1";  
   $st = $dbh->prepare($sql);
   $st->execute();
-
-
-  // // 投票結果表示
-  // for ($i = 0; $i < count($person); $i++) {
-  //   print "<tr>";
-  //   print "<td>{$person[$i]}</td>";
-  //   print "<td><table><tr>";
-  //   $w = $ed[$i] * 10;
-  //   print "<td width='$w' bgcolor='green'> </td>";
-  //   print "<td>{$ed[$i]} 票</td>";
-  //   print "</tr></table></td>";
-  //   print "</tr>\n";
-  // }
 
   
 
@@ -213,7 +203,7 @@ print"<table border='1'>";
   //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
   $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM Test5 WHERE ID = 27");
+  $st = $dbh->query("SELECT * FROM Test6 WHERE ID = 1");
   while ($row = $st->fetch()) {
     $name = htmlspecialchars($row['name3']);
     $price = htmlspecialchars($row['name4']);
@@ -274,7 +264,7 @@ if ($_POST['submit2']) {
     
     $h = $i +1;
     $nameA = "name$h";
-    $sql = "UPDATE Test5 SET $nameA = 0 WHERE ID = 27";  
+    $sql = "UPDATE Test6 SET $nameA = 0 WHERE ID = 1";  
     $st = $dbh->prepare($sql);
     $st->execute();
     }
