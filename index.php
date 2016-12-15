@@ -132,6 +132,18 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
 <?php
 if ($_POST['submit']) {
 
+  //ラジオボタン選択のエラー表示用
+  if ($_POST['cn1']==null or $_POST['cn2']==null or $_POST['cn3']==null) {
+    $error_msg = "<h4><font color='red'>※全ての順位を埋めてください</font></h4>";
+    print $error_msg;
+    exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
+  }
+  if ($_POST['cn1']==$_POST['cn2'] || $_POST['cn2']==$_POST['cn3'] || $_POST['cn1']==$_POST['cn3']) {
+    $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません</font></h4>";
+    print $error_msg;
+    exit;
+  }
+
   $a = $_POST['cn1'] + 1;
   $b = $_POST['cn2'] + 1;
   $c = $_POST['cn3'] + 1;
@@ -221,6 +233,6 @@ print"</table>";
 </form>
 
 <br>
-<a href= ../ > TOP </a><br><br>
+<a href= ../ > TOP </a><br><br><br>
 </body>
 </html
