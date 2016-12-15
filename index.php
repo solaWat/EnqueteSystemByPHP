@@ -141,7 +141,7 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
   print "$h 位 \n " ;
   print("<br>");
     for ($i = 0; $i < count($person); $i++) { // 人数分のradio表示
-      print "<input type='radio' name='cn$h' value='$i'>{$person[$i]}<br>\n";
+      print "<label><input type='radio' name='cn$h' value='$i'>{$person[$i]}</label><br>\n";
     }
 }
 ?>
@@ -160,9 +160,9 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
 
 if ($_POST['submit']) {
 
-  $a = $_POST['cn1'];
-  $b = $_POST['cn2'];
-  $c = $_POST['cn3'];
+  $a = $_POST['cn1'] + 1;
+  $b = $_POST['cn2'] + 1;
+  $c = $_POST['cn3'] + 1;
   $nameA = "name$a";
   $nameB = "name$b";
   $nameC = "name$c";
@@ -175,12 +175,24 @@ if ($_POST['submit']) {
   $dbh->query("USE enquete_simple");
   $st = $dbh->query("SELECT * FROM Test5");
   //$st = $pdo->prepare("INSERT INTO udon VALUES(?,?)");
-  $sql = "insert into Test5 (".$nameA.", ".$nameB.", ".$nameC.") values (?, ?, ?)";
+
+  //$sql = "insert into Test5 (".$nameA.", ".$nameB.", ".$nameC.") values (?, ?, ?)";
+  $sql = "UPDATE Test5 SET $nameA = $nameA + 3 WHERE ID = 27";
   echo "$sql";
+
   //$sql = "insert into Test5 ('{$nameA}', '{$nameB}', '{$nameC}') values (?, ?, ?)";
   $st = $dbh->prepare($sql);
   //$st->execute(array($_POST['cn1'], $_POST['cn2'], $_POST['cn3']));
-  $st->execute(array(3, 2, 1));
+  //$st->execute(array(3, 2, 1));
+  $st->execute();
+
+  $sql = "UPDATE Test5 SET $nameB = $nameB + 2 WHERE ID = 27";  
+  $st = $dbh->prepare($sql);
+  $st->execute();
+  $sql = "UPDATE Test5 SET $nameC = $nameC + 1 WHERE ID = 27";  
+  $st = $dbh->prepare($sql);
+  $st->execute();
+
 
   // // 投票結果表示
   // for ($i = 0; $i < count($person); $i++) {
@@ -197,15 +209,26 @@ if ($_POST['submit']) {
   
 
 print"<table border='1'>";
-print"<tr><th>名前</th><th>価格</th></tr>";
+//print"<tr><th>名前</th><th>価格</th></tr>";
   //$pdo = new PDO("mysql:dbname=enquete_simple", "root");
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
   $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM Test5 WHERE ID = 15");
+  $st = $dbh->query("SELECT * FROM Test5 WHERE ID = 27");
   while ($row = $st->fetch()) {
     $name = htmlspecialchars($row['name3']);
     $price = htmlspecialchars($row['name4']);
-    echo "<tr><td>$name</td><td>$price 円</td></tr>";
+    //echo "<tr><td>$name</td><td>$price 円</td></tr>";
+    for ($i = 0; $i < count($person); $i++) {
+      $h = $i +1;
+      print "<tr>";
+      print "<td>{$person[$i]}</td>";
+      print "<td><table><tr>";
+      $w = $row["name$h"] * 10;
+      print "<td width='$w' bgcolor='green'> </td>";
+      print "<td>{$row["name$h"]} 票</td>";
+      print "</tr></table></td>";
+      print "</tr>\n";
+    }
   }
 print"</table>";
 
@@ -246,11 +269,31 @@ if ($_POST['submit']) {
 }
 // リセットボタン 1クリックでは反映されない問題がある．
 if ($_POST['submit2']) {
-  $fp = fopen('enquete.txt', 'w');
+
   for ($i = 0; $i < count($person); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
+    
+    $h = $i +1;
+    $nameA = "name$h";
+    $sql = "UPDATE Test5 SET $nameA = 0 WHERE ID = 27";  
+    $st = $dbh->prepare($sql);
+    $st->execute();
+    }
+  // $sql = "UPDATE Test5 SET $nameA = 0 WHERE ID = 27";  
+  // $st = $dbh->prepare($sql);
+  // $st->execute();
+  // $sql = "UPDATE Test5 SET $nameB = $nameB + 2 WHERE ID = 27";  
+  // $st = $dbh->prepare($sql);
+  // $st->execute();
+  // $sql = "UPDATE Test5 SET $nameC = $nameC + 1 WHERE ID = 27";  
+  // $st = $dbh->prepare($sql);
+  // $st->execute();
+
+
+  // $fp = fopen('enquete.txt', 'w');
+  // for ($i = 0; $i < count($person); $i++) {
+  //   fwrite($fp, 0 . "\n");
+  // }
+  // fclose($fp);
 }
 // 更新ボタン
 $rel = $_GET['reload'];
