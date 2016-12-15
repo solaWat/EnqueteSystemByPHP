@@ -10,6 +10,10 @@
 $dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1;charset=utf8';
 $user = 'root';
 $password = 'root';
+
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
     // SELECT文以降の処理では，exec関数は使用できない．
@@ -18,6 +22,7 @@ try {
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
   ID    int(11) unsigned AUTO_INCREMENT NOT NULL,
+  date date UNIQUE,
   name1  int(11) default '0',
   name2  int(11) default '0',
   name3  int(11) default '0',
@@ -30,8 +35,8 @@ $col_set = <<< EOM
   PRIMARY KEY (ID)
 EOM;
     $dbh->query("CREATE TABLE IF NOT EXISTS enq_table_beta ($col_set);"); // 無ければTABLEを作成する．
-    $st = $dbh->prepare("INSERT INTO enq_table_beta (ID) VALUES(1)"); // 投票用のレコードを無ければ作成．
-    $st->execute();
+    $st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    $st->execute(array($date)); // 日にちでレコードを分ける．
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // $dbh->query('SET NAMES sjis');
@@ -130,6 +135,9 @@ for ($h = 1; $h < 4; $h++){ // 何位まで取得するか．
 
 
 <?php
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
 if ($_POST['submit']) {
 
   //ラジオボタン選択のエラー表示用
@@ -155,16 +163,16 @@ if ($_POST['submit']) {
   $dbh->query("USE enquete_simple");
   $st = $dbh->query("SELECT * FROM enq_table_beta");
 
-  $sql = "UPDATE enq_table_beta SET $nameA = $nameA + 3 WHERE ID = 1"; // 1位は3票足し込む．
+  $sql = "UPDATE enq_table_beta SET $nameA = $nameA + 3 WHERE date = '$date'"; // 1位は3票足し込む．
   $st = $dbh->prepare($sql);
   //$st->execute(array($_POST['cn1'], $_POST['cn2'], $_POST['cn3']));
   //$st->execute(array(3, 2, 1));
   $st->execute();
 
-  $sql = "UPDATE enq_table_beta SET $nameB = $nameB + 2 WHERE ID = 1"; // 2位は2票足し込む．
+  $sql = "UPDATE enq_table_beta SET $nameB = $nameB + 2 WHERE date = '$date'"; // 2位は2票足し込む．
   $st = $dbh->prepare($sql);
   $st->execute();
-  $sql = "UPDATE enq_table_beta SET $nameC = $nameC + 1 WHERE ID = 1"; // 3位は1票足し込む．
+  $sql = "UPDATE enq_table_beta SET $nameC = $nameC + 1 WHERE date = '$date'"; // 3位は1票足し込む．
   $st = $dbh->prepare($sql);
   $st->execute();
 }
@@ -174,7 +182,7 @@ if ($_POST['submit2']) {
   for ($i = 0; $i < count($person); $i++) {
     $h = $i + 1;
     $nameA = "name$h";
-    $sql = "UPDATE enq_table_beta SET $nameA = 0 WHERE ID = 1"; // 全てを0でアップデート．
+    $sql = "UPDATE enq_table_beta SET $nameA = 0 WHERE date = '$date'"; // 全てを0でアップデート．
     $st = $dbh->prepare($sql);
     $st->execute();
     }
@@ -188,10 +196,13 @@ $rel = $_GET['reload'];
 ?>
 
 <?php
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
 print"<table border='1'>"; // 投票結果を集計して，表示するためのテーブル．
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
   $dbh->query("USE enquete_simple");
-  $st = $dbh->query("SELECT * FROM enq_table_beta WHERE ID = 1"); // 今は，とりあえずID＝1にしておく．
+  $st = $dbh->query("SELECT * FROM enq_table_beta WHERE date = '$date'"); // 今は，とりあえずID＝1にしておく．
   while ($row = $st->fetch()) {
       //$name = htmlspecialchars($row['name3']);
       //$price = htmlspecialchars($row['name4']);
