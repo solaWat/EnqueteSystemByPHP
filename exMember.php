@@ -11,6 +11,7 @@
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
 
+
 // 研究室所属メンバー
 $person = array(
   "安保　建朗",
