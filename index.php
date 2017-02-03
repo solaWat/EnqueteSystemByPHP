@@ -8,9 +8,9 @@
 </head>
 <body>
 <?php
-$dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1;charset=utf8';
-$user = 'root';
-$password = 'root';
+$dsn = 'mysql:dbname=enquete_simple;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
@@ -160,7 +160,7 @@ if ($_POST['submit']) {
   $nameB = "name$b";
   $nameC = "name$c";
 
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_simple");
   $st = $dbh->query("SELECT * FROM enq_table_beta");
 
@@ -201,7 +201,7 @@ date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
 
 print"<table border='1'>"; // 投票結果を集計して，表示するためのテーブル．
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root);
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_simple");
   $st = $dbh->query("SELECT * FROM enq_table_beta WHERE date = '$date'"); // 今は，とりあえずID＝1にしておく．
   while ($row = $st->fetch()) {
