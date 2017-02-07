@@ -6,11 +6,105 @@
 <div style="background-color: #cff;">
 </head>
 <body>
+
+<?php
+$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
+
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
+  date  date,
+  time  time,
+  voter_name  nvarchar(100),
+  type_of_vote  varchar(30),
+  rank  tinyint unsigned,
+  voted_name  nvarchar(100)
+EOM;
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_1 ($col_set);"); // 無ければTABLEを作成する．
+
+    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    //$st->execute(array($date)); // 日にちでレコードを分ける．
+    
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+
+<?php
+$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
+
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
+  fiscal_year  year,
+  studentname  nvarchar(100)
+EOM;
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2 ($col_set);"); // 無ければTABLEを作成する．
+
+    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    //$st->execute(array($date)); // 日にちでレコードを分ける．
+    
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+
+<?php
+$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
+
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
+  date  date,
+  time  time,
+  exist_studentname  nvarchar(100),
+  order_of_presen  tinyint unsigned
+EOM;
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3 ($col_set);"); // 無ければTABLEを作成する．
+
+    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    //$st->execute(array($date)); // 日にちでレコードを分ける．
+    
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+
+
 <form method="post" action="exMember.php">
 <h2>○出席者を選んでください</h2>
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
-
 
 // 研究室所属メンバー
 $person = array(
