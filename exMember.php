@@ -106,22 +106,34 @@ EOM;
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
 
+$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+$dbh->query("USE enquete_main");
+$st = $dbh->query("SELECT studentname FROM TestA_2 WHERE fiscal_year = '2016'"); // 今は，とりあえずID＝1にしておく．
+//$person = $st->fetch();
+
+
 // 研究室所属メンバー
-$person = array(
-  "安保　建朗",
-  "Ghita Athalina",
-  "倉嶋　俊",
-  "小林　優稀",
-  "室井　健一",
-  "森田　和貴",
-  "渡辺　宇",
-  "荒木　香名",
-  "柴沢　弘樹"
-  );
+// $person = array(
+//   "安保　建朗",
+//   "Ghita Athalina",
+//   "倉嶋　俊",
+//   "小林　優稀",
+//   "室井　健一",
+//   "森田　和貴",
+//   "渡辺　宇",
+//   "荒木　香名",
+//   "柴沢　弘樹"
+//   );
 // チェックボックスで今日の出席者を選んでもらう．
-for ($i = 0; $i < count($person); $i++) {
-  print "<label><input type='checkbox' name='cn[]' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
+// for ($i = 0; $i < count($person); $i++) {
+//   print "<label><input type='checkbox' name='cn[]' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
+// }
+
+foreach ($st as $row) {
+  # code...
+  print "<label><input type='checkbox' name='cn[]' value='$person[$i]' checked>{$row['studentname']}<br><br></label>";
 }
+
 ?>
 
 </div><br>
