@@ -131,7 +131,8 @@ $st = $dbh->query("SELECT studentname FROM TestA_2 WHERE fiscal_year = '2016'");
 
 foreach ($st as $row) {
   # code...
-  print "<label><input type='checkbox' name='cn[]' value='$person[$i]' checked>{$row['studentname']}<br><br></label>";
+  $hen = $row['studentname'];
+  print "<label><input type='checkbox' name='cn[]' value='$hen' checked>{$hen}<br><br></label>";
 }
 
 ?>
@@ -141,8 +142,8 @@ foreach ($st as $row) {
 <input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
 </form>
 
-<?php
 
+<?php
 print"<h2>○今日の発表順はこちら</h2>";
 
 // // デバッグ用
@@ -155,10 +156,10 @@ print"<h2>○今日の発表順はこちら</h2>";
 // このプロジェクトでは，DB用途のtxtファイルは，手動であらかじめ作っておくことにする．パーミッションもその都度，現地で変更しておく．
 
 // 同フォルダ中のテキストファイルにデータを保存する仕組み
-$ed = file('exOrder_prz.txt');// 発表順とファシグラの順は，あらかじめ分けて記録させておく．
-$ee = file('exOrder_fg.txt');
-for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); //吸い取った配列のクレンジング．
-for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
+// $ed = file('exOrder_prz.txt');// 発表順とファシグラの順は，あらかじめ分けて記録させておく．
+// $ee = file('exOrder_fg.txt');
+// for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); //吸い取った配列のクレンジング．
+// for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
 
 // 投票ボタン
 if ($_POST['sort']) {
@@ -166,6 +167,43 @@ if ($_POST['sort']) {
   $food = $_POST['cn'];
   srand(time()); //乱数列初期化．冗長の可能性あり．
   shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
+
+  date_default_timezone_set('Asia/Tokyo');
+  $date = date('Y-m-d');
+  $time = time('H:i:s');
+
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
+
+  for ($i=0; $i < count($food); $i++) { 
+    $j = $i+1;
+    $sql = "INSERT INTO TestA_3 (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j')"; 
+    //echo "$food[$i]";
+    //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+    $st = $dbh->prepare($sql);
+    $st->execute();
+  }
+
+  
+
+  //$st = $dbh->query("SELECT studentname FROM TestA_3 WHERE fiscal_year = '2016'"); // 
+
+  // $a = $_POST['cn1'] + 1;
+  // $b = $_POST['cn2'] + 1;
+  // $c = $_POST['cn3'] + 1;
+  // $nameA = "name$a";
+  // $nameB = "name$b";
+  // $nameC = "name$c";
+
+  // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  // $dbh->query("USE enquete_simple");
+  // $st = $dbh->query("SELECT * FROM enq_table_beta");
+
+  // $sql = "UPDATE enq_table_beta SET $nameA = $nameA + 3 WHERE date = '$date'"; // 1位は3票足し込む．
+  // $st = $dbh->prepare($sql);
+  // //$st->execute(array($_POST['cn1'], $_POST['cn2'], $_POST['cn3']));
+  // //$st->execute(array(3, 2, 1));
+  // $st->execute();
 
   // プレゼン順のtxt書き込み
   $fp = fopen('exOrder_prz.txt', 'w');
