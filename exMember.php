@@ -178,9 +178,16 @@ if ($_POST['sort']) {
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_main");
 
+  $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date'";
+  $st = $dbh->prepare($sql);
+  $st->execute();
+
   for ($i=0; $i < count($food); $i++) { 
     $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j')"; 
+    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+    //ON DUPLICATE KEY UPDATE date = '$date' 
+
+
     //echo "$food[$i]";
     //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
     $st = $dbh->prepare($sql);
@@ -299,7 +306,8 @@ $query = <<< EOM
   from  TestA_2_lab_member_name
   left join TestA_3_order_of_presen
   on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  where TestA_3_order_of_presen.date = '$date';
+  where TestA_3_order_of_presen.date = '$date'
+  order by TestA_3_order_of_presen.order_of_presen;
 EOM;
 $st = $dbh->query("$query"); 
 
