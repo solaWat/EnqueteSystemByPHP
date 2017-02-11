@@ -110,7 +110,7 @@ EOM;
 
 $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
 $dbh->query("USE enquete_main");
-$st = $dbh->query("SELECT studentname FROM TestA_2 WHERE fiscal_year = '2016'"); // 今は，とりあえずID＝1にしておく．
+$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); // 今は，とりあえずID＝1にしておく．
 //$person = $st->fetch();
 
 
@@ -133,8 +133,9 @@ $st = $dbh->query("SELECT studentname FROM TestA_2 WHERE fiscal_year = '2016'");
 
 foreach ($st as $row) {
   # code...
-  $hen = $row['studentname'];
-  print "<label><input type='checkbox' name='cn[]' value='$hen' checked>{$hen}<br><br></label>";
+  $name = $row['studentname'];
+  $id = $row['person_id'];
+  print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
 }
 
 ?>
@@ -172,14 +173,14 @@ if ($_POST['sort']) {
 
   date_default_timezone_set('Asia/Tokyo');
   $date = date('Y-m-d');
-  $time = time('H:i:s');
+  $time = date('H:i:s');
 
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_main");
 
   for ($i=0; $i < count($food); $i++) { 
     $j = $i+1;
-    $sql = "INSERT INTO TestA_3 (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j')"; 
+    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j')"; 
     //echo "$food[$i]";
     //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
     $st = $dbh->prepare($sql);
