@@ -263,17 +263,68 @@ if ($_POST['sort']) {
 // clearInterval(roulette);
 // },3000);
 
+//   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+//   $dbh->query("USE enquete_main");
 
-// 投票結果表示
+//   for ($i=0; $i < count($food); $i++) { 
+//     $j = $i+1;
+//     $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j')"; 
+//     //echo "$food[$i]";
+//     //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+//     $st = $dbh->prepare($sql);
+//     $st->execute();
+//   }
+
+
+
+//   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+// $dbh->query("USE enquete_main");
+// $st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); // 今は，とりあえずID＝1にしておく．
+
+// foreach ($st as $row) {
+//   # code...
+//   $name = $row['studentname'];
+//   $id = $row['person_id'];
+//   print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+// }
+
+
+
+
+$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+$dbh->query("USE enquete_main");
+
+$query = <<< EOM
+  select studentname
+  from  TestA_2_lab_member_name
+  left join TestA_3_order_of_presen
+  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
+  where TestA_3_order_of_presen.date = '$date';
+EOM;
+$st = $dbh->query("$query"); 
+
 print"<table border='1' cellpadding='6' style='background:white'>";
-for ($i = 0; $i < count($food); $i++) {
-  $h = $i + 1 ;
+$i = 1;
+foreach ($st as $row) {
   print "<tr>";
-  print "<td>$h</td>";
-  print "<td>{$food[$i]}</td>";
+  print "<td>$i</td>";
+  print "<td>{$row['studentname']}</td>";
   print "</tr>\n";
+  $i = $i + 1;
 }
 print"</table>";
+
+
+// // 投票結果表示
+// print"<table border='1' cellpadding='6' style='background:white'>";
+// for ($i = 0; $i < count($food); $i++) {
+//   $h = $i + 1 ;
+//   print "<tr>";
+//   print "<td>$h</td>";
+//   print "<td>{$food[$i]}</td>";
+//   print "</tr>\n";
+// }
+// print"</table>";
 ?>
 
 <br>
