@@ -110,7 +110,11 @@ EOM;
 
 $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
 $dbh->query("USE enquete_main");
-$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); // 今は，とりあえずID＝1にしておく．
+
+// "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
+$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
+
+
 //$person = $st->fetch();
 
 
