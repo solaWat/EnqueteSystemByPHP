@@ -114,6 +114,78 @@ if ($_POST['add']) { // 追加が押されたら．
 <h3>[名前を追加する]</h3>
 <form method="post" action="request_exOrder.php">
 <?php
+
+// $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+// $dbh->query("USE enquete_main");
+
+// $query = <<< EOM
+//   select studentname
+//   from  TestA_2_lab_member_name
+//   left join TestA_3_order_of_presen
+//   on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
+//   where TestA_3_order_of_presen.date = '$date'
+//   order by TestA_3_order_of_presen.order_of_presen;
+// EOM;
+// $st = $dbh->query("$query"); 
+
+
+
+// // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
+// $st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
+
+
+
+// foreach ($st as $row) {
+//   # code...
+//   $name = $row['studentname'];
+//   $id = $row['person_id'];
+//   print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+// }
+
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
+$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+$dbh->query("USE enquete_main");
+
+$query = <<< EOM
+  select studentname
+  from  TestA_2_lab_member_name
+  left join TestA_3_order_of_presen
+  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
+  where TestA_3_order_of_presen.attendee_person_id is null
+  and fiscal_year = '2016' ;
+EOM;
+$st = $dbh->query("$query"); 
+
+// where TestA_3_order_of_presen.date = '$date' 
+// where TestA_3_order_of_presen.attendee_person_id is null
+
+foreach ($st as $row) {
+  $name = $row['studentname'];
+  $id = $row['person_id'];
+  print "<label><input type='radio' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+}
+
+
+
+
+// print"<table border='1' cellpadding='6' style='background:white'>";
+// $i = 1;
+// foreach ($st as $row) {
+//   print "<tr>";
+//   print "<td>$i</td>";
+//   print "<td>{$row['studentname']}</td>";
+//   print "</tr>\n";
+//   $i = $i + 1;
+// }
+// print"</table>";
+
+
+
+
+
+
 // 研究室所属メンバー
 $personOrsn = array(
   "安保　建朗",
@@ -133,9 +205,9 @@ $person = array_values($person); // 配列の要素の削除後には，indexを
 $person[] = '[ゲスト]'; // 配列の最後にゲストを仕込む．array_diffで消えずに，ずっと残る．
 
 // すでに発表順に入っていた者以外の名前を表示する．
-for ($i = 0; $i < count($person); $i++) {
-  print "<label><input type='radio' name='my_id' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
-}
+// for ($i = 0; $i < count($person); $i++) {
+//   print "<label><input type='radio' name='my_id' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
+// }
 ?>
 <input type="submit" name="add" value="決定" >
 </form>
