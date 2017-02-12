@@ -84,6 +84,30 @@ if ($_POST['add']) { // 追加が押されたら．
   	exit(名前が選択されていません．);
   }
 
+  $addname_id = $_POST['my_id'];
+
+  date_default_timezone_set('Asia/Tokyo');
+  $date = date('Y-m-d');
+  $time = date('H:i:s');
+
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
+
+  $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
+  $st = $dbh->query("$query"); 
+
+  foreach ($st as $row) {
+  $forAddOrder = $row['order_of_presen'];
+  }
+
+  $j = $forAddOrder + 1;
+  $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$addname_id', '$j') ";
+  $st = $dbh->prepare($sql);
+  $st->execute();
+
+
+
+
   $addname = $_POST['my_id'];
   // プレゼン順を書き換える．
   $fp = fopen('exOrder_prz.txt', 'a'); // txtへの追加書き込み処理．
@@ -172,7 +196,7 @@ $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環
 $dbh->query("USE enquete_main");
 
 $query = <<< EOM
-  SELECT studentname
+  SELECT studentname, person_id
   FROM  TestA_2_lab_member_name
   LEFT JOIN TestA_3_order_of_presen
   ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id 
@@ -188,7 +212,7 @@ $st = $dbh->query("$query");
 foreach ($st as $row) {
   $name = $row['studentname'];
   $id = $row['person_id'];
-  print "<label><input type='radio' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+  print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
 }
 
 
