@@ -7,6 +7,29 @@
 <body>
 <?php
 if ($_POST['delete']) { // デリートが押されたら．
+  date_default_timezone_set('Asia/Tokyo');
+  $date = date('Y-m-d');
+
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
+
+  $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date' order by order_of_presen desc limit 1";
+  $st = $dbh->prepare($sql);
+  $st->execute();
+
+  // for ($i=0; $i < count($food); $i++) { 
+  //   $j = $i+1;
+  //   $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+  //   //ON DUPLICATE KEY UPDATE date = '$date' 
+
+
+  //   //echo "$food[$i]";
+  //   //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+  //   $st = $dbh->prepare($sql);
+  //   $st->execute();
+
+
+
 
 	// プレゼン順を書き換える．
 	$file = file('exOrder_prz.txt');
@@ -149,12 +172,13 @@ $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環
 $dbh->query("USE enquete_main");
 
 $query = <<< EOM
-  select studentname
-  from  TestA_2_lab_member_name
-  left join TestA_3_order_of_presen
-  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  where TestA_3_order_of_presen.attendee_person_id is null
-  and fiscal_year = '2016' ;
+  SELECT studentname
+  FROM  TestA_2_lab_member_name
+  LEFT JOIN TestA_3_order_of_presen
+  ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id 
+  AND TestA_3_order_of_presen.date = '$date'
+  WHERE TestA_3_order_of_presen.attendee_person_id IS NULL
+  AND fiscal_year = '2016' ;
 EOM;
 $st = $dbh->query("$query"); 
 
@@ -226,4 +250,4 @@ $person[] = '[ゲスト]'; // 配列の最後にゲストを仕込む．array_di
 <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
 <p><a href= index.html > TOP </a></p><br><br>
 </body>
-</html
+</html>
