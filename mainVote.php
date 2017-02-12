@@ -19,8 +19,25 @@ if(isset($_POST['my_id'])){ // 「inputName.php」で選ばれた名前を抽出
 }
  $token = $_SESSION['token'];
  //echo "$token";
+ 
+ $fromSession = $_SESSION['my_id'];
+ 
+ date_default_timezone_set('Asia/Tokyo');
+  $date = date('Y-m-d');
+  $time = date('H:i:s');
+
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
+
+  $query = "SELECT studentname FROM TestA_2_lab_member_name WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
+  $st = $dbh->query("$query"); 
+
+  foreach ($st as $row) {
+  $master_name = $row['studentname'];
+  }
 ?>
-<h4>こんにちは <font color='#696969'><big><?php echo htmlspecialchars($_SESSION['my_id']); ?></big></font> さん</h4>
+
+<h4>こんにちは <font color='#696969'><big><?php echo htmlspecialchars($master_name); ?></big></font> さん</h4>
 <p>こちらの2つの表から，それぞれ投票を行ってください．</p><br>
 
 <form method="post" action="mainVote.php">
