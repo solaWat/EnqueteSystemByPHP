@@ -13,12 +13,12 @@ $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環
 $dbh->query("USE enquete_main");
 
 $query = <<< EOM
-  select studentname
-  from  TestA_2_lab_member_name
-  left join TestA_3_order_of_presen
-  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  where TestA_3_order_of_presen.date = '$date'
-  order by TestA_3_order_of_presen.order_of_presen;
+  SELECT studentname
+  FROM  TestA_2_lab_member_name
+  LEFT JOIN TestA_3_order_of_presen
+  ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
+  WHERE TestA_3_order_of_presen.date = '$date'
+  ORDER BY TestA_3_order_of_presen.order_of_presen;
 EOM;
 $st = $dbh->query("$query"); 
 
