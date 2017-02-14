@@ -272,6 +272,57 @@ if ($_POST['submit']) {
   $ed[$_POST['cn2']] += 2;
   $ed[$_POST['cn3']] ++;
 
+  // ファシグラ用
+  $ee[$_POST['co1']] += 3; // 1位から順にポイントが高くなる
+  $ee[$_POST['co2']] += 2;
+  $ee[$_POST['co3']] ++;
+
+
+
+
+  // $food = $_POST['cn'];
+  // srand(time()); //乱数列初期化．冗長の可能性あり．
+  // shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
+
+  date_default_timezone_set('Asia/Tokyo');
+  $date = date('Y-m-d');
+  $time = date('H:i:s');
+
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
+
+  $sql = "DELETE FROM TestA_1_vote where date = '$date' AND voter_person_id = '$fromSession' ";
+  $st = $dbh->prepare($sql);
+  $st->execute();
+
+  for ($i=1; $i < 4; $i++) { // for Presentation
+    $j = $i+1;
+    $voted_person_id = $_POST["cn$i"];
+    $sql = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ";
+    // ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession'
+    //ON DUPLICATE KEY UPDATE date = '$date' 
+    //
+    //$sql = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession' ";
+
+
+    //echo "$food[$i]";
+    //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+    $st = $dbh->prepare($sql);
+    $st->execute();
+  }
+
+  for ($i=1; $i < 4; $i++) { // for FG
+    $j = $i+1;
+    $voted_person_id = $_POST["co$i"];
+    $sql = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'FG', '$i', '$voted_person_id') ";
+    $st = $dbh->prepare($sql);
+    $st->execute();
+  }
+
+
+
+
+
   $fp = fopen('enquete_prz.txt', 'w'); // txtを開いて書き込み，正確には足しこみ．もっと正確に言うと，あらかじめファイルから記憶しておいた値に今回の結果を足し込んでいる．この関数は，元あった内容を上書きしてしまうため．
   for ($i = 0; $i < count($person); $i++) {
     fwrite($fp, $ed[$i] . "\n");
