@@ -182,6 +182,7 @@ if ($_POST['sort']) {
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_main");
 
+  // すでにその日の発表順が入っている場合は，それをまずDELETEする．
   $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date'";
   $st = $dbh->prepare($sql);
   $st->execute();
@@ -311,6 +312,7 @@ $query = <<< EOM
   left join TestA_3_order_of_presen
   on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
   where TestA_3_order_of_presen.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
   order by TestA_3_order_of_presen.order_of_presen;
 EOM;
 $st = $dbh->query("$query"); 

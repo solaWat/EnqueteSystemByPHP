@@ -31,50 +31,50 @@ if ($_POST['delete']) { // デリートが押されたら．
 
 
 
-	// プレゼン順を書き換える．
-	$file = file('exOrder_prz.txt');
-	$a = count($file) - 1 ; 
-	unset($file[$a]); // 配列の最後の要素を削除する．
-	$file = array_values($file); // indexを詰める．
-	file_put_contents('exOrder_prz.txt', $file); // 処理が終わったら，反映させる．
+	// // プレゼン順を書き換える．
+	// $file = file('exOrder_prz.txt');
+	// $a = count($file) - 1 ; 
+	// unset($file[$a]); // 配列の最後の要素を削除する．
+	// $file = array_values($file); // indexを詰める．
+	// file_put_contents('exOrder_prz.txt', $file); // 処理が終わったら，反映させる．
 
-	$cgd = file('exOrder_prz.txt');
-	for ($i = 0; $i < count($cgd); $i++) $cgd[$i] = rtrim($cgd[$i]); // 取り出した配列のクレンジング
-	// ファシグラ順のtxt書き込み
-	  $person_fg = $cgd;
-	  $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-	  $person_two = $person_fg[1];
-	  for ($i=0; $i < count($person_fg); $i++) { 
-	    if (($person_fg[$i+2]) == null) {
-	        if ($person_fg[$i+1] == null) {
-	          $person_fg[$i] = $person_two;
-	        }
-	        else{
-	          $person_fg[$i] = $person_one;
-	        }
-	      }
-	    else{
-	      $person_fg[$i] = $person_fg[$i+2];
-	      }
-	  }
-	  $fp = fopen('exOrder_fg.txt', 'w');
-	  for ($i = 0; $i < count($person_fg); $i++) {
-	    fwrite($fp, $person_fg[$i] . "\n");
-	  }
-	  fclose($fp);
+	// $cgd = file('exOrder_prz.txt');
+	// for ($i = 0; $i < count($cgd); $i++) $cgd[$i] = rtrim($cgd[$i]); // 取り出した配列のクレンジング
+	// // ファシグラ順のtxt書き込み
+	//   $person_fg = $cgd;
+	//   $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
+	//   $person_two = $person_fg[1];
+	//   for ($i=0; $i < count($person_fg); $i++) { 
+	//     if (($person_fg[$i+2]) == null) {
+	//         if ($person_fg[$i+1] == null) {
+	//           $person_fg[$i] = $person_two;
+	//         }
+	//         else{
+	//           $person_fg[$i] = $person_one;
+	//         }
+	//       }
+	//     else{
+	//       $person_fg[$i] = $person_fg[$i+2];
+	//       }
+	//   }
+	//   $fp = fopen('exOrder_fg.txt', 'w');
+	//   for ($i = 0; $i < count($person_fg); $i++) {
+	//     fwrite($fp, $person_fg[$i] . "\n");
+	//   }
+	//   fclose($fp);
 
-  // 投票集計のリセット．トラブル回避のため．
-  $fp = fopen('enquete_prz.txt', 'w');
-  for ($i = 0; $i < count($person_fg); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
-  // プレゼンとファシグラ，両方の投票記録を0で上書きする．
-  $fp = fopen('enquete_fg.txt', 'w');
-  for ($i = 0; $i < count($person_fg); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
+ //  // 投票集計のリセット．トラブル回避のため．
+ //  $fp = fopen('enquete_prz.txt', 'w');
+ //  for ($i = 0; $i < count($person_fg); $i++) {
+ //    fwrite($fp, 0 . "\n");
+ //  }
+ //  fclose($fp);
+ //  // プレゼンとファシグラ，両方の投票記録を0で上書きする．
+ //  $fp = fopen('enquete_fg.txt', 'w');
+ //  for ($i = 0; $i < count($person_fg); $i++) {
+ //    fwrite($fp, 0 . "\n");
+ //  }
+ //  fclose($fp);
 }
 
 
@@ -93,17 +93,40 @@ if ($_POST['add']) { // 追加が押されたら．
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_main");
 
-  $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
+
+  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presen WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date');";
+  // $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
   $st = $dbh->query("$query"); 
 
   foreach ($st as $row) {
-  $forAddOrder = $row['order_of_presen'];
+  $newOrder[] = $row['attendee_person_id'];
   }
 
-  $j = $forAddOrder + 1;
-  $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$addname_id', '$j') ";
-  $st = $dbh->prepare($sql);
-  $st->execute();
+  print "$newOrder";
+
+  $newOrder[] = $addname_id;
+
+  print "$newOrder";
+
+
+  // $food = $_POST['cn'];
+  // srand(time()); //乱数列初期化．冗長の可能性あり．
+  // shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
+
+  for ($i=0; $i < count($newOrder); $i++) { 
+    $j = $i+1;
+    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
+ 
+    $st = $dbh->prepare($sql);
+    $st->execute();
+  }
+
+
+
+  // $j = $forAddOrder + 1;
+  // $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$addname_id', '$j') ";
+  // $st = $dbh->prepare($sql);
+  // $st->execute();
 
 
 
