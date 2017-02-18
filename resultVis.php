@@ -54,6 +54,7 @@ $query = <<< EOM
   LEFT JOIN TestA_3_order_of_presen
   ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
   WHERE TestA_3_order_of_presen.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
   ORDER BY TestA_3_order_of_presen.order_of_presen;
 EOM;
 $st = $dbh->query("$query");
