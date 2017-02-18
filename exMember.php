@@ -23,12 +23,12 @@ try {
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
-  date  date,
-  time  time,
-  voter_person_id  varchar(100),
-  types_of_votes  varchar(30),
-  rank  tinyint unsigned,
-  voted_person_id  varchar(100)
+  date  date  COMMENT'年月日',
+  time  time  COMMENT'時間',
+  voter_person_id  varchar(100)  COMMENT'投票者のID',
+  types_of_votes  varchar(30)  COMMENT'P or FG ?',
+  rank  tinyint unsigned  COMMENT'順位',
+  voted_person_id  varchar(100)  COMMENT'被投票者のID'
 EOM;
     $dbh->query("CREATE TABLE IF NOT EXISTS TestA_1_vote ($col_set);"); // 無ければTABLEを作成する．
 
@@ -55,11 +55,11 @@ try {
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
-  fiscal_year  year,
-  studentname  nvarchar(100),
-  person_id  varchar(100)
+  fiscal_year  year  COMMENT'登録年度',
+  studentname  nvarchar(100)  COMMENT'ゼミ所属学生の名前',
+  person_id  varchar(100)  COMMENT'ID(年度が異なっても，この値が同じなら，同一人物)'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2_lab_member_name ($col_set);"); // 無ければTABLEを作成する．
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2_lab_member_info ($col_set);"); // 無ければTABLEを作成する．
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
@@ -84,12 +84,12 @@ try {
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
-  date  date,
-  time  time,
-  attendee_person_id  varchar(100),
-  order_of_presen  tinyint unsigned
+  date  date  COMMENT'年月日',
+  time  time  COMMENT'時間',
+  attendee_person_id  varchar(100)  COMMENT'出席者のID',
+  order_of_presen  tinyint unsigned  COMMENT'発表順'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3_order_of_presen ($col_set);"); // 無ければTABLEを作成する．
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3_order_of_presentation ($col_set);"); // 無ければTABLEを作成する．
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
