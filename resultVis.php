@@ -17,87 +17,93 @@ date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
 $time = date('H:i:s');
 
-$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-$dbh->query("USE enquete_main");
+try {
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
 
 $query = <<< EOM
-  SELECT studentname, person_id
-  FROM  TestA_2_lab_member_info
-  LEFT JOIN TestA_3_order_of_presentation
-  ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-  WHERE TestA_3_order_of_presentation.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-  ORDER BY TestA_3_order_of_presentation.order_of_presen;
+    SELECT studentname, person_id
+    FROM  TestA_2_lab_member_info
+    LEFT JOIN TestA_3_order_of_presentation
+    ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+    WHERE TestA_3_order_of_presentation.date = '$date'
+     AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+    ORDER BY TestA_3_order_of_presentation.order_of_presen;
 EOM;
-$st = $dbh->query("$query");
+  $st = $dbh->query("$query");
 
-// $query = "SELECT studentname FROM TestA_2_lab_member_name WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
-// $st = $dbh->query("$query"); 
-
-foreach ($st as $row) {
-  $attendee_studentname[] = $row['studentname'];
-  $hoge[] = $row['person_id'];
-}
-
-$attendee_person_number = count($attendee_studentname);
-// $stmt = $pdo -> query("SELECT * FROM テーブル名");
-// $count = $stmt -> rowCount();
-
-
-// P票の集計
-for ($i=0; $i < count($hoge); $i++) { 
-  $one_person_id = $hoge[$i];
-// なんかサブクエリがうまくいかない
-$query = <<< EOM
-    SELECT 
-      COUNT(rank = '1' or null) AS rank1_num,
-      COUNT(rank = '2' or null) AS rank2_num,
-      COUNT(rank = '3' or null) AS rank3_num
-    FROM TestA_1_vote
-    WHERE date = '$date'
-     AND types_of_votes = 'P'
-     AND voted_person_id = '$one_person_id' ;
-EOM;
-  $st = $dbh->query("$query"); 
+  // $query = "SELECT studentname FROM TestA_2_lab_member_name WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
+  // $st = $dbh->query("$query"); 
 
   foreach ($st as $row) {
-    $sum_voted_P[] = ($row['rank1_num'] * 3)+($row['rank2_num'] * 2)+($row['rank3_num'] * 1);
-    // $sum_voted_P[] = $row['sum_voted'];
+    $attendee_studentname[] = $row['studentname'];
+    $hoge[] = $row['person_id'];
   }
-}
 
-// FG票の集計
-for ($i=0; $i < count($hoge); $i++) { 
-  $one_person_id = $hoge[$i];
-// なんかサブクエリがうまくいかない
+  $attendee_person_number = count($attendee_studentname);
+  // $stmt = $pdo -> query("SELECT * FROM テーブル名");
+  // $count = $stmt -> rowCount();
+
+
+  // P票の集計
+  for ($i=0; $i < count($hoge); $i++) { 
+    $one_person_id = $hoge[$i];
+  // なんかサブクエリがうまくいかない
 $query = <<< EOM
-    SELECT 
-      COUNT(rank = '1' or null) AS rank1_num,
-      COUNT(rank = '2' or null) AS rank2_num,
-      COUNT(rank = '3' or null) AS rank3_num
-    FROM TestA_1_vote
-    WHERE date = '$date'
-     AND types_of_votes = 'FG'
-     AND voted_person_id = '$one_person_id' ;
+      SELECT 
+        COUNT(rank = '1' or null) AS rank1_num,
+        COUNT(rank = '2' or null) AS rank2_num,
+        COUNT(rank = '3' or null) AS rank3_num
+      FROM TestA_1_vote
+      WHERE date = '$date'
+       AND types_of_votes = 'P'
+       AND voted_person_id = '$one_person_id' ;
+EOM;
+    $st = $dbh->query("$query"); 
+
+    foreach ($st as $row) {
+      $sum_voted_P[] = ($row['rank1_num'] * 3)+($row['rank2_num'] * 2)+($row['rank3_num'] * 1);
+      // $sum_voted_P[] = $row['sum_voted'];
+    }
+  }
+
+  // FG票の集計
+  for ($i=0; $i < count($hoge); $i++) { 
+    $one_person_id = $hoge[$i];
+  // なんかサブクエリがうまくいかない
+$query = <<< EOM
+      SELECT 
+        COUNT(rank = '1' or null) AS rank1_num,
+        COUNT(rank = '2' or null) AS rank2_num,
+        COUNT(rank = '3' or null) AS rank3_num
+      FROM TestA_1_vote
+      WHERE date = '$date'
+       AND types_of_votes = 'FG'
+       AND voted_person_id = '$one_person_id' ;
+EOM;
+    $st = $dbh->query("$query"); 
+
+    foreach ($st as $row) {
+      $sum_voted_FG[] = ($row['rank1_num'] * 3)+($row['rank2_num'] * 2)+($row['rank3_num'] * 1);
+      // $sum_voted_P[] = $row['sum_voted'];
+    }
+  }
+
+
+$query = <<< EOM
+      SELECT DISTINCT voter_person_id
+      FROM TestA_1_vote
+      WHERE date = '$date' ;
 EOM;
   $st = $dbh->query("$query"); 
-
   foreach ($st as $row) {
-    $sum_voted_FG[] = ($row['rank1_num'] * 3)+($row['rank2_num'] * 2)+($row['rank3_num'] * 1);
-    // $sum_voted_P[] = $row['sum_voted'];
+    $forSUM[] = $row['voter_person_id'];
+    $finish_vote_num = count($forSUM);
   }
-}
 
-
-$query = <<< EOM
-    SELECT DISTINCT voter_person_id
-    FROM TestA_1_vote
-    WHERE date = '$date' ;
-EOM;
-$st = $dbh->query("$query"); 
-foreach ($st as $row) {
-  $forSUM[] = $row['voter_person_id'];
-  $finish_vote_num = count($forSUM);
+}catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
 }
 
 

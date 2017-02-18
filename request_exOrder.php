@@ -11,22 +11,28 @@ if ($_POST['delete']) { // デリートが押されたら．
   $date = date('Y-m-d');
   $time = date('H:i:s');
 
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+  try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+    $dbh->query("USE enquete_main");
 
 
-  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presentation WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date');";
-  $st = $dbh->query("$query"); 
-  foreach ($st as $row) {
-  $newOrder[] = $row['attendee_person_id'];
-  }
+    $query = "SELECT attendee_person_id FROM TestA_3_order_of_presentation WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date');";
+    $st = $dbh->query("$query"); 
+    foreach ($st as $row) {
+    $newOrder[] = $row['attendee_person_id'];
+    }
 
-  for ($i=0; $i < count($newOrder) - 1; $i++) { 
-    $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
-    $st = $dbh->prepare($sql);
-    $st->execute();
-  }
+    for ($i=0; $i < count($newOrder) - 1; $i++) { 
+      $j = $i+1;
+      $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
+      $st = $dbh->prepare($sql);
+      $st->execute();
+    }
+  }catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
+}
+  
 
 
   // $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date' order by order_of_presen desc limit 1";
@@ -47,31 +53,37 @@ if ($_POST['add']) { // 追加が押されたら．
   $date = date('Y-m-d');
   $time = date('H:i:s');
 
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+  try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+    $dbh->query("USE enquete_main");
 
 
-  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presentation WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date');";
-  // $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
-  $st = $dbh->query("$query"); 
+    $query = "SELECT attendee_person_id FROM TestA_3_order_of_presentation WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date');";
+    // $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
+    $st = $dbh->query("$query"); 
 
-  foreach ($st as $row) {
-  $newOrder[] = $row['attendee_person_id'];
-  }
+    foreach ($st as $row) {
+    $newOrder[] = $row['attendee_person_id'];
+    }
 
-  $newOrder[] = $addname_id;
+    $newOrder[] = $addname_id;
 
-  // $food = $_POST['cn'];
-  // srand(time()); //乱数列初期化．冗長の可能性あり．
-  // shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
+    // $food = $_POST['cn'];
+    // srand(time()); //乱数列初期化．冗長の可能性あり．
+    // shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
 
-  for ($i=0; $i < count($newOrder); $i++) { 
-    $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
- 
-    $st = $dbh->prepare($sql);
-    $st->execute();
-  }
+    for ($i=0; $i < count($newOrder); $i++) { 
+      $j = $i+1;
+      $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
+   
+      $st = $dbh->prepare($sql);
+      $st->execute();
+    }
+  }catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
+}
+  
 }
 ?>
 
@@ -87,28 +99,34 @@ if ($_POST['add']) { // 追加が押されたら．
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
 
-$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-$dbh->query("USE enquete_main");
+try {
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
 
 $query = <<< EOM
-  SELECT studentname, person_id
-  FROM  TestA_2_lab_member_info
-  LEFT JOIN TestA_3_order_of_presentation
-  ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id 
-  AND TestA_3_order_of_presentation.date = '$date'
-  AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-  WHERE TestA_3_order_of_presentation.attendee_person_id IS NULL
-  AND fiscal_year = '2016' ;
+    SELECT studentname, person_id
+    FROM  TestA_2_lab_member_info
+    LEFT JOIN TestA_3_order_of_presentation
+    ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id 
+    AND TestA_3_order_of_presentation.date = '$date'
+    AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+    WHERE TestA_3_order_of_presentation.attendee_person_id IS NULL
+    AND fiscal_year = '2016' ;
 EOM;
-$st = $dbh->query("$query"); 
+  $st = $dbh->query("$query"); 
 
-// where TestA_3_order_of_presen.date = '$date' 
-// where TestA_3_order_of_presen.attendee_person_id is null
+  // where TestA_3_order_of_presen.date = '$date' 
+  // where TestA_3_order_of_presen.attendee_person_id is null
 
-foreach ($st as $row) {
-  $name = $row['studentname'];
-  $id = $row['person_id'];
-  print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
+  foreach ($st as $row) {
+    $name = $row['studentname'];
+    $id = $row['person_id'];
+    print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
+  }
+
+}catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
 }
 
 ?>
