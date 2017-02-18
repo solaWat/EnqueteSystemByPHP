@@ -162,7 +162,7 @@ $(function(){
 	function resize_display() {
 		var height=$('body').height();
 		var width=$('body').width();
-		var theight=Math.min(height*3/5,width*1.95/5);
+		var theight=Math.min(height*3/6,width*1.95/6);
 		$('#time').css('top',(height-theight)/2*1.1);
 		$('#time').css('font-size',theight+'px');
 		$('#time').css('line-height',theight+'px');
