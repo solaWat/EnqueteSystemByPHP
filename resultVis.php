@@ -208,7 +208,7 @@ if ($_POST['submit2']) {
 
 <a href= index.html > TOP </a>
 <br><br><br><br><br><br><br><br><br><br>
-<form method="post" action="resultVis.php"><input type="submit" name="submit2" value="※押すな※　集計結果をリセット　※"></form>
+<!-- <form method="post" action="resultVis.php"><input type="submit" name="submit2" value="※押すな※　集計結果をリセット　※"></form> -->
 <p><font color="red">管理人のつぶやき「なんか，全体的に殺風景だ……」</font></p>
 
 </body>
