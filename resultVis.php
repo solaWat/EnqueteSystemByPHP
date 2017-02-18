@@ -12,34 +12,6 @@
 <img src="rest_nobita.jpg"></img><br><br><br>
 
 <?php
-// date_default_timezone_set('Asia/Tokyo');
-// $date = date('Y/m/d');
-
-$person = file('exOrder_prz.txt');
-$person_fg = file('exOrder_fg.txt'); // 結局，ファシグラの並び順はこのページでは使わなくなったが，一応残しておく．
-
-// 同フォルダ中のテキストファイルにデータを保存する仕組み
-$ed = file('enquete_prz.txt'); // txtファイルに関しては，両方とも情報を取ってくるのに使う．
-$ee = file('enquete_fg.txt');
-for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]);
-for ($i = 0; $i < count($person_fg); $i++) $ee[$i] = rtrim($ee[$i]);
-
-// index.phpでファシグラ用に並び替えた順番を，再びプレゼン順に合わせて表示するために処理．
-$ee_one = $ee[count($person)-2];
-  $ee_two = $ee[count($person)-1];
-  for ($i = count($person); 0 <= $i ; $i--) {
-    if ($i == 1) {
-      $ee[1] = $ee_two;
-    }
-    elseif ($i == 0) {
-      $ee[0] = $ee_one;
-    }
-    else{
-      $ee[$i] = $ee[$i-2];
-      }
-  }
-
-
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
@@ -130,14 +102,6 @@ foreach ($st as $row) {
 
 
 echo "現在，$attendee_person_number 人中『 $finish_vote_num 人』の投票が終わっています．";
-
-// 投票済み者の数え上げ(enquete_przベース)
-for ($i = 0; $i < count($ed); $i++) {
-  $sum += $ed[$i];
-}
-$hito = $sum / 6 ; //(3票＋2票＋1票)
-$perNum = count($person);
-//echo "現在，$perNum 人中『 $hito 人』の投票が終わっています．"; // 票の総計を6で割っているだけである．
 print"<br><br>";
 
 // 2つのテーブルと並列表示させるための透明テーブル
@@ -188,20 +152,20 @@ print"<table>";
   print"</tr>";
 print"</table>";
 
-//リセットボタン　不測の事態に備えて．
-if ($_POST['submit2']) {
-  $fp = fopen('enquete_prz.txt', 'w');
-  for ($i = 0; $i < count($person); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
-  // プレゼンとファシグラ，両方の投票結果をリセットできる．
-  $fp = fopen('enquete_fg.txt', 'w');
-  for ($i = 0; $i < count($person_fg); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
-}
+// //リセットボタン　不測の事態に備えて．
+// if ($_POST['submit2']) {
+//   $fp = fopen('enquete_prz.txt', 'w');
+//   for ($i = 0; $i < count($person); $i++) {
+//     fwrite($fp, 0 . "\n");
+//   }
+//   fclose($fp);
+//   // プレゼンとファシグラ，両方の投票結果をリセットできる．
+//   $fp = fopen('enquete_fg.txt', 'w');
+//   for ($i = 0; $i < count($person_fg); $i++) {
+//     fwrite($fp, 0 . "\n");
+//   }
+//   fclose($fp);
+// }
 ?>
 <br><br>
 <p><font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてください．(mac)</font></p><br><br>

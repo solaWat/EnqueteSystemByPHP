@@ -35,24 +35,6 @@ foreach ($st as $row) {
   $id = $row['person_id'];
   print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
 }
-
-// 研究室所属メンバー
-$person = array(
-  "安保　建朗",
-  "Ghita Athalina",
-  "倉嶋　俊",
-  "小林　優稀",
-  "室井　健一",
-  "森田　和貴",
-  "渡辺　宇",
-  "荒木　香名",
-  "柴沢　弘樹",
-  "[ゲスト]" // 有事の際は，これで凌ぐ．
-  );
-// リストの中から，自分の名前を選んでもらう．
-// for ($i = 0; $i < count($person); $i++) {
-//   print "<label><input type='radio' name='my_id' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
-// }
 ?>
 <input type="submit" value="送信する" onClick="return confirm('名前を再度確認したのち，[OK]を押してください．')" />
 </form><br><br><br>
