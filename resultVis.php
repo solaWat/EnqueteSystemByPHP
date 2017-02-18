@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<!-- 6秒ごとにページを自動更新 -->
-<!-- <META HTTP-EQUIV="Refresh" CONTENT="11">  -->
+<!-- 11秒ごとにページを自動更新 -->
+<META HTTP-EQUIV="Refresh" CONTENT="11"> 
 <title>集計結果の表示</title>
 </head>
 <body>
@@ -116,8 +116,19 @@ EOM;
 }
 
 
+$query = <<< EOM
+    SELECT DISTINCT voter_person_id
+    FROM TestA_1_vote
+    WHERE date = '$date' ;
+EOM;
+$st = $dbh->query("$query"); 
+foreach ($st as $row) {
+  $forSUM[] = $row['voter_person_id'];
+  $finish_vote_num = count($forSUM);
+}
 
-echo "現在，$attendee_person_number 人中『 $hito 人』の投票が終わっています．";
+
+echo "現在，$attendee_person_number 人中『 $finish_vote_num 人』の投票が終わっています．";
 
 // 投票済み者の数え上げ(enquete_przベース)
 for ($i = 0; $i < count($ed); $i++) {
@@ -125,7 +136,7 @@ for ($i = 0; $i < count($ed); $i++) {
 }
 $hito = $sum / 6 ; //(3票＋2票＋1票)
 $perNum = count($person);
-echo "現在，$perNum 人中『 $hito 人』の投票が終わっています．"; // 票の総計を6で割っているだけである．
+//echo "現在，$perNum 人中『 $hito 人』の投票が終わっています．"; // 票の総計を6で割っているだけである．
 print"<br><br>";
 
 // 2つのテーブルと並列表示させるための透明テーブル
