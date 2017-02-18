@@ -6,28 +6,141 @@
 <div style="background-color: #cff;">
 </head>
 <body>
+
+
+<?php
+$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
+
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
+  date  date,
+  time  time,
+  voter_person_id  varchar(100),
+  types_of_votes  varchar(30),
+  rank  tinyint unsigned,
+  voted_person_id  varchar(100)
+EOM;
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_1_vote ($col_set);"); // 無ければTABLEを作成する．
+
+    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    //$st->execute(array($date)); // 日にちでレコードを分ける．
+    
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+
+<?php
+$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
+
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
+  fiscal_year  year,
+  studentname  nvarchar(100),
+  person_id  varchar(100)
+EOM;
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2_lab_member_name ($col_set);"); // 無ければTABLEを作成する．
+
+    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    //$st->execute(array($date)); // 日にちでレコードを分ける．
+    
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+
+<?php
+$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user = 'root'; //ここら辺は各々の環境で．
+$password = 'root'; //ここら辺は各々の環境で．
+
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+    // SELECT文以降の処理では，exec関数は使用できない．
+    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
+// 新しくDBを作成した場合，このカラム設定を適用する．
+$col_set = <<< EOM
+  date  date,
+  time  time,
+  attendee_person_id  varchar(100),
+  order_of_presen  tinyint unsigned
+EOM;
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3_order_of_presen ($col_set);"); // 無ければTABLEを作成する．
+
+    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
+    //$st->execute(array($date)); // 日にちでレコードを分ける．
+    
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e){
+    print('Error:'.$e->getMessage());
+    die();
+}
+?>
+
+
 <form method="post" action="exMember.php">
 <h2>○出席者を選んでください</h2>
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
 
+$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+$dbh->query("USE enquete_main");
+
+// "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
+$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
+
+
+//$person = $st->fetch();
 
 // 研究室所属メンバー
-$person = array(
-  "安保　建朗",
-  "Ghita Athalina",
-  "倉嶋　俊",
-  "小林　優稀",
-  "室井　健一",
-  "森田　和貴",
-  "渡辺　宇",
-  "荒木　香名",
-  "柴沢　弘樹"
-  );
+// $person = array(
+//   "安保　建朗",
+//   "Ghita Athalina",
+//   "倉嶋　俊",
+//   "小林　優稀",
+//   "室井　健一",
+//   "森田　和貴",
+//   "渡辺　宇",
+//   "荒木　香名",
+//   "柴沢　弘樹"
+//   );
 // チェックボックスで今日の出席者を選んでもらう．
-for ($i = 0; $i < count($person); $i++) {
-  print "<label><input type='checkbox' name='cn[]' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
+// for ($i = 0; $i < count($person); $i++) {
+//   print "<label><input type='checkbox' name='cn[]' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
+// }
+
+foreach ($st as $row) {
+  # code...
+  $name = $row['studentname'];
+  $id = $row['person_id'];
+  print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
 }
+
 ?>
 
 </div><br>
@@ -35,8 +148,8 @@ for ($i = 0; $i < count($person); $i++) {
 <input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
 </form>
 
-<?php
 
+<?php
 print"<h2>○今日の発表順はこちら</h2>";
 
 // // デバッグ用
@@ -49,10 +162,10 @@ print"<h2>○今日の発表順はこちら</h2>";
 // このプロジェクトでは，DB用途のtxtファイルは，手動であらかじめ作っておくことにする．パーミッションもその都度，現地で変更しておく．
 
 // 同フォルダ中のテキストファイルにデータを保存する仕組み
-$ed = file('exOrder_prz.txt');// 発表順とファシグラの順は，あらかじめ分けて記録させておく．
-$ee = file('exOrder_fg.txt');
-for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); //吸い取った配列のクレンジング．
-for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
+// $ed = file('exOrder_prz.txt');// 発表順とファシグラの順は，あらかじめ分けて記録させておく．
+// $ee = file('exOrder_fg.txt');
+// for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); //吸い取った配列のクレンジング．
+// for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
 
 // 投票ボタン
 if ($_POST['sort']) {
@@ -60,6 +173,51 @@ if ($_POST['sort']) {
   $food = $_POST['cn'];
   srand(time()); //乱数列初期化．冗長の可能性あり．
   shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
+
+  date_default_timezone_set('Asia/Tokyo');
+  $date = date('Y-m-d');
+  $time = date('H:i:s');
+
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
+
+  // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+  $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date'";
+  $st = $dbh->prepare($sql);
+  $st->execute();
+
+  for ($i=0; $i < count($food); $i++) { 
+    $j = $i+1;
+    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+    //ON DUPLICATE KEY UPDATE date = '$date' 
+
+
+    //echo "$food[$i]";
+    //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+    $st = $dbh->prepare($sql);
+    $st->execute();
+  }
+
+  
+
+  //$st = $dbh->query("SELECT studentname FROM TestA_3 WHERE fiscal_year = '2016'"); // 
+
+  // $a = $_POST['cn1'] + 1;
+  // $b = $_POST['cn2'] + 1;
+  // $c = $_POST['cn3'] + 1;
+  // $nameA = "name$a";
+  // $nameB = "name$b";
+  // $nameC = "name$c";
+
+  // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  // $dbh->query("USE enquete_simple");
+  // $st = $dbh->query("SELECT * FROM enq_table_beta");
+
+  // $sql = "UPDATE enq_table_beta SET $nameA = $nameA + 3 WHERE date = '$date'"; // 1位は3票足し込む．
+  // $st = $dbh->prepare($sql);
+  // //$st->execute(array($_POST['cn1'], $_POST['cn2'], $_POST['cn3']));
+  // //$st->execute(array(3, 2, 1));
+  // $st->execute();
 
   // プレゼン順のtxt書き込み
   $fp = fopen('exOrder_prz.txt', 'w');
@@ -116,17 +274,70 @@ if ($_POST['sort']) {
 // clearInterval(roulette);
 // },3000);
 
+//   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+//   $dbh->query("USE enquete_main");
 
-// 投票結果表示
+//   for ($i=0; $i < count($food); $i++) { 
+//     $j = $i+1;
+//     $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j')"; 
+//     //echo "$food[$i]";
+//     //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+//     $st = $dbh->prepare($sql);
+//     $st->execute();
+//   }
+
+
+
+//   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+// $dbh->query("USE enquete_main");
+// $st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); // 今は，とりあえずID＝1にしておく．
+
+// foreach ($st as $row) {
+//   # code...
+//   $name = $row['studentname'];
+//   $id = $row['person_id'];
+//   print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+// }
+
+
+
+
+$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+$dbh->query("USE enquete_main");
+
+$query = <<< EOM
+  select studentname
+  from  TestA_2_lab_member_name
+  left join TestA_3_order_of_presen
+  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
+  where TestA_3_order_of_presen.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
+  order by TestA_3_order_of_presen.order_of_presen;
+EOM;
+$st = $dbh->query("$query"); 
+
 print"<table border='1' cellpadding='6' style='background:white'>";
-for ($i = 0; $i < count($food); $i++) {
-  $h = $i + 1 ;
+$i = 1;
+foreach ($st as $row) {
   print "<tr>";
-  print "<td>$h</td>";
-  print "<td>{$food[$i]}</td>";
+  print "<td>$i</td>";
+  print "<td>{$row['studentname']}</td>";
   print "</tr>\n";
+  $i = $i + 1;
 }
 print"</table>";
+
+
+// // 投票結果表示
+// print"<table border='1' cellpadding='6' style='background:white'>";
+// for ($i = 0; $i < count($food); $i++) {
+//   $h = $i + 1 ;
+//   print "<tr>";
+//   print "<td>$h</td>";
+//   print "<td>{$food[$i]}</td>";
+//   print "</tr>\n";
+// }
+// print"</table>";
 ?>
 
 <br>
