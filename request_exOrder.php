@@ -77,60 +77,6 @@ if ($_POST['add']) { // 追加が押されたら．
     $st = $dbh->prepare($sql);
     $st->execute();
   }
-
-
-
-  // $j = $forAddOrder + 1;
-  // $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$addname_id', '$j') ";
-  // $st = $dbh->prepare($sql);
-  // $st->execute();
-
-
-
-
-  $addname = $_POST['my_id'];
-  // プレゼン順を書き換える．
-  $fp = fopen('exOrder_prz.txt', 'a'); // txtへの追加書き込み処理．
-  fwrite($fp, "$addname" . "\n");
-  fclose($fp);
-
-	$cgd = file('exOrder_prz.txt');
-	for ($i = 0; $i < count($cgd); $i++) $cgd[$i] = rtrim($cgd[$i]); // 取り出した配列のクレンジング
-	  // ファシグラ順のtxt書き込み
-	  $person_fg = $cgd;
-	  $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-	  $person_two = $person_fg[1];
-	  for ($i=0; $i < count($person_fg); $i++) { 
-	    if (($person_fg[$i+2]) == null) {
-	        if ($person_fg[$i+1] == null) {
-	          $person_fg[$i] = $person_two;
-	        }
-	        else{
-	          $person_fg[$i] = $person_one;
-	        }
-	      }
-	    else{
-	      $person_fg[$i] = $person_fg[$i+2];
-	      }
-	  }
-	  $fp = fopen('exOrder_fg.txt', 'w');
-	  for ($i = 0; $i < count($person_fg); $i++) {
-	    fwrite($fp, $person_fg[$i] . "\n");
-	  }
-	  fclose($fp);
-
-	  // 投票集計のリセット．トラブル回避のため．
-  $fp = fopen('enquete_prz.txt', 'w');
-  for ($i = 0; $i < count($person_fg); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
-  // プレゼンとファシグラ，両方の投票記録を0で上書きする．
-  $fp = fopen('enquete_fg.txt', 'w');
-  for ($i = 0; $i < count($person_fg); $i++) {
-    fwrite($fp, 0 . "\n");
-  }
-  fclose($fp);
 }
 ?>
 
@@ -142,32 +88,6 @@ if ($_POST['add']) { // 追加が押されたら．
 <form method="post" action="request_exOrder.php">
 <?php
 
-// $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-// $dbh->query("USE enquete_main");
-
-// $query = <<< EOM
-//   select studentname
-//   from  TestA_2_lab_member_name
-//   left join TestA_3_order_of_presen
-//   on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-//   where TestA_3_order_of_presen.date = '$date'
-//   order by TestA_3_order_of_presen.order_of_presen;
-// EOM;
-// $st = $dbh->query("$query"); 
-
-
-
-// // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-// $st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
-
-
-
-// foreach ($st as $row) {
-//   # code...
-//   $name = $row['studentname'];
-//   $id = $row['person_id'];
-//   print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
-// }
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
@@ -196,47 +116,6 @@ foreach ($st as $row) {
   print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
 }
 
-
-
-
-// print"<table border='1' cellpadding='6' style='background:white'>";
-// $i = 1;
-// foreach ($st as $row) {
-//   print "<tr>";
-//   print "<td>$i</td>";
-//   print "<td>{$row['studentname']}</td>";
-//   print "</tr>\n";
-//   $i = $i + 1;
-// }
-// print"</table>";
-
-
-
-
-
-
-// 研究室所属メンバー
-$personOrsn = array(
-  "安保　建朗",
-  "Ghita Athalina",
-  "倉嶋　俊",
-  "小林　優稀",
-  "室井　健一",
-  "森田　和貴",
-  "渡辺　宇",
-  "荒木　香名",
-  "柴沢　弘樹"
-  );
-$file = file('exOrder_prz.txt');
-for ($i = 0; $i < count($file); $i++) $file[$i] = rtrim($file[$i]); // 取り出した配列のクレンジング
-$person = array_diff($personOrsn, $file); // 研究室所属メンバーと，出席していたメンバーとの，差分を取る．
-$person = array_values($person); // 配列の要素の削除後には，indexを詰める必要がある．
-$person[] = '[ゲスト]'; // 配列の最後にゲストを仕込む．array_diffで消えずに，ずっと残る．
-
-// すでに発表順に入っていた者以外の名前を表示する．
-// for ($i = 0; $i < count($person); $i++) {
-//   print "<label><input type='radio' name='my_id' value='$person[$i]' checked>{$person[$i]}<br><br></label>";
-// }
 ?>
 <input type="submit" name="add" value="決定" >
 </form>

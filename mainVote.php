@@ -136,30 +136,6 @@ print"<table>";
   $id_text_forFG = order_of_FG($id_text_forFG);
   $name_text_forFG = order_of_FG($name_text_forFG);
 
-  // $person_fg = $id_text_forFG;
-  // $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-  // $person_two = $person_fg[1];
-  // for ($i=0; $i < count($person_fg); $i++) { 
-  //   if (($person_fg[$i+2]) == null) {
-  //       if ($person_fg[$i+1] == null) {
-  //         $person_fg[$i] = $person_two;
-  //       }
-  //       else{
-  //         $person_fg[$i] = $person_one;
-  //       }
-  //     }
-  //   else{
-  //     $person_fg[$i] = $person_fg[$i+2];
-  //     }
-  // }
-  
-  // $fp = fopen('exOrder_fg.txt', 'w');
-  // for ($i = 0; $i < count($person_fg); $i++) {
-  //   fwrite($fp, $person_fg[$i] . "\n");
-  // }
-  // fclose($fp);
-
-
 
   // ファシグラ用投票テーブル
   print"<table border='1' cellpadding='8' style='background:  #F5F5F5'>";
@@ -247,9 +223,6 @@ if ($_POST['submit']) {
   // POSTの値からトークンを取得
   $token = isset($_POST['token']) ? $_POST['token'] : '';
 
-  // echo "$session_token";
-  // echo "<br>";
-  // echo "$token";
 
   // トークンがない場合は不正扱い
   if ($token === '') {
@@ -266,24 +239,6 @@ if ($_POST['submit']) {
 
   
   print "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
-
-  // 投票の重み付け
-  // プレゼンテーション用
-  $ed[$_POST['cn1']] += 3; // 1位から順にポイントが高くなる
-  $ed[$_POST['cn2']] += 2;
-  $ed[$_POST['cn3']] ++;
-
-  // ファシグラ用
-  $ee[$_POST['co1']] += 3; // 1位から順にポイントが高くなる
-  $ee[$_POST['co2']] += 2;
-  $ee[$_POST['co3']] ++;
-
-
-
-
-  // $food = $_POST['cn'];
-  // srand(time()); //乱数列初期化．冗長の可能性あり．
-  // shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
 
   date_default_timezone_set('Asia/Tokyo');
   $date = date('Y-m-d');
@@ -319,27 +274,6 @@ if ($_POST['submit']) {
     $st = $dbh->prepare($sql);
     $st->execute();
   }
-
-
-
-
-
-  $fp = fopen('enquete_prz.txt', 'w'); // txtを開いて書き込み，正確には足しこみ．もっと正確に言うと，あらかじめファイルから記憶しておいた値に今回の結果を足し込んでいる．この関数は，元あった内容を上書きしてしまうため．
-  for ($i = 0; $i < count($person); $i++) {
-    fwrite($fp, $ed[$i] . "\n");
-  }
-  fclose($fp); 
-
-  // ファシグラ用
-  $ee[$_POST['co1']] += 3; // 1位から順にポイントが高くなる
-  $ee[$_POST['co2']] += 2;
-  $ee[$_POST['co3']] ++;
-
-  $fp = fopen('enquete_fg.txt', 'w');
-  for ($i = 0; $i < count($person); $i++) {
-    fwrite($fp, $ee[$i] . "\n");
-  }
-  fclose($fp);
 }
 ?>
 
