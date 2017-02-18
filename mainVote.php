@@ -29,7 +29,7 @@ if(isset($_POST['my_id'])){ // 「inputName.php」で選ばれた名前を抽出
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_main");
 
-  $query = "SELECT studentname FROM TestA_2_lab_member_name WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
+  $query = "SELECT studentname FROM TestA_2_lab_member_info WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
   $st = $dbh->query("$query"); 
 
   foreach ($st as $row) {
@@ -42,8 +42,6 @@ if(isset($_POST['my_id'])){ // 「inputName.php」で選ばれた名前を抽出
 
 <form method="post" action="mainVote.php">
 <?php
-$person = file('exOrder_prz.txt');// file関数：txtの中身を簡単に吸ってこれる
-$person_fg = file('exOrder_fg.txt'); // 現状，プレゼンとファシグラで異なる投票データベースを使用している．
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
@@ -54,12 +52,12 @@ $dbh->query("USE enquete_main");
 
 $query = <<< EOM
   SELECT studentname, person_id
-  FROM  TestA_2_lab_member_name
-  LEFT JOIN TestA_3_order_of_presen
-  ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  WHERE TestA_3_order_of_presen.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
-  ORDER BY TestA_3_order_of_presen.order_of_presen;
+  FROM  TestA_2_lab_member_info
+  LEFT JOIN TestA_3_order_of_presentation
+  ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+  WHERE TestA_3_order_of_presentation.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+  ORDER BY TestA_3_order_of_presentation.order_of_presen;
 EOM;
 
 $st = $dbh->query("$query"); 
@@ -185,12 +183,6 @@ print"</table>";
 <?php
 // 投票ボタン
 if ($_POST['submit']) {
-
-  // 同フォルダ中のテキストファイルにデータを保存する仕組み
-  $ed = file('enquete_prz.txt'); //　まず開く．あらかじめ，現在のtxtファイルの内容を記憶しておく．理由は後述．
-  $ee = file('enquete_fg.txt');
-  for ($i = 0; $i < count($person); $i++) $ed[$i] = rtrim($ed[$i]); // 取り出した配列のクレンジング
-  for ($i = 0; $i < count($person); $i++) $ee[$i] = rtrim($ee[$i]);
 
   //ラジオボタン選択のエラー表示用
   if ($_POST['cn1']==null or $_POST['cn2']==null or $_POST['cn3']==null) {

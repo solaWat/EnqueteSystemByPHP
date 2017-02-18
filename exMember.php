@@ -23,12 +23,12 @@ try {
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
-  date  date,
-  time  time,
-  voter_person_id  varchar(100),
-  types_of_votes  varchar(30),
-  rank  tinyint unsigned,
-  voted_person_id  varchar(100)
+  date  date  COMMENT'年月日',
+  time  time  COMMENT'時間',
+  voter_person_id  varchar(100)  COMMENT'投票者のID',
+  types_of_votes  varchar(30)  COMMENT'P or FG ?',
+  rank  tinyint unsigned  COMMENT'順位',
+  voted_person_id  varchar(100)  COMMENT'被投票者のID'
 EOM;
     $dbh->query("CREATE TABLE IF NOT EXISTS TestA_1_vote ($col_set);"); // 無ければTABLEを作成する．
 
@@ -55,11 +55,11 @@ try {
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
-  fiscal_year  year,
-  studentname  nvarchar(100),
-  person_id  varchar(100)
+  fiscal_year  year  COMMENT'登録年度',
+  studentname  nvarchar(100)  COMMENT'ゼミ所属学生の名前',
+  person_id  varchar(100)  COMMENT'ID(年度が異なっても，この値が同じなら，同一人物)'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2_lab_member_name ($col_set);"); // 無ければTABLEを作成する．
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2_lab_member_info ($col_set);"); // 無ければTABLEを作成する．
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
@@ -84,12 +84,12 @@ try {
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
-  date  date,
-  time  time,
-  attendee_person_id  varchar(100),
-  order_of_presen  tinyint unsigned
+  date  date  COMMENT'年月日',
+  time  time  COMMENT'時間',
+  attendee_person_id  varchar(100)  COMMENT'出席者のID',
+  order_of_presen  tinyint unsigned  COMMENT'発表順'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3_order_of_presen ($col_set);"); // 無ければTABLEを作成する．
+    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3_order_of_presentation ($col_set);"); // 無ければTABLEを作成する．
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
@@ -112,7 +112,7 @@ $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環
 $dbh->query("USE enquete_main");
 
 // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
+$st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
 
 
 foreach ($st as $row) {
@@ -150,13 +150,13 @@ if ($_POST['sort']) {
   $dbh->query("USE enquete_main");
 
   // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-  $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date'";
+  $sql = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
   $st = $dbh->prepare($sql);
   $st->execute();
 
   for ($i=0; $i < count($food); $i++) { 
     $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
     //ON DUPLICATE KEY UPDATE date = '$date' 
 
 
@@ -174,12 +174,12 @@ $dbh->query("USE enquete_main");
 
 $query = <<< EOM
   select studentname
-  from  TestA_2_lab_member_name
-  left join TestA_3_order_of_presen
-  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  where TestA_3_order_of_presen.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
-  order by TestA_3_order_of_presen.order_of_presen;
+  from  TestA_2_lab_member_info
+  left join TestA_3_order_of_presentation
+  on TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+  where TestA_3_order_of_presentation.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+  order by TestA_3_order_of_presentation.order_of_presen;
 EOM;
 $st = $dbh->query("$query"); 
 

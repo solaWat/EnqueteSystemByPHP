@@ -28,7 +28,7 @@ $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環
 $dbh->query("USE enquete_main");
 
 // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
+$st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
 
 foreach ($st as $row) {
   $name = $row['studentname'];
