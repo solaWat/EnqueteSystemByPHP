@@ -108,19 +108,25 @@ EOM;
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php
 
-$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-$dbh->query("USE enquete_main");
+try {
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
 
-// "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-$st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
+  // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
+  $st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
 
 
-foreach ($st as $row) {
-  # code...
-  $name = $row['studentname'];
-  $id = $row['person_id'];
-  print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+  foreach ($st as $row) {
+    # code...
+    $name = $row['studentname'];
+    $id = $row['person_id'];
+    print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+  }
+}catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
 }
+
 
 ?>
 
@@ -146,53 +152,64 @@ if ($_POST['sort']) {
   $date = date('Y-m-d');
   $time = date('H:i:s');
 
+  try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+    $dbh->query("USE enquete_main");
+
+    // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+    $sql = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
+    $st = $dbh->prepare($sql);
+    $st->execute();
+
+    for ($i=0; $i < count($food); $i++) { 
+      $j = $i+1;
+      $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+      //ON DUPLICATE KEY UPDATE date = '$date' 
+
+
+      //echo "$food[$i]";
+      //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+      $st = $dbh->prepare($sql);
+      $st->execute();
+    }
+  } catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
+}
+  
+}
+
+
+try {
   $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query("USE enquete_main");
 
-  // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-  $sql = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
-  $st = $dbh->prepare($sql);
-  $st->execute();
-
-  for ($i=0; $i < count($food); $i++) { 
-    $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
-    //ON DUPLICATE KEY UPDATE date = '$date' 
-
-
-    //echo "$food[$i]";
-    //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
-    $st = $dbh->prepare($sql);
-    $st->execute();
-  }
-}
-
-
-
-$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-$dbh->query("USE enquete_main");
-
 $query = <<< EOM
-  select studentname
-  from  TestA_2_lab_member_info
-  left join TestA_3_order_of_presentation
-  on TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-  where TestA_3_order_of_presentation.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-  order by TestA_3_order_of_presentation.order_of_presen;
+    select studentname
+    from  TestA_2_lab_member_info
+    left join TestA_3_order_of_presentation
+    on TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+    where TestA_3_order_of_presentation.date = '$date'
+     AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+    order by TestA_3_order_of_presentation.order_of_presen;
 EOM;
-$st = $dbh->query("$query"); 
+  $st = $dbh->query("$query"); 
 
-print"<table border='1' cellpadding='6' style='background:white'>";
-$i = 1;
-foreach ($st as $row) {
-  print "<tr>";
-  print "<td>$i</td>";
-  print "<td>{$row['studentname']}</td>";
-  print "</tr>\n";
-  $i = $i + 1;
+  print"<table border='1' cellpadding='6' style='background:white'>";
+  $i = 1;
+  foreach ($st as $row) {
+    print "<tr>";
+    print "<td>$i</td>";
+    print "<td>{$row['studentname']}</td>";
+    print "</tr>\n";
+    $i = $i + 1;
+  }
+  print"</table>";
+}catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
 }
-print"</table>";
+
 
 ?>
 

@@ -9,30 +9,37 @@
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
 
-$dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-$dbh->query("USE enquete_main");
+try {
+  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query("USE enquete_main");
 
 $query = <<< EOM
-  SELECT studentname
-  FROM  TestA_2_lab_member_info
-  LEFT JOIN TestA_3_order_of_presentation
-  ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-  WHERE TestA_3_order_of_presentation.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-  ORDER BY TestA_3_order_of_presentation.order_of_presen;
+    SELECT studentname
+    FROM  TestA_2_lab_member_info
+    LEFT JOIN TestA_3_order_of_presentation
+    ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+    WHERE TestA_3_order_of_presentation.date = '$date'
+     AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+    ORDER BY TestA_3_order_of_presentation.order_of_presen;
 EOM;
-$st = $dbh->query("$query"); 
+  $st = $dbh->query("$query"); 
 
-print"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
-$i = 1;
-foreach ($st as $row) {
-  print "<tr>";
-  print "<td>$i</td>";
-  print "<td>{$row['studentname']}</td>";
-  print "</tr>\n";
-  $i = $i + 1;
+  print"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
+  $i = 1;
+  foreach ($st as $row) {
+    print "<tr>";
+    print "<td>$i</td>";
+    print "<td>{$row['studentname']}</td>";
+    print "</tr>\n";
+    $i = $i + 1;
+  }
+  print"</table>";
+  
+} catch (PDOException $e) {
+    print "エラー!: " . $e->getMessage() . "<br/>";
+    die();
 }
-print"</table>";
+
 
 ?>
 <br>
