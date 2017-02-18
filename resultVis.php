@@ -22,12 +22,12 @@ $dbh->query("USE enquete_main");
 
 $query = <<< EOM
   SELECT studentname, person_id
-  FROM  TestA_2_lab_member_name
-  LEFT JOIN TestA_3_order_of_presen
-  ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  WHERE TestA_3_order_of_presen.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
-  ORDER BY TestA_3_order_of_presen.order_of_presen;
+  FROM  TestA_2_lab_member_info
+  LEFT JOIN TestA_3_order_of_presentation
+  ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+  WHERE TestA_3_order_of_presentation.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+  ORDER BY TestA_3_order_of_presentation.order_of_presen;
 EOM;
 $st = $dbh->query("$query");
 

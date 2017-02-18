@@ -15,7 +15,7 @@ if ($_POST['delete']) { // デリートが押されたら．
   $dbh->query("USE enquete_main");
 
 
-  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presen WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date');";
+  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presentation WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date');";
   $st = $dbh->query("$query"); 
   foreach ($st as $row) {
   $newOrder[] = $row['attendee_person_id'];
@@ -23,7 +23,7 @@ if ($_POST['delete']) { // デリートが押されたら．
 
   for ($i=0; $i < count($newOrder) - 1; $i++) { 
     $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
+    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
     $st = $dbh->prepare($sql);
     $st->execute();
   }
@@ -51,7 +51,7 @@ if ($_POST['add']) { // 追加が押されたら．
   $dbh->query("USE enquete_main");
 
 
-  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presen WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date');";
+  $query = "SELECT attendee_person_id FROM TestA_3_order_of_presentation WHERE date = '$date' AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date');";
   // $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
   $st = $dbh->query("$query"); 
 
@@ -59,12 +59,7 @@ if ($_POST['add']) { // 追加が押されたら．
   $newOrder[] = $row['attendee_person_id'];
   }
 
-  print "$newOrder";
-
   $newOrder[] = $addname_id;
-
-  print "$newOrder";
-
 
   // $food = $_POST['cn'];
   // srand(time()); //乱数列初期化．冗長の可能性あり．
@@ -72,7 +67,7 @@ if ($_POST['add']) { // 追加が押されたら．
 
   for ($i=0; $i < count($newOrder); $i++) { 
     $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
+    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
  
     $st = $dbh->prepare($sql);
     $st->execute();
@@ -97,12 +92,12 @@ $dbh->query("USE enquete_main");
 
 $query = <<< EOM
   SELECT studentname, person_id
-  FROM  TestA_2_lab_member_name
-  LEFT JOIN TestA_3_order_of_presen
-  ON TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id 
-  AND TestA_3_order_of_presen.date = '$date'
-  AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
-  WHERE TestA_3_order_of_presen.attendee_person_id IS NULL
+  FROM  TestA_2_lab_member_info
+  LEFT JOIN TestA_3_order_of_presentation
+  ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id 
+  AND TestA_3_order_of_presentation.date = '$date'
+  AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+  WHERE TestA_3_order_of_presentation.attendee_person_id IS NULL
   AND fiscal_year = '2016' ;
 EOM;
 $st = $dbh->query("$query"); 

@@ -112,7 +112,7 @@ $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環
 $dbh->query("USE enquete_main");
 
 // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-$st = $dbh->query("SELECT * FROM TestA_2_lab_member_name WHERE fiscal_year = '2016'"); 
+$st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
 
 
 foreach ($st as $row) {
@@ -150,13 +150,13 @@ if ($_POST['sort']) {
   $dbh->query("USE enquete_main");
 
   // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-  $sql = "DELETE FROM TestA_3_order_of_presen where date = '$date'";
+  $sql = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
   $st = $dbh->prepare($sql);
   $st->execute();
 
   for ($i=0; $i < count($food); $i++) { 
     $j = $i+1;
-    $sql = "INSERT INTO TestA_3_order_of_presen (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+    $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
     //ON DUPLICATE KEY UPDATE date = '$date' 
 
 
@@ -174,12 +174,12 @@ $dbh->query("USE enquete_main");
 
 $query = <<< EOM
   select studentname
-  from  TestA_2_lab_member_name
-  left join TestA_3_order_of_presen
-  on TestA_2_lab_member_name.person_id = TestA_3_order_of_presen.attendee_person_id
-  where TestA_3_order_of_presen.date = '$date'
-   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presen WHERE date = '$date')
-  order by TestA_3_order_of_presen.order_of_presen;
+  from  TestA_2_lab_member_info
+  left join TestA_3_order_of_presentation
+  on TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
+  where TestA_3_order_of_presentation.date = '$date'
+   AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
+  order by TestA_3_order_of_presentation.order_of_presen;
 EOM;
 $st = $dbh->query("$query"); 
 
