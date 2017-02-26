@@ -13,31 +13,31 @@ $token = md5(uniqid(rand(), true));
 // トークンをセッションに保存
 $_SESSION['token'] = $token;
 
-if (isset($_SESSION['my_id'])){ // 以前のセッション登録したことがある場合
+if (isset($_SESSION['my_id'])) { // 以前のセッション登録したことがある場合
     header('Location: mainVote.php'); // 即，投票ページに飛ぶ．
-	exit();
+    exit();
 }
 ?>
 
 <!-- 自分の名前の登録は，遷移先で行われる． -->
-<form action="mainVote.php" method="post"> 
+<form action="mainVote.php" method="post">
 <?php
-echo "<h3>あなたの名前を教えてください．</h3>";
+echo '<h3>あなたの名前を教えてください．</h3>';
 
-try{
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+try {
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query('USE enquete_main');
 
-  // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-  $st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
+  // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい．
+  $st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'");
 
-  foreach ($st as $row) {
-    $name = $row['studentname'];
-    $id = $row['person_id'];
-    print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
-  }
-}catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
+    foreach ($st as $row) {
+        $name = $row['studentname'];
+        $id   = $row['person_id'];
+        echo "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
+    }
+} catch (PDOException $e) {
+    echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
 }
 

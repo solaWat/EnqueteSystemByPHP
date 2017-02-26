@@ -9,8 +9,8 @@
 
 
 <?php
-$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
-$user = 'root'; //ここら辺は各々の環境で．
+$dsn      = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user     = 'root'; //ここら辺は各々の環境で．
 $password = 'root'; //ここら辺は各々の環境で．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -19,7 +19,7 @@ $date = date('Y-m-d');
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
     // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh->exec('CREATE DATABASE IF NOT EXISTS enquete_main'); // 無ければDBを作成する．
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
@@ -34,24 +34,23 @@ EOM;
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
-    
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-} catch (PDOException $e){
-    print('Error:'.$e->getMessage());
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Error:'.$e->getMessage();
     die();
 }
 ?>
 
 <?php
-$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
-$user = 'root'; //ここら辺は各々の環境で．
+$dsn      = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user     = 'root'; //ここら辺は各々の環境で．
 $password = 'root'; //ここら辺は各々の環境で．
 
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
     // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh->exec('CREATE DATABASE IF NOT EXISTS enquete_main'); // 無ければDBを作成する．
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
@@ -63,24 +62,23 @@ EOM;
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
-    
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-} catch (PDOException $e){
-    print('Error:'.$e->getMessage());
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Error:'.$e->getMessage();
     die();
 }
 ?>
 
 <?php
-$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
-$user = 'root'; //ここら辺は各々の環境で．
+$dsn      = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$user     = 'root'; //ここら辺は各々の環境で．
 $password = 'root'; //ここら辺は各々の環境で．
 
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
     // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
+    $dbh->exec('CREATE DATABASE IF NOT EXISTS enquete_main'); // 無ければDBを作成する．
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
 // 新しくDBを作成した場合，このカラム設定を適用する．
 $col_set = <<< EOM
@@ -93,11 +91,10 @@ EOM;
 
     //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
     //$st->execute(array($date)); // 日にちでレコードを分ける．
-    
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-} catch (PDOException $e){
-    print('Error:'.$e->getMessage());
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Error:'.$e->getMessage();
     die();
 }
 ?>
@@ -109,24 +106,22 @@ EOM;
 <?php
 
 try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query('USE enquete_main');
 
-  // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-  $st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
+  // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい．
+  $st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'");
 
-
-  foreach ($st as $row) {
-    # code...
-    $name = $row['studentname'];
-    $id = $row['person_id'];
-    print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
-  }
-}catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
+    foreach ($st as $row) {
+        # code...
+    $name   = $row['studentname'];
+        $id = $row['person_id'];
+        echo "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
+    }
+} catch (PDOException $e) {
+    echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
 }
-
 
 ?>
 
@@ -137,54 +132,48 @@ try {
 
 
 <?php
-print"<h2>○今日の発表順はこちら</h2>";
-
-
+echo'<h2>○今日の発表順はこちら</h2>';
 
 // 投票ボタン
 if ($_POST['sort']) {
-
-  $food = $_POST['cn'];
-  srand(time()); //乱数列初期化．冗長の可能性あり．
+    $food = $_POST['cn'];
+    srand(time()); //乱数列初期化．冗長の可能性あり．
   shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
 
   date_default_timezone_set('Asia/Tokyo');
-  $date = date('Y-m-d');
-  $time = date('H:i:s');
+    $date = date('Y-m-d');
+    $time = date('H:i:s');
 
-  try {
-    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-    $dbh->query("USE enquete_main");
+    try {
+        $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+    $dbh->query('USE enquete_main');
 
     // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-    $sql = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
-    $st = $dbh->prepare($sql);
-    $st->execute();
+    $sql    = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
+        $st = $dbh->prepare($sql);
+        $st->execute();
 
-    for ($i=0; $i < count($food); $i++) { 
-      $j = $i+1;
-      $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
-      //ON DUPLICATE KEY UPDATE date = '$date' 
-
+        for ($i = 0; $i < count($food); ++$i) {
+            $j   = $i + 1;
+            $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
+      //ON DUPLICATE KEY UPDATE date = '$date'
 
       //echo "$food[$i]";
-      //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
+      //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'";
       $st = $dbh->prepare($sql);
-      $st->execute();
+            $st->execute();
+        }
+    } catch (PDOException $e) {
+        echo 'エラー!: '.$e->getMessage().'<br/>';
+        die();
     }
-  } catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
-    die();
 }
-  
-}
-
 
 try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query('USE enquete_main');
 
-$query = <<< EOM
+    $query = <<< EOM
     select studentname
     from  TestA_2_lab_member_info
     left join TestA_3_order_of_presentation
@@ -193,23 +182,22 @@ $query = <<< EOM
      AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
     order by TestA_3_order_of_presentation.order_of_presen;
 EOM;
-  $st = $dbh->query("$query"); 
+    $st = $dbh->query("$query");
 
-  print"<table border='1' cellpadding='6' style='background:white'>";
-  $i = 1;
-  foreach ($st as $row) {
-    print "<tr>";
-    print "<td>$i</td>";
-    print "<td>{$row['studentname']}</td>";
-    print "</tr>\n";
-    $i = $i + 1;
-  }
-  print"</table>";
-}catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
+    echo"<table border='1' cellpadding='6' style='background:white'>";
+    $i = 1;
+    foreach ($st as $row) {
+        echo '<tr>';
+        echo "<td>$i</td>";
+        echo "<td>{$row['studentname']}</td>";
+        echo "</tr>\n";
+        $i = $i + 1;
+    }
+    echo'</table>';
+} catch (PDOException $e) {
+    echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
 }
-
 
 ?>
 

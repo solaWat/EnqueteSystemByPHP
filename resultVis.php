@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- 11秒ごとにページを自動更新 -->
-<META HTTP-EQUIV="Refresh" CONTENT="11"> 
+<META HTTP-EQUIV="Refresh" CONTENT="11">
 <title>集計結果の表示</title>
 </head>
 <body>
@@ -18,10 +18,10 @@ $date = date('Y-m-d');
 $time = date('H:i:s');
 
 try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query('USE enquete_main');
 
-$query = <<< EOM
+    $query = <<< EOM
     SELECT studentname, person_id
     FROM  TestA_2_lab_member_info
     LEFT JOIN TestA_3_order_of_presentation
@@ -30,27 +30,26 @@ $query = <<< EOM
      AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
     ORDER BY TestA_3_order_of_presentation.order_of_presen;
 EOM;
-  $st = $dbh->query("$query");
+    $st = $dbh->query("$query");
 
   // $query = "SELECT studentname FROM TestA_2_lab_member_name WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
-  // $st = $dbh->query("$query"); 
+  // $st = $dbh->query("$query");
 
   foreach ($st as $row) {
-    $attendee_studentname[] = $row['studentname'];
-    $hoge[] = $row['person_id'];
+      $attendee_studentname[] = $row['studentname'];
+      $hoge[]                 = $row['person_id'];
   }
 
-  $attendee_person_number = count($attendee_studentname);
+    $attendee_person_number = count($attendee_studentname);
   // $stmt = $pdo -> query("SELECT * FROM テーブル名");
   // $count = $stmt -> rowCount();
 
-
   // P票の集計
-  for ($i=0; $i < count($hoge); $i++) { 
-    $one_person_id = $hoge[$i];
+  for ($i = 0; $i < count($hoge); ++$i) {
+      $one_person_id = $hoge[$i];
   // なんかサブクエリがうまくいかない
 $query = <<< EOM
-      SELECT 
+      SELECT
         COUNT(rank = '1' or null) AS rank1_num,
         COUNT(rank = '2' or null) AS rank2_num,
         COUNT(rank = '3' or null) AS rank3_num
@@ -59,20 +58,20 @@ $query = <<< EOM
        AND types_of_votes = 'P'
        AND voted_person_id = '$one_person_id' ;
 EOM;
-    $st = $dbh->query("$query"); 
+      $st = $dbh->query("$query");
 
-    foreach ($st as $row) {
-      $sum_voted_P[] = ($row['rank1_num'] * 3)+($row['rank2_num'] * 2)+($row['rank3_num'] * 1);
+      foreach ($st as $row) {
+          $sum_voted_P[] = ($row['rank1_num'] * 3) + ($row['rank2_num'] * 2) + ($row['rank3_num'] * 1);
       // $sum_voted_P[] = $row['sum_voted'];
-    }
+      }
   }
 
   // FG票の集計
-  for ($i=0; $i < count($hoge); $i++) { 
-    $one_person_id = $hoge[$i];
+  for ($i = 0; $i < count($hoge); ++$i) {
+      $one_person_id = $hoge[$i];
   // なんかサブクエリがうまくいかない
 $query = <<< EOM
-      SELECT 
+      SELECT
         COUNT(rank = '1' or null) AS rank1_num,
         COUNT(rank = '2' or null) AS rank2_num,
         COUNT(rank = '3' or null) AS rank3_num
@@ -81,82 +80,79 @@ $query = <<< EOM
        AND types_of_votes = 'FG'
        AND voted_person_id = '$one_person_id' ;
 EOM;
-    $st = $dbh->query("$query"); 
+      $st = $dbh->query("$query");
 
-    foreach ($st as $row) {
-      $sum_voted_FG[] = ($row['rank1_num'] * 3)+($row['rank2_num'] * 2)+($row['rank3_num'] * 1);
+      foreach ($st as $row) {
+          $sum_voted_FG[] = ($row['rank1_num'] * 3) + ($row['rank2_num'] * 2) + ($row['rank3_num'] * 1);
       // $sum_voted_P[] = $row['sum_voted'];
-    }
+      }
   }
 
-
-$query = <<< EOM
+    $query = <<< EOM
       SELECT DISTINCT voter_person_id
       FROM TestA_1_vote
       WHERE date = '$date' ;
 EOM;
-  $st = $dbh->query("$query"); 
-  foreach ($st as $row) {
-    $forSUM[] = $row['voter_person_id'];
-    $finish_vote_num = count($forSUM);
-  }
-
-}catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
+    $st = $dbh->query("$query");
+    foreach ($st as $row) {
+        $forSUM[]        = $row['voter_person_id'];
+        $finish_vote_num = count($forSUM);
+    }
+} catch (PDOException $e) {
+    echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
 }
 
-
 echo "現在，$attendee_person_number 人中『 $finish_vote_num 人』の投票が終わっています．";
-print"<br><br>";
+echo'<br><br>';
 
 // 2つのテーブルと並列表示させるための透明テーブル
-print"<table>";
-  print"<caption>投票結果 ( $date )";
-  print"<tr>";
-  print"<td>";
+echo'<table>';
+  echo"<caption>投票結果 ( $date )";
+  echo'<tr>';
+  echo'<td>';
   ////////////ここから
-  print"<table border='1' style='background:#F0F8FF'>";
-    print"<caption align='left'>　　　　　　　　プレゼン";
+  echo"<table border='1' style='background:#F0F8FF'>";
+    echo"<caption align='left'>　　　　　　　　プレゼン";
     // 投票結果表示
     // プレゼンテーション
-    for ($i = 0; $i < count($hoge); $i++) {
-      print "<tr>";
-      print "<td style='background:white'>　{$attendee_studentname[$i]}　</td>";
-      print "<td><table><tr>";
-      $w = $sum_voted_P[$i] * 10;
-      print "<td width='$w' bgcolor='green'> </td>";
-      print "<td>{$sum_voted_P[$i]} 票</td>";
-      print "</tr></table></td>";
-      print "</tr>\n";
+    for ($i = 0; $i < count($hoge); ++$i) {
+        echo '<tr>';
+        echo "<td style='background:white'>　{$attendee_studentname[$i]}　</td>";
+        echo '<td><table><tr>';
+        $w = $sum_voted_P[$i] * 10;
+        echo "<td width='$w' bgcolor='green'> </td>";
+        echo "<td>{$sum_voted_P[$i]} 票</td>";
+        echo '</tr></table></td>';
+        echo "</tr>\n";
     }
-    print"</tr>";
-  print"</table>";
+    echo'</tr>';
+  echo'</table>';
   /////////////ここまで，一つのカタマリ
 
-  print"</td>";
-  print"<td>";
+  echo'</td>';
+  echo'<td>';
 
-  print"<table border='1' style='background:#F5F5F5'>";
-    print"<caption>ファシグラ";
-    print"<tr>";
+  echo"<table border='1' style='background:#F5F5F5'>";
+    echo'<caption>ファシグラ';
+    echo'<tr>';
     // ファシグラ
-    for ($i = 0; $i < count($hoge); $i++) {
-      print "<tr>";
+    for ($i = 0; $i < count($hoge); ++$i) {
+        echo '<tr>';
       //print "<td>{$person_fg[$i]}</td>";
-      print "<td><table><tr>";
-      $w = $sum_voted_FG[$i] * 10;
-      print "<td width='$w' bgcolor='green'> </td>";
-      print "<td>{$sum_voted_FG[$i]} 票</td>";
-      print "</tr></table></td>";
-      print "</tr>\n";
+      echo '<td><table><tr>';
+        $w = $sum_voted_FG[$i] * 10;
+        echo "<td width='$w' bgcolor='green'> </td>";
+        echo "<td>{$sum_voted_FG[$i]} 票</td>";
+        echo '</tr></table></td>';
+        echo "</tr>\n";
     }
-    print"</tr>";
-  print"</table>";
+    echo'</tr>';
+  echo'</table>';
 
-  print"</td>";
-  print"</tr>";
-print"</table>";
+  echo'</td>';
+  echo'</tr>';
+echo'</table>';
 
 // //リセットボタン　不測の事態に備えて．
 // if ($_POST['submit2']) {

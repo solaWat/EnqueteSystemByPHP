@@ -10,10 +10,10 @@ date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
 
 try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
+    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+  $dbh->query('USE enquete_main');
 
-$query = <<< EOM
+    $query = <<< EOM
     SELECT studentname
     FROM  TestA_2_lab_member_info
     LEFT JOIN TestA_3_order_of_presentation
@@ -22,24 +22,22 @@ $query = <<< EOM
      AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
     ORDER BY TestA_3_order_of_presentation.order_of_presen;
 EOM;
-  $st = $dbh->query("$query"); 
+    $st = $dbh->query("$query");
 
-  print"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
-  $i = 1;
-  foreach ($st as $row) {
-    print "<tr>";
-    print "<td>$i</td>";
-    print "<td>{$row['studentname']}</td>";
-    print "</tr>\n";
-    $i = $i + 1;
-  }
-  print"</table>";
-  
+    echo"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
+    $i = 1;
+    foreach ($st as $row) {
+        echo '<tr>';
+        echo "<td>$i</td>";
+        echo "<td>{$row['studentname']}</td>";
+        echo "</tr>\n";
+        $i = $i + 1;
+    }
+    echo'</table>';
 } catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
+    echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
 }
-
 
 ?>
 <br>
