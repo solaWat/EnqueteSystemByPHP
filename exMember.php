@@ -1,3 +1,87 @@
+<?php
+$dbname = 'enquete_main_2';//各々の環境で変わります．
+$pre_dsn = 'mysql:host=127.0.0.1;charset=utf8';
+$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8';//各々の環境で変わります．
+$user = 'root';//各々の環境で変わります．
+$password = 'root';//各々の環境で変わります．
+
+$tbname_1 = 'test_vote';
+$tbname_2 = 'test_lab_member_info';
+$tbname_3 = 'test_order_of_presentation';
+$fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
+
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+
+try {
+  $pre_dbh = new PDO( // databaseがなければ作る．
+    $pre_dsn,
+    $user,
+    $password,
+    array(
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+      PDO::ATTR_EMULATE_PREPARES => false,
+    )
+  );
+  $pre_dbh->exec('CREATE DATABASE IF NOT EXISTS'.$dbname);
+
+  $dbh = new PDO(
+    $dsn,
+    $user,
+    $password,
+    array(
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+      PDO::ATTR_EMULATE_PREPARES => false,
+    )
+  );
+$col_set_tb1 = <<< EOM
+  date  date  COMMENT'年月日',
+  time  time  COMMENT'時間',
+  voter_person_id  varchar(100)  COMMENT'投票者のID',
+  types_of_votes  varchar(30)  COMMENT'P or FG ?',
+  rank  tinyint unsigned  COMMENT'順位',
+  voted_person_id  varchar(100)  COMMENT'被投票者のID'
+EOM;
+  $dbh->exec('CREATE TABLE IF NOT EXISTS'.$tbname_1.'('.$col_set_tb1.');');
+
+$col_set_tb2 = <<< EOM
+  fiscal_year  year  COMMENT'登録年度',
+  studentname  nvarchar(100)  COMMENT'ゼミ所属学生の名前',
+  person_id  varchar(100)  COMMENT'ID(年度が異なっても，この値が同じなら，同一人物)'
+EOM;
+  $dbh->exec('CREATE TABLE IF NOT EXISTS'.$tbname_2.'('.$col_set_tb2.');');
+
+$col_set_tb3 = <<< EOM
+  date  date  COMMENT'年月日',
+  time  time  COMMENT'時間',
+  attendee_person_id  varchar(100)  COMMENT'出席者のID',
+  order_of_presen  tinyint unsigned  COMMENT'発表順'
+EOM;
+  $dbh->exec('CREATE TABLE IF NOT EXISTS'.$tbname_3.'('.$col_set_tb3.');');
+
+  $sql = 'SELECT * FROM ? WHERE fiscal_year = ? ';
+  $prepare->bindValue(1, $tbname_2, PDO::PARAM_STR);
+  $prepare->bindValue(2, $fiscalyear, PDO::PARAM_STR);
+  $memberinfo = $prepare->execute();
+
+
+
+
+} catch (Exception $e) {
+  header('Content-Type: text/plain; charset=UTF-8', true, 500);
+  echo 'エラー!: '.$e->getMessage().'<br/>';
+  die();
+}
+function h($str)
+{
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
+header('Content-Type: text/html; charset=utf-8');
+
+
+ ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
@@ -118,8 +202,9 @@ EOM;
 <form method="post" action="exMember.php">
 <h2>○出席者を選んでください</h2>
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-<?php
 
+<!-- 消すやつ -->
+<?php
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
   $dbh->query('USE enquete_main');
@@ -137,13 +222,27 @@ try {
     echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
 }
-
 ?>
+<!--  -->
 
+<!--  残すやつ -->
+<?php foreach ($memberinfo as $row): ?>
+  <?php $name   = $row['studentname'];?>
+  <?php $id = $row['person_id'];?>
+  <label>
+    <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked>
+    {<?=h($name)?>}
+    <br><br>
+  </label>
+<?php endforeach; ?>
+<!--  -->
+
+<!-- 残すやつ -->
 </div><br>
  <!-- 出席者から今日の発表順がソートされる時点で，これより前の投票結果を削除する．投票の反映は上書きではなく，足し込みのため． -->
 <input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
 </form>
+<!--  -->
 
 
 <?php
