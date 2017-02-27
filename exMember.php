@@ -72,32 +72,50 @@ EOM;
 
 
   // POSTが降ってきたら．
-  if ($_POST['sort']) {
-    // $food = $_POST['cn'];
-    $attendee_person_id = $_POST['cn'];
-    srand(time()); //乱数列初期化．冗長の可能性あり．
-    shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
+  //if (isset($_POST['sort'])) {
+  if (!isset($_POST['sort'])) {
+      $errors[] = 'Eメールアドレスが送信されていません';
+  } elseif ($_POST['sort'] === '') {
+      $errors[] = 'Eメールアドレスが入力されていません';
+  }else {
+  //   # code...
+  // }
+    // if (!isset($_POST['cn'])) {
+    //     $attendee_person_id = null;
+    // } elseif (!is_string($_POST['cn'])) {
+    //     $attendee_person_id = false;
+    // } else {
+    //     $attendee_person_id = $_POST['cn'];
+    // }
+    // 二行下までの処理は上記と等価である．
+    // $attendee_person_id = filter_input(INPUT_POST, 'cn');
+    // if (is_string($attendee_person_id)) {
+      /* 文字列として送信されてきた場合のみ実行したい処理 */
+      $attendee_person_id = $_POST['cn'];
+      srand(time()); //乱数列初期化．冗長の可能性あり．
+      shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
 
-    // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-    $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
-    $prepare = $dbh->prepare($sql);
-    //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
-    $prepare->bindValue(1, $date, PDO::PARAM_STR);
-    $prepare->execute();
-
-    // 発表順を入れる．
-    for ($i = 0; $i < count($attendee_person_id); $i++) {
-      $j = $i + 1;
-      $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+      // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+      $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
       $prepare = $dbh->prepare($sql);
       //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
       $prepare->bindValue(1, $date, PDO::PARAM_STR);
-      $prepare->bindValue(2, $time, PDO::PARAM_STR);
-      $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
-      $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
       $prepare->execute();
+
+      // 発表順を入れる．
+      for ($i = 0; $i < count($attendee_person_id); $i++) {
+        $j = $i + 1;
+        $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+        $prepare = $dbh->prepare($sql);
+        //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+        $prepare->bindValue(1, $date, PDO::PARAM_STR);
+        $prepare->bindValue(2, $time, PDO::PARAM_STR);
+        $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
+        $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+        $prepare->execute();
+      }
     }
-  }
+  // }
 
   // これで済むはずなのに……　<?php include 'current_exOrder.php';
 $sql = <<< EOM
@@ -152,7 +170,7 @@ header('Content-Type: text/html; charset=utf-8');
 <!-- 残すやつ -->
 </div><br>
  <!-- 出席者から今日の発表順がソートされる時点で，これより前の投票結果を削除する．投票の反映は上書きではなく，足し込みのため． -->
-<input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
+<input type="submit" name="sort" value="　発表順を決める　" >
 </form>
 <!--  -->
 
