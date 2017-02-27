@@ -1,16 +1,23 @@
 <?php
+$dbname = 'enquete_main';//各々の環境で変わります．
+$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8';//各々の環境で変わります．
+$user = 'root';//各々の環境で変わります．
+$password = 'root';//各々の環境で変わります．
+
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
-
+// mysql:host=127.0.0.1;dbname=enquete_main;charset=utf8
 try {
-    $dbh = new PDO('mysql:host=127.0.0.1;dbname=enquete_main;charset=utf8',//各々の環境で変わります．
-    root,//各々の環境で変わります．
-    root,//各々の環境で変わります．
-    array(
-      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-      PDO::ATTR_EMULATE_PREPARES => false,
-    ));
+    $dbh = new PDO(
+      $dsn,
+      $user,
+      $password,
+      array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+      )
+    );
     // $dbh->query('USE enquete_main');
 $sql = <<< EOM
     SELECT studentname
