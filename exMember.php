@@ -12,6 +12,7 @@ $fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，�
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
+$time = date('H:i:s');
 
 try {
   $pre_dbh = new PDO( // databaseがなければ作る．
@@ -26,7 +27,7 @@ try {
   );
   $pre_dbh->exec('CREATE DATABASE IF NOT EXISTS'.$dbname);
 
-  $dbh = new PDO(
+  $dbh = new PDO( // tableがなければ作る．
     $dsn,
     $user,
     $password,
@@ -61,13 +62,40 @@ $col_set_tb3 = <<< EOM
 EOM;
   $dbh->exec('CREATE TABLE IF NOT EXISTS'.$tbname_3.'('.$col_set_tb3.');');
 
+  // 研究室所属メンバーを表示する．
   $sql = 'SELECT * FROM ? WHERE fiscal_year = ? ';
+  $prepare = $dbh->prepare($sql);
   $prepare->bindValue(1, $tbname_2, PDO::PARAM_STR);
   $prepare->bindValue(2, $fiscalyear, PDO::PARAM_STR);
   $memberinfo = $prepare->execute();
 
+// POSTが降ってきたら．
+if ($_POST['sort']) {
+  // $food = $_POST['cn'];
+  $attendee_person_id = $_POST['cn'];
+  srand(time()); //乱数列初期化．冗長の可能性あり．
+  shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
 
+  // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+  $sql = 'DELETE FROM ? where date = ?';
+  $prepare = $dbh->prepare($sql);
+  $prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+  $prepare->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare->execute();
 
+  // 発表順を入れる．
+  for ($i = 0; $i < count($attendee_person_id); $i++) {
+    $j = $i + 1;
+    $sql = 'INSERT INTO ? (date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+    $prepare->bindValue(2, $date, PDO::PARAM_STR);
+    $prepare->bindValue(3, $time, PDO::PARAM_STR);
+    $prepare->bindValue(4, $attendee_person_id[$i], PDO::PARAM_STR);
+    $prepare->bindValue(5, (int)$j, PDO::PARAM_INT);
+    $prepare->execute();
+  }
+}
 
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
@@ -79,9 +107,7 @@ function h($str)
     return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 header('Content-Type: text/html; charset=utf-8');
-
-
- ?>
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
@@ -314,6 +340,8 @@ EOM;
 }
 
 ?>
+
+<?php include 'current_exOrder.php';?>
 
 <br>
 <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
