@@ -63,11 +63,11 @@ EOM;
   $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_3.'('.$col_set_tb3.');');
 
   // 研究室所属メンバーを表示する．
-  $sql = 'SELECT * FROM ? WHERE fiscal_year = ? ';
-  $prepare = $dbh->prepare($sql);
-  $prepare->bindValue(1, $tbname_2, PDO::PARAM_STR);
-  $prepare->bindValue(2, $fiscalyear, PDO::PARAM_STR);
-  $memberinfo = $prepare->execute();
+  $sql = 'SELECT * FROM '.$tbname_2.' WHERE fiscal_year = ? ';
+  $prepare_memberinfo = $dbh->prepare($sql);
+  //$prepare->bindValue(1, $tbname_2, PDO::PARAM_STR);
+  $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
+  $prepare_memberinfo->execute();
 
 // POSTが降ってきたら．
 if ($_POST['sort']) {
@@ -77,22 +77,22 @@ if ($_POST['sort']) {
   shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
 
   // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-  $sql = 'DELETE FROM ? where date = ?';
+  $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
   $prepare = $dbh->prepare($sql);
-  $prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
-  $prepare->bindValue(2, $date, PDO::PARAM_STR);
+  //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+  $prepare->bindValue(1, $date, PDO::PARAM_STR);
   $prepare->execute();
 
   // 発表順を入れる．
   for ($i = 0; $i < count($attendee_person_id); $i++) {
     $j = $i + 1;
-    $sql = 'INSERT INTO ? (date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+    $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
     $prepare = $dbh->prepare($sql);
-    $prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
-    $prepare->bindValue(2, $date, PDO::PARAM_STR);
-    $prepare->bindValue(3, $time, PDO::PARAM_STR);
-    $prepare->bindValue(4, $attendee_person_id[$i], PDO::PARAM_STR);
-    $prepare->bindValue(5, (int)$j, PDO::PARAM_INT);
+    //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->bindValue(2, $time, PDO::PARAM_STR);
+    $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
+    $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
     $prepare->execute();
   }
 }
@@ -122,12 +122,11 @@ header('Content-Type: text/html; charset=utf-8');
 <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 
 <!--  残すやつ -->
-<?php foreach ($memberinfo as $row): ?>
+<?php foreach ($prepare_memberinfo as $row): ?>
   <?php $name   = $row['studentname'];?>
   <?php $id = $row['person_id'];?>
   <label>
-    <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked>
-    {<?=h($name)?>}
+    <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked><?=h($name)?>
     <br><br>
   </label>
 <?php endforeach; ?>
