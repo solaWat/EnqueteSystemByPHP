@@ -1,5 +1,5 @@
 <?php
-$dbname = 'enquete_main';//各々の環境で変わります．
+$dbname = 'enquete_main_2';//各々の環境で変わります．
 $dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8';//各々の環境で変わります．
 $user = 'root';//各々の環境で変わります．
 $password = 'root';//各々の環境で変わります．
@@ -21,12 +21,12 @@ try {
     // $dbh->query('USE enquete_main');
 $sql = <<< EOM
     SELECT studentname
-    FROM  TestA_2_lab_member_info
-    LEFT JOIN TestA_3_order_of_presentation
-    ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-    WHERE TestA_3_order_of_presentation.date = ?
-     AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = ?)
-    ORDER BY TestA_3_order_of_presentation.order_of_presen;
+    FROM  test_lab_member_info
+    LEFT JOIN test_order_of_presentation
+    ON test_lab_member_info.person_id = test_order_of_presentation.attendee_person_id
+    WHERE test_order_of_presentation.date = ?
+     AND time = (SELECT MAX(time) FROM test_order_of_presentation WHERE date = ?)
+    ORDER BY test_order_of_presentation.order_of_presen;
 EOM;
     $prepare = $dbh->prepare($sql);
     $prepare->bindValue(1, $date, PDO::PARAM_STR);
@@ -44,7 +44,8 @@ function h($str)
 {
     return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
-header('Content-Type: text/html; charset=utf-8');
+
+//header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">

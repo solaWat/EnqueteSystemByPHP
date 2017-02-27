@@ -69,33 +69,50 @@ EOM;
   $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
   $prepare_memberinfo->execute();
 
-// POSTが降ってきたら．
-if ($_POST['sort']) {
-  // $food = $_POST['cn'];
-  $attendee_person_id = $_POST['cn'];
-  srand(time()); //乱数列初期化．冗長の可能性あり．
-  shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
 
-  // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-  $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
-  $prepare = $dbh->prepare($sql);
-  //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
-  $prepare->bindValue(1, $date, PDO::PARAM_STR);
-  $prepare->execute();
 
-  // 発表順を入れる．
-  for ($i = 0; $i < count($attendee_person_id); $i++) {
-    $j = $i + 1;
-    $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+  // POSTが降ってきたら．
+  if ($_POST['sort']) {
+    // $food = $_POST['cn'];
+    $attendee_person_id = $_POST['cn'];
+    srand(time()); //乱数列初期化．冗長の可能性あり．
+    shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
+
+    // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+    $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
     $prepare = $dbh->prepare($sql);
     //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
     $prepare->bindValue(1, $date, PDO::PARAM_STR);
-    $prepare->bindValue(2, $time, PDO::PARAM_STR);
-    $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
-    $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
     $prepare->execute();
+
+    // 発表順を入れる．
+    for ($i = 0; $i < count($attendee_person_id); $i++) {
+      $j = $i + 1;
+      $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+      $prepare = $dbh->prepare($sql);
+      //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->bindValue(2, $time, PDO::PARAM_STR);
+      $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
+      $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+      $prepare->execute();
+    }
   }
-}
+
+  // これで済むはずなのに……　<?php include 'current_exOrder.php';
+$sql = <<< EOM
+  SELECT studentname
+  FROM  test_lab_member_info
+  LEFT JOIN test_order_of_presentation
+  ON test_lab_member_info.person_id = test_order_of_presentation.attendee_person_id
+  WHERE test_order_of_presentation.date = ?
+   AND time = (SELECT MAX(time) FROM test_order_of_presentation WHERE date = ?)
+  ORDER BY test_order_of_presentation.order_of_presen;
+EOM;
+  $prepare = $dbh->prepare($sql);
+  $prepare->bindValue(1, $date, PDO::PARAM_STR);
+  $prepare->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare->execute();
 
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
@@ -141,7 +158,18 @@ header('Content-Type: text/html; charset=utf-8');
 
 <h2>○今日の発表順はこちら</h2>
 
-<?php include 'current_exOrder.php';?>
+<!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
+<table border='1' cellpadding='5' style='background:#F0F8FF'>
+<?php $i = 1; ?>
+<?php foreach ($prepare as $row): ?>
+  <tr>
+    <td><?=h($i) ?></td>
+    <td><?=h($row['studentname'])?></td>
+  </tr>
+<?php $i = $i + 1; ?>
+<?php endforeach; ?>
+</table>
+
 
 <br>
 <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
