@@ -19,16 +19,16 @@ $date = date('Y-m-d');
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
 
-    $dbh = new PDO(//各々の環境で変わります．
-      'mysql:host=127.0.0.1;charset=utf8',
-      root,
-      root,
-      array(
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-      )
-    );
+    // $dbh = new PDO(//各々の環境で変わります．
+    //   'mysql:host=127.0.0.1;charset=utf8',
+    //   root,
+    //   root,
+    //   array(
+    //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    //     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    //     PDO::ATTR_EMULATE_PREPARES => false,
+    //   )
+    // );
 
     // SELECT文以降の処理では，exec関数は使用できない．
     $dbh->exec('CREATE DATABASE IF NOT EXISTS enquete_main'); // 無ければDBを作成する．
