@@ -102,12 +102,12 @@ EOM;
   // これで済むはずなのに……　<?php include 'current_exOrder.php';
 $sql = <<< EOM
   SELECT studentname
-  FROM  test_lab_member_info
-  LEFT JOIN test_order_of_presentation
-  ON test_lab_member_info.person_id = test_order_of_presentation.attendee_person_id
-  WHERE test_order_of_presentation.date = ?
-   AND time = (SELECT MAX(time) FROM test_order_of_presentation WHERE date = ?)
-  ORDER BY test_order_of_presentation.order_of_presen;
+  FROM  {$tbname_2}
+  LEFT JOIN {$tbname_3}
+  ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
+  WHERE {$tbname_3}.date = ?
+   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ?)
+  ORDER BY {$tbname_3}.order_of_presen;
 EOM;
   $prepare = $dbh->prepare($sql);
   $prepare->bindValue(1, $date, PDO::PARAM_STR);

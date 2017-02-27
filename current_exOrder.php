@@ -1,11 +1,19 @@
 <?php
 $dbname = 'enquete_main_2';//各々の環境で変わります．
-$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8';//各々の環境で変わります．
+$pre_dsn = 'mysql:host=127.0.0.1;charset=utf8';
+$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
 $user = 'root';//各々の環境で変わります．
 $password = 'root';//各々の環境で変わります．
 
+$tbname_1 = 'test_vote';
+$tbname_2 = 'test_lab_member_info';
+$tbname_3 = 'test_order_of_presentation';
+$fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
+
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
+$time = date('H:i:s');
+
 // mysql:host=127.0.0.1;dbname=enquete_main;charset=utf8
 try {
     $dbh = new PDO(
@@ -20,13 +28,13 @@ try {
     );
     // $dbh->query('USE enquete_main');
 $sql = <<< EOM
-    SELECT studentname
-    FROM  test_lab_member_info
-    LEFT JOIN test_order_of_presentation
-    ON test_lab_member_info.person_id = test_order_of_presentation.attendee_person_id
-    WHERE test_order_of_presentation.date = ?
-     AND time = (SELECT MAX(time) FROM test_order_of_presentation WHERE date = ?)
-    ORDER BY test_order_of_presentation.order_of_presen;
+  SELECT studentname
+  FROM  {$tbname_2}
+  LEFT JOIN {$tbname_3}
+  ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
+  WHERE {$tbname_3}.date = ?
+   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ?)
+  ORDER BY {$tbname_3}.order_of_presen;
 EOM;
     $prepare = $dbh->prepare($sql);
     $prepare->bindValue(1, $date, PDO::PARAM_STR);
