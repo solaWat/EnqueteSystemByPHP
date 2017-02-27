@@ -74,12 +74,10 @@ EOM;
   // POSTが降ってきたら．
   //if (isset($_POST['sort'])) {
   if (!isset($_POST['sort'])) {
-      $errors[] = 'Eメールアドレスが送信されていません';
+      $errors[] = '送信されていません';
   } elseif ($_POST['sort'] === '') {
-      $errors[] = 'Eメールアドレスが入力されていません';
+      $errors[] = '入力されていません';
   }else {
-  //   # code...
-  // }
     // if (!isset($_POST['cn'])) {
     //     $attendee_person_id = null;
     // } elseif (!is_string($_POST['cn'])) {
@@ -146,55 +144,44 @@ header('Content-Type: text/html; charset=utf-8');
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>発表順</title>
-<div style="background-color: #cff;">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>発表順</title>
+  <div style="background-color: #cff;">
 </head>
 <body>
-
-<form method="post" action="exMember.php">
-<h2>○出席者を選んでください</h2>
-<div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-
-<!--  残すやつ -->
+  <form method="post" action="exMember.php">
+  <h2>○出席者を選んでください</h2>
+  <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
 <?php foreach ($prepare_memberinfo as $row): ?>
-  <?php $name   = $row['studentname'];?>
-  <?php $id = $row['person_id'];?>
-  <label>
-    <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked><?=h($name)?>
-    <br><br>
-  </label>
+<?php $name   = $row['studentname'];?>
+<?php $id = $row['person_id'];?>
+    <label>
+      <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked><?=h($name)?>
+      <br><br>
+    </label>
 <?php endforeach; ?>
-<!--  -->
+  </div><br>
+  <input type="submit" name="sort" value="　発表順を決める　" >
+  </form>
+  <h2>○今日の発表順はこちら</h2>
 
-<!-- 残すやつ -->
-</div><br>
- <!-- 出席者から今日の発表順がソートされる時点で，これより前の投票結果を削除する．投票の反映は上書きではなく，足し込みのため． -->
-<input type="submit" name="sort" value="　発表順を決める　" >
-</form>
-<!--  -->
-
-<h2>○今日の発表順はこちら</h2>
-
-<!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
-<table border='1' cellpadding='5' style='background:#F0F8FF'>
+  <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
+  <table border='1' cellpadding='5' style='background:#F0F8FF'>
 <?php $i = 1; ?>
 <?php foreach ($prepare as $row): ?>
-  <tr>
-    <td><?=h($i) ?></td>
-    <td><?=h($row['studentname'])?></td>
-  </tr>
+    <tr>
+      <td><?=h($i) ?></td>
+      <td><?=h($row['studentname'])?></td>
+    </tr>
 <?php $i = $i + 1; ?>
 <?php endforeach; ?>
-</table>
-
-
-<br>
-<!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
-<h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
-<h4><a href= request_exOrder.php ><font color="blue"> 発表順を編集 </font>
-<h4><a href= index.html ><font color="green"> TOP </font>
-</a><h4>
-<br><br><br>
+  </table>
+  <br>
+  <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
+  <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
+  <h4><a href= request_exOrder.php ><font color="blue"> 発表順を編集 </font>
+  <h4><a href= index.html ><font color="green"> TOP </font>
+  </a><h4>
+  <br><br><br>
 </body>
 </html
