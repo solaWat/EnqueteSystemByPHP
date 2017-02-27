@@ -70,8 +70,14 @@ if ($_POST['add']) { // 追加が押されたら．
     for ($i = 0; $i < count($newOrder); ++$i) {
         $j   = $i + 1;
         $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$newOrder[$i]', '$j') ";
+        $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?) ";
 
         $st = $dbh->prepare($sql);
+        $st->bindValue(1, $date, PDO::PARAM_STR);
+        $st->bindValue(2, $time, PDO::PARAM_STR);
+        $st->bindValue(3, $newOrder[$i], PDO::PARAM_STR);
+        $st->bindValue(4, $j, PDO::PARAM_INT);
+
         $st->execute();
     }
     } catch (PDOException $e) {

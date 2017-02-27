@@ -9,7 +9,7 @@
 
 
 <?php
-$dsn      = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
+$dsn      = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8mb4'; //ここら辺は各々の環境で．
 $user     = 'root'; //ここら辺は各々の環境で．
 $password = 'root'; //ここら辺は各々の環境で．
 
@@ -18,6 +18,18 @@ $date = date('Y-m-d');
 
 try {
     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
+
+    $dbh = new PDO(//各々の環境で変わります．
+      'mysql:host=127.0.0.1;charset=utf8',
+      root,
+      root,
+      array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+      )
+    );
+
     // SELECT文以降の処理では，exec関数は使用できない．
     $dbh->exec('CREATE DATABASE IF NOT EXISTS enquete_main'); // 無ければDBを作成する．
     $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
@@ -40,6 +52,9 @@ EOM;
     echo 'Error:'.$e->getMessage();
     die();
 }
+
+
+header('Content-Type: text/html; charset=utf-8');
 ?>
 
 <?php

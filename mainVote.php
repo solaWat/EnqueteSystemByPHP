@@ -28,8 +28,16 @@ if (isset($_POST['my_id'])) { // 「inputName.php」で選ばれた名前を抽�
   $time = date('H:i:s');
 
   try {
-      $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-    $dbh->query('USE enquete_main');
+      $dbh = new PDO(//各々の環境で変わります．
+        'mysql:host=127.0.0.1;charset=utf8',
+        root,
+        root,
+        array(
+          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+          PDO::ATTR_EMULATE_PREPARES => false,
+        )
+      );
+      $dbh->query('USE enquete_main');
 
       $query = "SELECT studentname FROM TestA_2_lab_member_info WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
       $st    = $dbh->query("$query");
