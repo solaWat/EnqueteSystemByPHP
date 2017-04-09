@@ -124,6 +124,18 @@ EOM;
       $finish_vote_num = count($forSum);
   }
 
+  // リセットボタン用
+  if ($_POST['submit2']) {
+    $sql = <<< EOM
+      DELETE
+      FROM {$tbname_1}
+      where date = ?
+EOM;
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->execute();
+  }
+
 //   // 研究室所属メンバーを表示する．
 //   $sql = <<< EOM
 //    SELECT *
@@ -368,19 +380,7 @@ header('Content-Type: text/html; charset=utf-8');
   echo'</tr>';
 echo'</table>';
 
-<!-- リセットボタン -->
-<?php
-if ($_POST['submit2']) {
-  $sql = <<< EOM
-    DELETE
-    FROM {$tbname_1}
-    where date = ?
-EOM;
-  $prepare = $dbh->prepare($sql);
-  $prepare->bindValue(1, $date, PDO::PARAM_STR);
-  $prepare->execute();
-}
-?>
+
 <!-- // //リセットボタン　不測の事態に備えて．
 // if ($_POST['submit2']) {
 //   $fp = fopen('enquete_prz.txt', 'w');
