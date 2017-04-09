@@ -1,14 +1,15 @@
 <?php
-$dbname = 'enquete_main_2';//各々の環境で変わります．
-$pre_dsn = 'mysql:host=127.0.0.1;charset=utf8';
-$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
-$user = 'root';//各々の環境で変わります．
+$dbname   = 'enquete_main_2';//各々の環境で変わります．
+$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
+$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
+$user     = 'root';//各々の環境で変わります．
 $password = 'root';//各々の環境で変わります．
 
-$tbname_1 = 'test_vote';
-$tbname_2 = 'test_lab_member_info';
-$tbname_3 = 'test_order_of_presentation';
+$tbname_1   = 'test_vote';
+$tbname_2   = 'test_lab_member_info';
+$tbname_3   = 'test_order_of_presentation';
 $fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
+
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
@@ -16,47 +17,45 @@ $time = date('H:i:s');
 
 try {
   if ($_POST['delete']) { // デリートが押されたら．
-          $dbh = new PDO(
-            $dsn,
-            $user,
-            $password,
-            array(
-              PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-              PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-              PDO::ATTR_EMULATE_PREPARES => false,
-            )
-            );
-      $sql = <<< EOM
-        SELECT attendee_person_id
-        FROM {$tbname_3}
-        WHERE date = ?
-        AND   time = (SELECT MAX(time)
-                      FROM {$tbname_3}
-                      WHERE date = ? ) ;
+    $dbh = new PDO(
+      $dsn,
+      $user,
+      $password,
+      array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+      )
+    );
+    $sql = <<< EOM
+      SELECT attendee_person_id
+      FROM {$tbname_3}
+      WHERE date = ?
+      AND   time = (SELECT MAX(time)
+                    FROM {$tbname_3}
+                    WHERE date = ? ) ;
 EOM;
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->bindValue(2, $date, PDO::PARAM_STR);
+    $prepare->execute();
 
-      $prepare = $dbh->prepare($sql);
-      $prepare->bindValue(1, $date, PDO::PARAM_STR);
-      $prepare->bindValue(2, $date, PDO::PARAM_STR);
+    foreach ($prepare as $row) {
+        $newOrder[] = $row['attendee_person_id'];
+    }
 
-      $prepare->execute();
-
-      foreach ($prepare as $row) {
-          $newOrder[] = $row['attendee_person_id'];
-      }
-
-      for ($i = 0; $i < count($newOrder) - 1; ++$i) {
-          $j   = $i + 1;
-          $sql_delete_2 = <<< EOM
-            INSERT INTO {$tbname_3} (date, time, attendee_person_id, order_of_presen)
-            VALUES (?, ?, ?, ?) ;
+    for ($i = 0; $i < count($newOrder) - 1; ++$i) {
+        $j   = $i + 1;
+        $sql_delete_2 = <<< EOM
+          INSERT INTO {$tbname_3} (date, time, attendee_person_id, order_of_presen)
+          VALUES (?, ?, ?, ?) ;
 EOM;
-      $prepare = $dbh->prepare($sql_delete_2);
-      $prepare->bindValue(1, $date, PDO::PARAM_STR);
-      $prepare->bindValue(2, $time, PDO::PARAM_STR);
-      $prepare->bindValue(3, $newOrder[$i], PDO::PARAM_STR);
-      $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
-      $prepare->execute();
+    $prepare = $dbh->prepare($sql_delete_2);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->bindValue(2, $time, PDO::PARAM_STR);
+    $prepare->bindValue(3, $newOrder[$i], PDO::PARAM_STR);
+    $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+    $prepare->execute();
     }
   }
 

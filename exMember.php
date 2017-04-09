@@ -1,13 +1,13 @@
 <?php
-$dbname = 'enquete_main_2';//各々の環境で変わります．
-$pre_dsn = 'mysql:host=127.0.0.1;charset=utf8';
-$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
-$user = 'root';//各々の環境で変わります．
+$dbname   = 'enquete_main_2';//各々の環境で変わります．
+$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
+$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
+$user     = 'root';//各々の環境で変わります．
 $password = 'root';//各々の環境で変わります．
 
-$tbname_1 = 'test_vote';
-$tbname_2 = 'test_lab_member_info';
-$tbname_3 = 'test_order_of_presentation';
+$tbname_1   = 'test_vote';
+$tbname_2   = 'test_lab_member_info';
+$tbname_3   = 'test_order_of_presentation';
 $fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -103,9 +103,15 @@ EOM;
       // 発表順を入れる．
       for ($i = 0; $i < count($attendee_person_id); $i++) {
         $j = $i + 1;
-        $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+        $sql = <<< EOM
+        　INSERT INTO {$tbname_3}
+          ( date,
+            time,
+            attendee_person_id,
+            order_of_presen )
+          VALUES (?, ?, ?, ?)
+EOM;
         $prepare = $dbh->prepare($sql);
-        //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
         $prepare->bindValue(1, $date, PDO::PARAM_STR);
         $prepare->bindValue(2, $time, PDO::PARAM_STR);
         $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
@@ -122,7 +128,7 @@ $sql = <<< EOM
   LEFT JOIN {$tbname_3}
   ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
   WHERE {$tbname_3}.date = ?
-   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ?)
+   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ? )
   ORDER BY {$tbname_3}.order_of_presen;
 EOM;
   $prepare = $dbh->prepare($sql);
