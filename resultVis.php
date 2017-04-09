@@ -136,17 +136,6 @@ EOM;
     $prepare->execute();
   }
 
-//   // 研究室所属メンバーを表示する．
-//   $sql = <<< EOM
-//    SELECT *
-//    FROM {$tbname_2}
-//    WHERE ?
-// EOM;
-
-  // $prepare_memberinfo = $dbh->prepare($sql);
-  // $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
-  // $prepare_memberinfo->execute();
-
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
   echo 'エラー!: '.$e->getMessage().'<br/>';
@@ -170,99 +159,6 @@ header('Content-Type: text/html; charset=utf-8');
 お疲れ様でした．投票結果は自動的に更新されます．<br><br>
 <!-- 休憩してて良いことを示す画像 -->
 <img src="rest_nobita.jpg"></img><br><br><br>
-
-<?php
-//
-// date_default_timezone_set('Asia/Tokyo');
-// $date = date('Y-m-d');
-// $time = date('H:i:s');
-//
-// try {
-//     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-//   $dbh->query('USE enquete_main');
-//
-//     $query = <<< EOM
-//     SELECT studentname, person_id
-//     FROM  TestA_2_lab_member_info
-//     LEFT JOIN TestA_3_order_of_presentation
-//     ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-//     WHERE TestA_3_order_of_presentation.date = '$date'
-//      AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-//     ORDER BY TestA_3_order_of_presentation.order_of_presen;
-// EOM;
-//     $st = $dbh->query("$query");
-//
-//   // $query = "SELECT studentname FROM TestA_2_lab_member_name WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
-//   // $st = $dbh->query("$query");
-//
-//   foreach ($st as $row) {
-//       $attendee_studentname[] = $row['studentname'];
-//       $hoge[]                 = $row['person_id'];
-//   }
-//
-//     $attendee_person_number = count($attendee_studentname);
-//   // $stmt = $pdo -> query("SELECT * FROM テーブル名");
-//   // $count = $stmt -> rowCount();
-//
-//   // P票の集計
-//   for ($i = 0; $i < count($hoge); ++$i) {
-//       $one_person_id = $hoge[$i];
-//   // なんかサブクエリがうまくいかない
-// $query = <<< EOM
-//       SELECT
-//         COUNT(rank = '1' or null) AS rank1_num,
-//         COUNT(rank = '2' or null) AS rank2_num,
-//         COUNT(rank = '3' or null) AS rank3_num
-//       FROM TestA_1_vote
-//       WHERE date = '$date'
-//        AND types_of_votes = 'P'
-//        AND voted_person_id = '$one_person_id' ;
-// EOM;
-//       $st = $dbh->query("$query");
-//
-//       foreach ($st as $row) {
-//           $sum_voted_P[] = ($row['rank1_num'] * 3) + ($row['rank2_num'] * 2) + ($row['rank3_num'] * 1);
-//       // $sum_voted_P[] = $row['sum_voted'];
-//       }
-//   }
-//
-//   // FG票の集計
-//   for ($i = 0; $i < count($hoge); ++$i) {
-//       $one_person_id = $hoge[$i];
-//   // なんかサブクエリがうまくいかない
-// $query = <<< EOM
-//       SELECT
-//         COUNT(rank = '1' or null) AS rank1_num,
-//         COUNT(rank = '2' or null) AS rank2_num,
-//         COUNT(rank = '3' or null) AS rank3_num
-//       FROM TestA_1_vote
-//       WHERE date = '$date'
-//        AND types_of_votes = 'FG'
-//        AND voted_person_id = '$one_person_id' ;
-// EOM;
-//       $st = $dbh->query("$query");
-//
-//       foreach ($st as $row) {
-//           $sum_voted_FG[] = ($row['rank1_num'] * 3) + ($row['rank2_num'] * 2) + ($row['rank3_num'] * 1);
-//       // $sum_voted_P[] = $row['sum_voted'];
-//       }
-//   }
-
-//     $query = <<< EOM
-//       SELECT DISTINCT voter_person_id
-//       FROM TestA_1_vote
-//       WHERE date = '$date' ;
-// EOM;
-//     $st = $dbh->query("$query");
-//     foreach ($st as $row) {
-//         $forSUM[]        = $row['voter_person_id'];
-//         $finish_vote_num = count($forSUM);
-// //     }
-// } catch (PDOException $e) {
-//     echo 'エラー!: '.$e->getMessage().'<br/>';
-//     die();
-// }
-?>
 
 <p>
   現在，『 <?=h($finish_vote_num)?> 人 』の投票が終わっています.
@@ -331,78 +227,20 @@ header('Content-Type: text/html; charset=utf-8');
 
   </tr>
 </table>
-
-
-<!-- echo'<table>';
-  echo"<caption>投票結果 ( $date )";
-  echo'<tr>';
-  echo'<td>';
-  ////////////ここから
-  echo"<table border='1' style='background:#F0F8FF'>";
-    echo"<caption align='left'>　　　　　　　　プレゼン";
-    // 投票結果表示
-    // プレゼンテーション
-    for ($i = 0; $i < count($hoge); ++$i) {
-        echo '<tr>';
-        echo "<td style='background:white'>　{$attendee_studentname[$i]}　</td>";
-        echo '<td><table><tr>';
-        $w = $sum_voted_P[$i] * 10;
-        echo "<td width='$w' bgcolor='green'> </td>";
-        echo "<td>{$sum_voted_P[$i]} 票</td>";
-        echo '</tr></table></td>';
-        echo "</tr>\n";
-    }
-    echo'</tr>';
-  echo'</table>';
-  /////////////ここまで，一つのカタマリ
-
-  echo'</td>';
-  echo'<td>';
-
-  echo"<table border='1' style='background:#F5F5F5'>";
-    echo'<caption>ファシグラ';
-    echo'<tr>';
-    // ファシグラ
-    for ($i = 0; $i < count($hoge); ++$i) {
-        echo '<tr>';
-      //print "<td>{$person_fg[$i]}</td>";
-      echo '<td><table><tr>';
-        $w = $sum_voted_FG[$i] * 10;
-        echo "<td width='$w' bgcolor='green'> </td>";
-        echo "<td>{$sum_voted_FG[$i]} 票</td>";
-        echo '</tr></table></td>';
-        echo "</tr>\n";
-    }
-    echo'</tr>';
-  echo'</table>';
-
-  echo'</td>';
-  echo'</tr>';
-echo'</table>';
-
-
-<!-- // //リセットボタン　不測の事態に備えて．
-// if ($_POST['submit2']) {
-//   $fp = fopen('enquete_prz.txt', 'w');
-//   for ($i = 0; $i < count($person); $i++) {
-//     fwrite($fp, 0 . "\n");
-//   }
-//   fclose($fp);
-//   // プレゼンとファシグラ，両方の投票結果をリセットできる．
-//   $fp = fopen('enquete_fg.txt', 'w');
-//   for ($i = 0; $i < count($person_fg); $i++) {
-//     fwrite($fp, 0 . "\n");
-//   }
-//   fclose($fp);
-// } -->
-<!-- ?> -->
 <br><br>
-<p><font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてください．(mac)</font></p><br><br>
-
+<p>
+  <font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてください．(mac)</font>
+</p><br><br>
 <a href= index.html > TOP </a>
+
 <br><br><br><br><br><br><br><br><br><br>
-<form method="post" action="resultVis.php"><input type="submit" name="submit2" value="※押すな※　本日の投票データを全て削除　※"></form>
-<p><font color="red">管理人のつぶやき「なんか，全体的に殺風景だ……」</font></p>
+
+<form method="post" action="resultVis.php">
+  <input type="submit" name="submit2" value="※押すな※　本日の投票データを全て削除　※">
+</form>
+<p>
+  <font color="red">管理人のつぶやき「なんか，全体的に殺風景だ……」</font>
+</p>
 
 </body>
 </html>
