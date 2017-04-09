@@ -1,28 +1,43 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html lang="ja">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>発表順</title>
-<div style="background-color: #cff;">
-</head>
-<body>
-
-
 <?php
-$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
-$user = 'root'; //ここら辺は各々の環境で．
-$password = 'root'; //ここら辺は各々の環境で．
+$dbname = 'enquete_main_2';//各々の環境で変わります．
+$pre_dsn = 'mysql:host=127.0.0.1;charset=utf8';
+$dsn = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
+$user = 'root';//各々の環境で変わります．
+$password = 'root';//各々の環境で変わります．
+
+$tbname_1 = 'test_vote';
+$tbname_2 = 'test_lab_member_info';
+$tbname_3 = 'test_order_of_presentation';
+$fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
+$time = date('H:i:s');
 
 try {
-    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
-    // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
-    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
-// 新しくDBを作成した場合，このカラム設定を適用する．
-$col_set = <<< EOM
+  $pre_dbh = new PDO( // databaseがなければ作る．
+    $pre_dsn,
+    $user,
+    $password,
+    array(
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+      PDO::ATTR_EMULATE_PREPARES => false,
+    )
+  );
+  $pre_dbh->exec('CREATE DATABASE IF NOT EXISTS '.$dbname);
+
+  $dbh = new PDO( // tableがなければ作る．
+    $dsn,
+    $user,
+    $password,
+    array(
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+      PDO::ATTR_EMULATE_PREPARES => false,
+    )
+  );
+$col_set_tb1 = <<< EOM
   date  date  COMMENT'年月日',
   time  time  COMMENT'時間',
   voter_person_id  varchar(100)  COMMENT'投票者のID',
@@ -30,195 +45,143 @@ $col_set = <<< EOM
   rank  tinyint unsigned  COMMENT'順位',
   voted_person_id  varchar(100)  COMMENT'被投票者のID'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_1_vote ($col_set);"); // 無ければTABLEを作成する．
+  $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_1.'('.$col_set_tb1.');');
 
-    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
-    //$st->execute(array($date)); // 日にちでレコードを分ける．
-    
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e){
-    print('Error:'.$e->getMessage());
-    die();
-}
-?>
-
-<?php
-$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
-$user = 'root'; //ここら辺は各々の環境で．
-$password = 'root'; //ここら辺は各々の環境で．
-
-try {
-    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
-    // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
-    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
-// 新しくDBを作成した場合，このカラム設定を適用する．
-$col_set = <<< EOM
+$col_set_tb2 = <<< EOM
   fiscal_year  year  COMMENT'登録年度',
   studentname  nvarchar(100)  COMMENT'ゼミ所属学生の名前',
   person_id  varchar(100)  COMMENT'ID(年度が異なっても，この値が同じなら，同一人物)'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_2_lab_member_info ($col_set);"); // 無ければTABLEを作成する．
+  $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_2.'('.$col_set_tb2.');');
 
-    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
-    //$st->execute(array($date)); // 日にちでレコードを分ける．
-    
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e){
-    print('Error:'.$e->getMessage());
-    die();
-}
-?>
-
-<?php
-$dsn = 'mysql:dbname=enquete_main;host=127.0.0.1;charset=utf8'; //ここら辺は各々の環境で．
-$user = 'root'; //ここら辺は各々の環境で．
-$password = 'root'; //ここら辺は各々の環境で．
-
-try {
-    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8', $user, $password);
-    // SELECT文以降の処理では，exec関数は使用できない．
-    $dbh->exec("CREATE DATABASE IF NOT EXISTS enquete_main"); // 無ければDBを作成する．
-    $dbh = new PDO($dsn, $user, $password); //　$dbh->query("USE enquete_simple"); // こっちでも良い．
-// 新しくDBを作成した場合，このカラム設定を適用する．
-$col_set = <<< EOM
+$col_set_tb3 = <<< EOM
   date  date  COMMENT'年月日',
   time  time  COMMENT'時間',
   attendee_person_id  varchar(100)  COMMENT'出席者のID',
   order_of_presen  tinyint unsigned  COMMENT'発表順'
 EOM;
-    $dbh->query("CREATE TABLE IF NOT EXISTS TestA_3_order_of_presentation ($col_set);"); // 無ければTABLEを作成する．
+  $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_3.'('.$col_set_tb3.');');
 
-    //$st = $dbh->prepare("INSERT INTO enq_table_beta (date) VALUES(?)"); // 投票用のレコードを無ければ作成．
-    //$st->execute(array($date)); // 日にちでレコードを分ける．
-    
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e){
-    print('Error:'.$e->getMessage());
-    die();
-}
-?>
-
-
-<form method="post" action="exMember.php">
-<h2>○出席者を選んでください</h2>
-<div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-<?php
-
-try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
-
-  // "fiscal_year"に関しては，後で，フロントサイドからトグル？などで「年度」を選択できるようにしたい． 
-  $st = $dbh->query("SELECT * FROM TestA_2_lab_member_info WHERE fiscal_year = '2016'"); 
-
-
-  foreach ($st as $row) {
-    # code...
-    $name = $row['studentname'];
-    $id = $row['person_id'];
-    print "<label><input type='checkbox' name='cn[]' value='$id' checked>{$name}<br><br></label>";
-  }
-}catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
-    die();
-}
-
-
-?>
-
-</div><br>
- <!-- 出席者から今日の発表順がソートされる時点で，これより前の投票結果を削除する．投票の反映は上書きではなく，足し込みのため． -->
-<input type="submit" name="sort" value="発表順を決める 　(＆　残っている投票結果をクリアする)" >
-</form>
-
-
-<?php
-print"<h2>○今日の発表順はこちら</h2>";
+  // 研究室所属メンバーを表示する．
+  $sql = 'SELECT * FROM '.$tbname_2.' WHERE fiscal_year = ? ';
+  $prepare_memberinfo = $dbh->prepare($sql);
+  //$prepare->bindValue(1, $tbname_2, PDO::PARAM_STR);
+  $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
+  $prepare_memberinfo->execute();
 
 
 
-// 投票ボタン
-if ($_POST['sort']) {
+  // POSTが降ってきたら．
+  //if (isset($_POST['sort'])) {
+  if (!isset($_POST['sort'])) {
+      $errors[] = '送信されていません';
+  } elseif ($_POST['sort'] === '') {
+      $errors[] = '入力されていません';
+  }else {
+    // if (!isset($_POST['cn'])) {
+    //     $attendee_person_id = null;
+    // } elseif (!is_string($_POST['cn'])) {
+    //     $attendee_person_id = false;
+    // } else {
+    //     $attendee_person_id = $_POST['cn'];
+    // }
+    // 二行下までの処理は上記と等価である．
+    // $attendee_person_id = filter_input(INPUT_POST, 'cn');
+    // if (is_string($attendee_person_id)) {
+      /* 文字列として送信されてきた場合のみ実行したい処理 */
+      $attendee_person_id = $_POST['cn'];
+      srand(time()); //乱数列初期化．冗長の可能性あり．
+      shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
 
-  $food = $_POST['cn'];
-  srand(time()); //乱数列初期化．冗長の可能性あり．
-  shuffle($food); //　出席者をランダムソートにかけ，発表順を決める．
+      // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+      $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
+      $prepare = $dbh->prepare($sql);
+      //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->execute();
 
-  date_default_timezone_set('Asia/Tokyo');
-  $date = date('Y-m-d');
-  $time = date('H:i:s');
-
-  try {
-    $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-    $dbh->query("USE enquete_main");
-
-    // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-    $sql = "DELETE FROM TestA_3_order_of_presentation where date = '$date'";
-    $st = $dbh->prepare($sql);
-    $st->execute();
-
-    for ($i=0; $i < count($food); $i++) { 
-      $j = $i+1;
-      $sql = "INSERT INTO TestA_3_order_of_presentation (date, time, attendee_person_id, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$j') ";
-      //ON DUPLICATE KEY UPDATE date = '$date' 
-
-
-      //echo "$food[$i]";
-      //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'"; 
-      $st = $dbh->prepare($sql);
-      $st->execute();
+      // 発表順を入れる．
+      for ($i = 0; $i < count($attendee_person_id); $i++) {
+        $j = $i + 1;
+        $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
+        $prepare = $dbh->prepare($sql);
+        //$prepare->bindValue(1, $tbname_3, PDO::PARAM_STR);
+        $prepare->bindValue(1, $date, PDO::PARAM_STR);
+        $prepare->bindValue(2, $time, PDO::PARAM_STR);
+        $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
+        $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+        $prepare->execute();
+      }
     }
-  } catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
-    die();
-}
-  
-}
+  // }
 
-
-try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
-
-$query = <<< EOM
-    select studentname
-    from  TestA_2_lab_member_info
-    left join TestA_3_order_of_presentation
-    on TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-    where TestA_3_order_of_presentation.date = '$date'
-     AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-    order by TestA_3_order_of_presentation.order_of_presen;
+  // これで済むはずなのに……　<?php include 'current_exOrder.php';
+$sql = <<< EOM
+  SELECT studentname
+  FROM  {$tbname_2}
+  LEFT JOIN {$tbname_3}
+  ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
+  WHERE {$tbname_3}.date = ?
+   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ?)
+  ORDER BY {$tbname_3}.order_of_presen;
 EOM;
-  $st = $dbh->query("$query"); 
+  $prepare = $dbh->prepare($sql);
+  $prepare->bindValue(1, $date, PDO::PARAM_STR);
+  $prepare->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare->execute();
 
-  print"<table border='1' cellpadding='6' style='background:white'>";
-  $i = 1;
-  foreach ($st as $row) {
-    print "<tr>";
-    print "<td>$i</td>";
-    print "<td>{$row['studentname']}</td>";
-    print "</tr>\n";
-    $i = $i + 1;
-  }
-  print"</table>";
-}catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
-    die();
+} catch (Exception $e) {
+  header('Content-Type: text/plain; charset=UTF-8', true, 500);
+  echo 'エラー!: '.$e->getMessage().'<br/>';
+  die();
 }
-
-
+function h($str)
+{
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
+header('Content-Type: text/html; charset=utf-8');
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>発表順</title>
+  <div style="background-color: #cff;">
+</head>
+<body>
+  <form method="post" action="exMember.php">
+  <h2>○出席者を選んでください</h2>
+  <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
+<?php foreach ($prepare_memberinfo as $row): ?>
+<?php $name   = $row['studentname'];?>
+<?php $id = $row['person_id'];?>
+    <label>
+      <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked><?=h($name)?>
+      <br><br>
+    </label>
+<?php endforeach; ?>
+  </div><br>
+  <input type="submit" name="sort" value="　発表順を決める　" >
+  </form>
+  <h2>○今日の発表順はこちら</h2>
 
-<br>
-<!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
-<h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
-<h4><a href= request_exOrder.php ><font color="blue"> 発表順を編集 </font>
-<h4><a href= index.html ><font color="green"> TOP </font>
-</a><h4>
-<br><br><br>
+  <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
+  <table border='1' cellpadding='5' style='background:#F0F8FF'>
+<?php $i = 1; ?>
+<?php foreach ($prepare as $row): ?>
+    <tr>
+      <td><?=h($i) ?></td>
+      <td><?=h($row['studentname'])?></td>
+    </tr>
+<?php $i = $i + 1; ?>
+<?php endforeach; ?>
+  </table>
+  <br>
+  <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
+  <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
+  <h4><a href= request_exOrder.php ><font color="blue"> 発表順を編集 </font>
+  <h4><a href= index.html ><font color="green"> TOP </font>
+  </a><h4>
+  <br><br><br>
 </body>
 </html
