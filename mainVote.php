@@ -120,10 +120,6 @@ foreach ($variable as $key => $value) {
   // echo "$name_text_FG[0]";
   // echo "$name_text_FG[3]";
 
-  $count = array();
-  array_push($count, 'cn1', 'cn2', 'cn3');
-
-
 
 
 
@@ -147,49 +143,17 @@ header('Content-Type: text/html; charset=utf-8');
 <title>投票システム</title>
 </head>
 <body>
-<?php
-// ini_set( 'session.save_path', '/var/tmp_enqueteSystem' );
-// ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
-// ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
-//
-// session_start();
-// session_regenerate_id(); // セキュリティ向上のため，セッションIDを振り直している．
-//
-// if (isset($_POST['my_id'])) { // 「inputName.php」で選ばれた名前を抽出．
-//     $_SESSION['my_id'] = $_POST['my_id'];
-// } else {
-//   echo "あなたの名前がわかりません．";
-//   exit;
-// }
-//  $token = $_SESSION['token'];
-//  //echo "$token";
-//  //
-//
-//  $fromSession = $_SESSION['my_id'];
-//
-//  date_default_timezone_set('Asia/Tokyo');
-//   $date = date('Y-m-d');
-//   $time = date('H:i:s');
-
-  // try {
-  //     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  //   $dbh->query('USE enquete_main');
-  //
-  //     $query = "SELECT studentname FROM TestA_2_lab_member_info WHERE person_id = '$fromSession' AND fiscal_year = '2016' ";
-  //     $st    = $dbh->query("$query");
-  //
-  //     foreach ($st as $row) {
-  //         $master_name = $row['studentname'];
-  //     }
-  // } catch (PDOException $e) {
-  //     echo 'エラー!: '.$e->getMessage().'<br/>';
-  //     die();
-  // }
-
-?>
 
 <h4>こんにちは <font color='#696969'><big><?=h($masters_name)?></big></font> さん</h4>
-<p>こちらの2つの表から，それぞれ投票を行ってください．</p><br>
+<p>○こちらの2つの表から，それぞれ投票を行ってください．</p>
+<p>
+  ○投票の際，以下のポイントに留意してください．<br />
+  <font color=red>　＜プレゼンテーション＞</font><br />
+  <font color=red>　・その論文を読んでみたくなったか．</font><br />
+  <font color=red>　・ etc... </font><br />
+  <font color=red>　＜ファシとグラ＞</font><br />
+  <font color=red>　・ etc... </font><br />
+</p>
 
 <form method="post" action="mainVote.php">
 
@@ -223,12 +187,13 @@ header('Content-Type: text/html; charset=utf-8');
             <?php for ($h = 1; $h < 3; ++$h) { ?>
             <td>
               &nbsp
-              <input type = 'radio' name=<?=h($count[$h]) ?> value=<?=h($id_text_PRESEN[$k]) ?> disabled>
+              <!-- <input type = 'radio' name=<?=h($count[$h]) ?> value=<?=h($id_text_PRESEN[$k]) ?> disabled> -->
+              <input type = 'radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
             </td>
             <?php } ?>
             <td>
               &nbsp
-              <input type='radio' name=<?=h($count[$h]) ?> value=<?h($id_text_PRESEN[$k]) ?> disabled>
+              <input type='radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
             </td>
             <td>
               <?=h($j)?>.<?=h($name_text_PRESEN[$k])?>
@@ -239,12 +204,12 @@ header('Content-Type: text/html; charset=utf-8');
             <?php for ($h = 1; $h < 3; ++$h) { ?>
             <td>
               &nbsp
-              <input type = 'radio' name=<?=h($count[$h]) ?> value=<?h($id_text_PRESEN[$k]) ?> >
+              <input type = 'radio' name='cn<?=$h?>' value=<?=$id_text_PRESEN[$k] ?> >
             </td>
             <?php } ?>
             <td>
               &nbsp
-              <input type='radio' name=<?=h($count[$h]) ?> value=<?h($id_text_PRESEN[$k]) ?> >
+              <input type='radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> >
             </td>
             <td>
               <?=h($j)?>.<?=h($name_text_PRESEN[$k])?>
@@ -253,15 +218,13 @@ header('Content-Type: text/html; charset=utf-8');
           <?php } ?>
           <?php $k = $k + 1; ?>
         <?php endforeach; ?>
-
-
-
       </table>
     </td>
+
     <td>
       <table border="1" cellpadding="8" style="background:#F5F5F5">
         <caption>
-          ファシとグラ！
+          ファシとグラ
         </caption>
         <tr>
           <th>
@@ -277,44 +240,44 @@ header('Content-Type: text/html; charset=utf-8');
             3位
           </th>
         </tr>
-<?php $j = 0; $k = 0;?>
-<?php foreach ($name_text_FG as $row): ?>
-<?php $j = $j + 1; ?>
-<?php if (strpos($id_text_FG[$k], $fromSession) !== false) { ?>
+        <?php $k = 0;?>
+        <?php foreach ($name_text_FG as $row): ?>
+
+          <?php if (strpos($id_text_FG[$k], $fromSession) !== false) { ?>
           <tr>
             <td>
-<?=h($name_text_FG[$k])?>
+              <?=h($name_text_FG[$k])?>
             </td>
-<?php for ($h = 1; $h < 3; ++$h) { ?>
+            <?php for ($h = 1; $h < 3; ++$h) { ?>
             <td>
               &nbsp
-              <input type = 'radio' name='co<?=h($h) ?>' value=<?=h( $id_text_FG[$k]) ?> disabled>
+              <input type = 'radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> disabled>
             </td>
-<?php } ?>
+            <?php } ?>
             <td>
               &nbsp
-              <input type='radio' name='co<?=h($h) ?>' value=<?=h( $id_text_FG[$k]) ?> disabled>
+              <input type='radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> disabled>
             </td>
           </tr>
-<?php } else { ?>
+          <?php } else { ?>
           <tr>
             <td>
-<?=h($name_text_FG[$k])?>
+              <?=h($name_text_FG[$k])?>
             </td>
-<?php for ($h = 1; $h < 3; ++$h) { ?>
+            <?php for ($h = 1; $h < 3; ++$h) { ?>
             <td>
               &nbsp
-              <input type = 'radio' name='co<?=h($h) ?>' value=<?=h( $id_text_FG[$k]) ?> >
+              <input type = 'radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> >
             </td>
-<?php } ?>
+            <?php } ?>
             <td>
               &nbsp
-              <input type='radio' name='co<?=h($h) ?>' value=<?=h( $id_text_FG[$k]) ?> >
+              <input type='radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> >
             </td>
           </tr>
-<?php } ?>
-<?php $k = $k + 1; ?>
-<?php endforeach; ?>
+          <?php } ?>
+          <?php $k = $k + 1; ?>
+        <?php endforeach; ?>
       </table>
     </td>
   </tr>
@@ -325,59 +288,6 @@ header('Content-Type: text/html; charset=utf-8');
 <input type="submit" name="submit" value="投票する" >
 </form>
 
-  <!-- <?php $j = 0; ?>
-  <?php foreach ($prepare_presen_order as $row): ?>
-  <?php $name_text           = $row['studentname']; ?>
-  <?php $name_text_forFG[$j] = $row['studentname']; ?>
-  <?php $id_text             = $row['person_id']; ?>
-  <?php $id_text_forFG[$j]   = $row['person_id']; ?> -->
-
-<?php $j = 0; ?>
-<?php foreach ($prepare_presen_order as $row): ?>
-<?php $j = $j + 1; ?>
-<?php if (strpos($id_text, $fromSession) !== false) { ?>
-  <tr>
-    <?php for ($h = 1; $h < 3; ++$h) { ?>
-    <td>
-      &nbsp
-      <!-- <input type = 'radio' name='cn<?php $h ?>' value=<?php $id_text_PRESEN[$j] ?> disabled> -->
-    </td>
-    <?php } ?>
-    <td>
-      &nbsp
-      <!-- <input type='radio' name='cn<?php $h ?>' value=<?php $id_text_PRESEN[$j] ?> disabled> -->
-    </td>
-    <td>
-      <?=h($j)?>.<?=h($name_text_PRESEN[$j])?>
-    </td>
-  </tr>
-<?php } else { ?>
-  <tr>
-    <?php for ($h = 1; $h < 3; ++$h) { ?>
-    <td>
-      &nbsp
-      <!-- <input type = 'radio' name='cn<?php $h ?>' value=<?php $id_text_PRESEN[$j] ?> disabled> -->
-    </td>
-    <?php } ?>
-    <td>
-      &nbsp
-      <!-- <input type='radio' name='cn<?php $h ?>' value=<?php $id_text_PRESEN[$j] ?> disabled> -->
-    </td>
-    <td>
-      <?=h($j)?>.<?=h($name_text_PRESEN[$j])?>
-    </td>
-  </tr>
-<?php } ?>
-<?php endforeach; ?>
-
-
-  <!-- <?php $name = $row['studentname']; ?>
-  <?php $id = $row['person_id']; ?>
-    <label>
-      <input type='radio' name='my_id' value=<?=h($id)?> checked /><?=h($name)?>
-      <br /><br />
-    </label>
-  <?php endforeach; ?> -->
 <?php
 
 // date_default_timezone_set('Asia/Tokyo');
@@ -524,11 +434,6 @@ header('Content-Type: text/html; charset=utf-8');
 <form><input type="text"><input type="submit"></form>
 </div> -->
 
-<br>
-<input type="hidden" name="token" value="<?=$token?>">
-<input type="submit" name="submit" value="投票する" >
-</form>
-
 <?php
 // 投票ボタン
 if ($_POST['submit']) {
@@ -539,21 +444,21 @@ if ($_POST['submit']) {
       echo $error_msg;
       exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
   }
-    if ($_POST['co1'] == null or $_POST['co2'] == null or $_POST['co3'] == null) {
-        $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
-        echo $error_msg;
-        exit; //die関数にしてもいいかも．
-    }
-    if ($_POST['cn1'] == $_POST['cn2'] || $_POST['cn2'] == $_POST['cn3'] || $_POST['cn1'] == $_POST['cn3']) {
-        $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（プレゼンテーション）</font></h4>";
-        echo $error_msg;
-        exit;
-    }
-    if ($_POST['co1'] == $_POST['co2'] || $_POST['co2'] == $_POST['co3'] || $_POST['co1'] == $_POST['co3']) {
-        $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（ファシとグラ）</font></h4>";
-        echo $error_msg;
-        exit;
-    }
+  if ($_POST['co1'] == null or $_POST['co2'] == null or $_POST['co3'] == null) {
+      $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
+      echo $error_msg;
+      exit; //die関数にしてもいいかも．
+  }
+  if ($_POST['cn1'] == $_POST['cn2'] || $_POST['cn2'] == $_POST['cn3'] || $_POST['cn1'] == $_POST['cn3']) {
+      $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（プレゼンテーション）</font></h4>";
+      echo $error_msg;
+      exit;
+  }
+  if ($_POST['co1'] == $_POST['co2'] || $_POST['co2'] == $_POST['co3'] || $_POST['co1'] == $_POST['co3']) {
+      $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（ファシとグラ）</font></h4>";
+      echo $error_msg;
+      exit;
+  }
 
   // セッションを開始する
   if (!isset($_SESSION)) {
@@ -577,46 +482,95 @@ if ($_POST['submit']) {
   // セッションに保存しておいたトークンの削除
   unset($_SESSION['token']);
 
-    echo "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
 
-    date_default_timezone_set('Asia/Tokyo');
-    $date = date('Y-m-d');
-    $time = date('H:i:s');
+  echo "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
 
-    try {
-        $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-    $dbh->query('USE enquete_main');
+  try {
+      // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
+      // $dbh->query('USE enquete_main');
 
-        $sql = "DELETE FROM TestA_1_vote where date = '$date' AND voter_person_id = '$fromSession' ";
-        $st  = $dbh->prepare($sql);
-        $st->execute();
+    $sql = <<< EOM
+      DELETE
+      FROM {$tbname_1}
+      where date = ?
+      AND voter_person_id = ?
+EOM;
 
-        for ($i = 1; $i < 4; ++$i) { // for Presentation
-      $j                     = $i + 1;
-            $voted_person_id = $_POST["cn$i"];
-            $sql             = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ";
-      // ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession'
-      //ON DUPLICATE KEY UPDATE date = '$date'
-      //
-      //$sql = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession' ";
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->bindValue(2, $fromSession, PDO::PARAM_STR);
+    $prepare->execute();
 
-      //echo "$food[$i]";
-      //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'";
-      $st = $dbh->prepare($sql);
-            $st->execute();
-        }
+      // $st  = $dbh->prepare($sql);
+      // $st->execute();
 
-        for ($i = 1; $i < 4; ++$i) { // for FG
-      $j                     = $i + 1;
-            $voted_person_id = $_POST["co$i"];
-            $sql             = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'FG', '$i', '$voted_person_id') ";
-            $st              = $dbh->prepare($sql);
-            $st->execute();
-        }
-    } catch (PDOException $e) {
-        echo 'エラー!: '.$e->getMessage().'<br/>';
-        die();
+    $sql_insert_vote = <<< EOM
+      INSERT INTO {$tbname_1}
+      ( date,
+        time,
+        voter_person_id,
+        types_of_votes,
+        rank,
+        voted_person_id )
+      VALUES (?, ?, ?, ?, ?, ?)
+EOM;
+
+    for ($i = 1; $i < 4 ; ++$i) {
+      $voted_person_id = $_POST["cn$i"];
+
+      $prepare = $dbh->prepare($sql_insert_vote);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->bindValue(2, $time, PDO::PARAM_STR);
+      $prepare->bindValue(3, $fromSession, PDO::PARAM_STR);
+      $prepare->bindValue(4, 'P', PDO::PARAM_STR);
+      $prepare->bindValue(5, $i, PDO::PARAM_STR);
+      $prepare->bindValue(6, $voted_person_id, PDO::PARAM_INT);
+
+      $prepare->execute();
     }
+
+    for ($i = 1; $i < 4 ; ++$i) {
+      $voted_person_id = $_POST["co$i"];
+
+      $prepare = $dbh->prepare($sql_insert_vote);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->bindValue(2, $time, PDO::PARAM_STR);
+      $prepare->bindValue(3, $fromSession, PDO::PARAM_STR);
+      $prepare->bindValue(4, 'FG', PDO::PARAM_STR);
+      $prepare->bindValue(5, $i, PDO::PARAM_STR);
+      $prepare->bindValue(6, $voted_person_id, PDO::PARAM_INT);
+
+      $prepare->execute();
+    }
+//
+    // for ($i = 1; $i < 4; ++$i) { // for Presentation
+    // $j                     = $i + 1;
+    //       $voted_person_id = $_POST["cn$i"];
+    //       $sql             = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ";
+    // // ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession'
+    // //ON DUPLICATE KEY UPDATE date = '$date'
+    // //
+    // //$sql = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession' ";
+    //
+    // //echo "$food[$i]";
+    // //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'";
+    // $st = $dbh->prepare($sql);
+    //       $st->execute();
+    //   }
+    //
+    //   for ($i = 1; $i < 4; ++$i) { // for FG
+    // $j                     = $i + 1;
+    //       $voted_person_id = $_POST["co$i"];
+    //       $sql             = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'FG', '$i', '$voted_person_id') ";
+    //       $st              = $dbh->prepare($sql);
+    //       $st->execute();
+    //   }
+
+  } catch (Exception $e) {
+    header('Content-Type: text/plain; charset=UTF-8', true, 500);
+    echo 'エラー!: '.$e->getMessage().'<br/>';
+    die();
+  }
 }
 ?>
 
