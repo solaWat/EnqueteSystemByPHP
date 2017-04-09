@@ -30,9 +30,7 @@ try {
   //   exit;
   // }
   $token = $_SESSION['token'];
-
   $fromSession = $_SESSION['my_id'];
-
 
   $dbh = new PDO( // tableがなければ作る．
     $dsn,
@@ -78,51 +76,34 @@ EOM;
   $prepare_presen_order->bindValue(1, $date, PDO::PARAM_STR);
   $prepare_presen_order->bindValue(2, $date, PDO::PARAM_STR);
   $prepare_presen_order->execute();
-foreach ($variable as $key => $value) {
-  # code...
-}
+
   foreach ($prepare_presen_order as $key => $row) {
     $name_text_PRESEN[$key]      = $row['studentname'];
-    // $name_text_FG[] = $row['studentname'];
     $id_text_PRESEN[$key]        = $row['person_id'];
-    // $id_text_FG[]   = $row['person_id'];
   }
 
 
   function change_order_for_FG($array)
   {
-    // echo "$array[2]";
-      $person_fg  = $array;
-      // echo "$person_fg[0]";
-      // $z = count($person_fg);
-      // echo "$z";
-      $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-      $person_two = $person_fg[1];
-      for ($i = 0; $i < count($person_fg); ++$i) {
-          if (($person_fg[$i + 2]) == null) {
-              if ($person_fg[$i + 1] == null) {
-                  $person_fg[$i] = $person_two;
-              } else {
-                  $person_fg[$i] = $person_one;
-              }
-          } else {
-              $person_fg[$i] = $person_fg[$i + 2];
-          }
-      }
-      // echo "$person_fg[0]";
-      return $person_fg;
+    $person_fg  = $array;
+    $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
+    $person_two = $person_fg[1];
+    for ($i = 0; $i < count($person_fg); ++$i) {
+        if (($person_fg[$i + 2]) == null) {
+            if ($person_fg[$i + 1] == null) {
+                $person_fg[$i] = $person_two;
+            } else {
+                $person_fg[$i] = $person_one;
+            }
+        } else {
+            $person_fg[$i] = $person_fg[$i + 2];
+        }
+    }
+    return $person_fg;
   }
-  // echo "$name_text_PRESEN[0]";
-  // echo "$name_text_PRESEN[1]";
+
   $name_text_FG = change_order_for_FG($name_text_PRESEN);
   $id_text_FG   = change_order_for_FG($id_text_PRESEN);
-  //
-  // echo "$name_text_FG[0]";
-  // echo "$name_text_FG[3]";
-
-
-
-
 
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
@@ -154,7 +135,6 @@ header('Content-Type: text/html; charset=utf-8');
   <font color=red>　＜ファシとグラ＞</font><br />
   <font color=red>　・ etc... </font><br />
 </p>
-
 <form method="post" action="mainVote.php">
 
 <!-- 2つのテーブルを並列させるための透明テーブル． -->
@@ -187,7 +167,6 @@ header('Content-Type: text/html; charset=utf-8');
             <?php for ($h = 1; $h < 3; ++$h) { ?>
             <td>
               &nbsp
-              <!-- <input type = 'radio' name=<?=h($count[$h]) ?> value=<?=h($id_text_PRESEN[$k]) ?> disabled> -->
               <input type = 'radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
             </td>
             <?php } ?>
@@ -288,146 +267,6 @@ header('Content-Type: text/html; charset=utf-8');
 <input type="submit" name="submit" value="投票する" >
 </form>
 
-<?php
-
-// date_default_timezone_set('Asia/Tokyo');
-// $date = date('Y-m-d');
-// $time = date('H:i:s');
-//
-// try {
-//     $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-//   $dbh->query('USE enquete_main');
-//
-//     $query = <<< EOM
-//     SELECT studentname, person_id
-//     FROM  TestA_2_lab_member_info
-//     LEFT JOIN TestA_3_order_of_presentation
-//     ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-//     WHERE TestA_3_order_of_presentation.date = '$date'
-//      AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-//     ORDER BY TestA_3_order_of_presentation.order_of_presen;
-// EOM;
-//
-//     $st = $dbh->query("$query");
-
-  // foreach ($st as $row) {
-  //   $name = $row['studentname'];
-  //   $id = $row['person_id'];
-  //   print "<label><input type='radio' name='my_id' value='$id' checked>{$name}<br><br></label>";
-  // }
-//
-//   // 2つのテーブルを並列させるための透明テーブル．
-//   echo'<table>';
-//     echo'<tr>';
-//     echo'<td>';
-//     // プレゼンテーション用投票テーブル
-//     echo"<table border='1' cellpadding='8' style='background:#F0F8FF'>";
-//     echo'<caption>プレゼンテーション';
-//     echo'<tr >';
-//     echo'<th>1位</th><th>2位</th><th>3位</th><th>　</th>';
-//     echo'</tr>';
-//       //for ($i = 0; $i < count($person); $i++){ // 人数分のradio表示
-//       $j = 0;
-//     // foreach ($st as $row) {
-//     //     $name_text           = $row['studentname'];
-//     //     $name_text_forFG[$j] = $row['studentname'];
-//     //     $id_text             = $row['person_id'];
-//     //     $id_text_forFG[$j]   = $row['person_id'];
-//     //
-//     foreach ($prepare_presen_order as $row) {
-//       $name_text_PRESEN[]      = $row['studentname'];
-//       $name_text_FG[] = $row['studentname'];
-//       $id_text_PRESEN[]        = $row['person_id'];
-//       $id_text_FG[]   = $row['person_id'];
-//     // }
-//
-//         $j = $j + 1; // 発表順を見せるための変数．
-//         if (strpos($id_text, $fromSession) !== false) {
-//             // 自分の名前には投票できなくするために，ボタンを無効化する．
-//           echo'<tr>';
-//             for ($h = 1; $h < 3; ++$h) { // 取得したい位の1つ前まで．
-//             echo "<td>&nbsp<input type='radio' name='cn$h' value='$id_text' disabled></td>";
-//             // print "<td>&nbsp<input type='radio' name='cn$h' value='$i' disabled></td>";
-//             }
-//             echo "<td>&nbsp<input type='radio' name='cn$h' value='$id_text' disabled></td><td>$j.{$name_text}</td>"; // 取得したい最後の位分
-//           echo'</tr>';
-//         } else {
-//             echo'<tr>';
-//             for ($h = 1; $h < 3; ++$h) { // 取得したい位の1つ前まで．
-//             echo "<td>&nbsp<input type='radio' name='cn$h' value='$id_text'></td>";
-//             }
-//             echo "<td>&nbsp<input type='radio' name='cn$h' value='$id_text'></td><td>$j.{$name_text}</td>"; // 取得したい最後の位分
-//           echo'</tr>';
-//         }
-//     }
-//     echo'</tr>';
-//     echo'</table>';
-//     echo'</td>';
-//     echo'<td>';
-// } catch (PDOException $e) {
-//     echo 'エラー!: '.$e->getMessage().'<br/>';
-//     die();
-// }
-//
-    // function order_of_FG($array)
-    // {
-    //     $person_fg  = $array;
-    //     $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-    //   $person_two   = $person_fg[1];
-    //     for ($i = 0; $i < count($person_fg); ++$i) {
-    //         if (($person_fg[$i + 2]) == null) {
-    //             if ($person_fg[$i + 1] == null) {
-    //                 $person_fg[$i] = $person_two;
-    //             } else {
-    //                 $person_fg[$i] = $person_one;
-    //             }
-    //         } else {
-    //             $person_fg[$i] = $person_fg[$i + 2];
-    //         }
-    //     }
-    //
-    //     return $person_fg;
-    // }
-    //
-    // $id_text_forFG   = order_of_FG($id_text_forFG);
-    // $name_text_forFG = order_of_FG($name_text_forFG);
-//
-//     // ファシグラ用投票テーブル
-//     echo"<table border='1' cellpadding='8' style='background:  #F5F5F5'>";
-//       echo'<caption>ファシとグラ';
-//       echo'<tr>';
-//       echo'<th>　</th><th>1位</th><th>2位</th><th>3位</th>';
-//       echo'</tr>';
-      // for ($i = 0; $i < count($id_text_forFG); ++$i) { // 人数分のradio表示
-      //
-      //   if (strpos($id_text_forFG[$i], $fromSession) !== false) {
-      //       // 自分の名前には投票できなくするために，ボタンを無効化する．
-      //     echo'<tr>';
-      //       echo"<td>→ {$name_text_forFG[$i]}</td>";
-      //       for ($h = 1; $h < 3; ++$h) { // 取得したい位の1つ前まで．
-      //       echo "<td>&nbsp<input type='radio' name='co$h' value='$id_text_forFG[$i]' disabled></td>";
-      //       }
-      //       echo "<td>&nbsp<input type='radio' name='co$h' value='$id_text_forFG[$i]' disabled></td>"; // 取得したい最後の位分
-      //     echo'</tr>';
-      //   } else {
-      //       echo'<tr>';
-      //       echo"<td>→ {$name_text_forFG[$i]}</td>";
-      //       for ($h = 1; $h < 3; ++$h) { // 取得したい位の1つ前まで．
-      //       echo "<td>&nbsp<input type='radio' name='co$h' value='$id_text_forFG[$i]'></td>";
-      //       }
-      //       echo "<td>&nbsp<input type='radio' name='co$h' value='$id_text_forFG[$i]'></td>"; // 取得したい最後の位分
-      //     echo'</tr>';
-      //   }
-      // }
-//       echo'</tr>';
-//     echo'</table>';
-//
-//     echo'</td>';
-//     echo'</tr>';
-//   echo'</table>';
-
-?>
-
 <!-- フォームを並列したい時に使うもの．
 <div style="display:inline-flex">
 <form><input type="text"><input type="submit"></form>
@@ -482,12 +321,9 @@ if ($_POST['submit']) {
   // セッションに保存しておいたトークンの削除
   unset($_SESSION['token']);
 
-
   echo "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
 
   try {
-      // $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-      // $dbh->query('USE enquete_main');
 
     $sql = <<< EOM
       DELETE
@@ -542,30 +378,6 @@ EOM;
 
       $prepare->execute();
     }
-//
-    // for ($i = 1; $i < 4; ++$i) { // for Presentation
-    // $j                     = $i + 1;
-    //       $voted_person_id = $_POST["cn$i"];
-    //       $sql             = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ";
-    // // ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession'
-    // //ON DUPLICATE KEY UPDATE date = '$date'
-    // //
-    // //$sql = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'P', '$i', '$voted_person_id') ON DUPLICATE KEY UPDATE date = '$date', voter_person_id = '$fromSession' ";
-    //
-    // //echo "$food[$i]";
-    // //$sql = "INSERT INTO enq_table_main (date, time, exist_studentname, order_of_presen) VALUES ('$date', '$time', '$food[$i]', '$i')SET $nameA = $nameA + 3 WHERE date = '$date'";
-    // $st = $dbh->prepare($sql);
-    //       $st->execute();
-    //   }
-    //
-    //   for ($i = 1; $i < 4; ++$i) { // for FG
-    // $j                     = $i + 1;
-    //       $voted_person_id = $_POST["co$i"];
-    //       $sql             = "INSERT INTO TestA_1_vote (date, time, voter_person_id, types_of_votes, rank, voted_person_id) VALUES ('$date', '$time', '$fromSession', 'FG', '$i', '$voted_person_id') ";
-    //       $st              = $dbh->prepare($sql);
-    //       $st->execute();
-    //   }
-
   } catch (Exception $e) {
     header('Content-Type: text/plain; charset=UTF-8', true, 500);
     echo 'エラー!: '.$e->getMessage().'<br/>';
