@@ -1,3 +1,59 @@
+<?php
+$dbname   = 'enquete_main_2';//各々の環境で変わります．
+$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
+$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
+$user     = 'root';//各々の環境で変わります．
+$password = 'root';//各々の環境で変わります．
+
+$tbname_1   = 'test_vote';
+$tbname_2   = 'test_lab_member_info';
+$tbname_3   = 'test_order_of_presentation';
+$fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
+
+date_default_timezone_set('Asia/Tokyo');
+$date = date('Y-m-d');
+$time = date('H:i:s');
+
+// mysql:host=127.0.0.1;dbname=enquete_main;charset=utf8
+try {
+    $dbh = new PDO(
+      $dsn,
+      $user,
+      $password,
+      array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+      )
+    );
+    // $dbh->query('USE enquete_main');
+$sql = <<< EOM
+  SELECT studentname
+  FROM  {$tbname_2}
+  LEFT JOIN {$tbname_3}
+  ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
+  WHERE {$tbname_3}.date = ?
+   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ?)
+  ORDER BY {$tbname_3}.order_of_presen;
+EOM;
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->bindValue(2, $date, PDO::PARAM_STR);
+
+    $prepare->execute();
+    //$prepare->fetchAll();
+} catch (PDOException $e) {
+    header('Content-Type: text/plain; charset=UTF-8', true, 500);
+    echo 'エラー!: '.$e->getMessage().'<br/>';
+    die();
+}
+function h($str)
+{
+    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
+
+//header('Content-Type: text/html; charset=utf-8');
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
@@ -5,44 +61,17 @@
 <title>現在の出席者と発表順</title>
 </head>
 <body>
-<?php
-date_default_timezone_set('Asia/Tokyo');
-$date = date('Y-m-d');
+  <table border='1' cellpadding='5' style='background:#F0F8FF'>
+<?php $i = 1; ?>
+<?php foreach ($prepare as $row): ?>
+    <tr>
+      <td><?=h($i) ?></td>
+      <td><?=h($row['studentname'])?></td>
+    </tr>
+<?php $i = $i + 1; ?>
+<?php endforeach; ?>
+  </table>
 
-try {
-  $dbh = new PDO('mysql:host=127.0.0.1;charset=utf8',  root, root); //各々の環境で変わります．
-  $dbh->query("USE enquete_main");
-
-$query = <<< EOM
-    SELECT studentname
-    FROM  TestA_2_lab_member_info
-    LEFT JOIN TestA_3_order_of_presentation
-    ON TestA_2_lab_member_info.person_id = TestA_3_order_of_presentation.attendee_person_id
-    WHERE TestA_3_order_of_presentation.date = '$date'
-     AND time = (SELECT MAX(time) FROM TestA_3_order_of_presentation WHERE date = '$date')
-    ORDER BY TestA_3_order_of_presentation.order_of_presen;
-EOM;
-  $st = $dbh->query("$query"); 
-
-  print"<table border='1' cellpadding='5' style='background:#F0F8FF'>";
-  $i = 1;
-  foreach ($st as $row) {
-    print "<tr>";
-    print "<td>$i</td>";
-    print "<td>{$row['studentname']}</td>";
-    print "</tr>\n";
-    $i = $i + 1;
-  }
-  print"</table>";
-  
-} catch (PDOException $e) {
-    print "エラー!: " . $e->getMessage() . "<br/>";
-    die();
-}
-
-
-?>
-<br>
-<br><br><br>
+<br><br><br><br>
 </body>
-</html
+</html>
