@@ -103,14 +103,7 @@ EOM;
       // 発表順を入れる．
       for ($i = 0; $i < count($attendee_person_id); $i++) {
         $j = $i + 1;
-        $sql = <<< EOM
-        　INSERT INTO {$tbname_3}
-          ( date,
-            time,
-            attendee_person_id,
-            order_of_presen )
-          VALUES (?, ?, ?, ?)
-EOM;
+        $sql = 'INSERT INTO '.$tbname_3.'(date, time, attendee_person_id, order_of_presen) VALUES (?, ?, ?, ?)';
         $prepare = $dbh->prepare($sql);
         $prepare->bindValue(1, $date, PDO::PARAM_STR);
         $prepare->bindValue(2, $time, PDO::PARAM_STR);
