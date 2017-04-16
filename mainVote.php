@@ -8,7 +8,7 @@ $password = 'root';//各々の環境で変わります．
 $tbname_1   = 'test_vote';
 $tbname_2   = 'test_lab_member_info';
 $tbname_3   = 'test_order_of_presentation';
-$fiscalyear = '2016'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
+$fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
 $date = date('Y-m-d');
