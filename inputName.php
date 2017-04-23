@@ -8,6 +8,7 @@ $password = 'root';//各々の環境で変わります．
 $tbname_1   = 'test_vote';
 $tbname_2   = 'test_lab_member_info';
 $tbname_3   = 'test_order_of_presentation';
+$tbname_4   = 'test_order_of_fg';
 $fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -42,9 +43,9 @@ try {
 
   // 研究室所属メンバーを表示する．
   $sql = <<< EOM
-   SELECT *
+   SELECT studentname, person_id
    FROM {$tbname_2}
-   WHERE ?
+   WHERE fiscal_year = ?
 EOM;
 
   $prepare_memberinfo = $dbh->prepare($sql);

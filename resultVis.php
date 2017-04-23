@@ -8,6 +8,7 @@ $password = 'root';//各々の環境で変わります．
 $tbname_1   = 'test_vote';
 $tbname_2   = 'test_lab_member_info';
 $tbname_3   = 'test_order_of_presentation';
+$tbname_4   = 'test_order_of_fg';
 $fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -15,7 +16,6 @@ $date = date('Y-m-d');
 $time = date('H:i:s');
 
 try {
-
   $dbh = new PDO(
     $dsn,
     $user,
@@ -26,7 +26,10 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
-
+  /**
+   * 現在の順番をDBから吸い出す
+   */
+  // プレゼン用
   $sql = <<< EOM
     SELECT studentname, person_id
     FROM {$tbname_2}
@@ -39,7 +42,6 @@ try {
        WHERE date = ? )
     ORDER BY {$tbname_3}.order_of_presen;
 EOM;
-
   $prepare = $dbh->prepare($sql);
   $prepare->bindValue(1, $date, PDO::PARAM_STR);
   $prepare->bindValue(2, $date, PDO::PARAM_STR);
@@ -47,14 +49,40 @@ EOM;
 
   foreach ($prepare as $row) {
       $attendee_studentname[] = $row['studentname'];
-      $hoge[]                 = $row['person_id'];
+      $id_order[]                 = $row['person_id'];
   }
-
+  // PRでもFGでもどちらでもいいが，発表の回数を保持しておく
   $attendee_person_number = count($attendee_studentname);
 
+  // ファシグラ用
+  $sql_fg = <<< EOM
+    SELECT studentname, person_id
+    FROM {$tbname_2}
+    LEFT JOIN {$tbname_4}
+    ON {$tbname_2}.person_id = {$tbname_4}.attendee_person_id
+    WHERE {$tbname_4}.date = ?
+     AND time =
+     ( SELECT MAX(time)
+       FROM {$tbname_4}
+       WHERE date = ? )
+    ORDER BY {$tbname_4}.order_of_fg;
+EOM;
+  $prepare_fg = $dbh->prepare($sql_fg);
+  $prepare_fg->bindValue(1, $date, PDO::PARAM_STR);
+  $prepare_fg->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare_fg->execute();
+
+  foreach ($prepare_fg as $row) {
+      $attendee_studentname_fg[] = $row['studentname'];
+      $id_order_fg[]                 = $row['person_id'];
+  }
+
+  /**
+   * 投票の集計を行う．
+   */
   // P票の集計
-  for ($i = 0; $i < count($hoge); ++$i) {
-    $one_person_id = $hoge[$i];
+  for ($i = 0; $i < count($id_order); ++$i) {
+    $one_person_id = $id_order[$i];
     $sql = <<< EOM
       SELECT
         COUNT(rank = ? or null) AS rank1_num,
@@ -75,16 +103,16 @@ EOM;
     $prepare->execute();
     foreach ($prepare as $row) {
         $sum_voted_P[] =
-        ($row['rank1_num'] * 3) +
-        ($row['rank2_num'] * 2) +
-        ($row['rank3_num'] * 1)   ;
+          ($row['rank1_num'] * 3) +
+          ($row['rank2_num'] * 2) +
+          ($row['rank3_num'] * 1)   ;
     }
   }
 
   // FG票の集計
-  for ($i = 0; $i < count($hoge); ++$i) {
-    $one_person_id = $hoge[$i];
-    $sql = <<< EOM
+  for ($i = 0; $i < count($id_order_fg); ++$i) {
+    $one_person_id = $id_order_fg[$i];
+    $sql_fg = <<< EOM
       SELECT
         COUNT(rank = ? or null) AS rank1_num,
         COUNT(rank = ? or null) AS rank2_num,
@@ -94,15 +122,15 @@ EOM;
        AND types_of_votes = ?
        AND voted_person_id = ? ;
 EOM;
-    $prepare = $dbh->prepare($sql);
-    $prepare->bindValue(1, '1', PDO::PARAM_STR);
-    $prepare->bindValue(2, '2', PDO::PARAM_STR);
-    $prepare->bindValue(3, '3', PDO::PARAM_STR);
-    $prepare->bindValue(4, $date, PDO::PARAM_STR);
-    $prepare->bindValue(5, 'FG', PDO::PARAM_STR);
-    $prepare->bindValue(6, $one_person_id, PDO::PARAM_STR);
-    $prepare->execute();
-    foreach ($prepare as $row) {
+    $prepare_fg = $dbh->prepare($sql_fg);
+    $prepare_fg->bindValue(1, '1', PDO::PARAM_STR);
+    $prepare_fg->bindValue(2, '2', PDO::PARAM_STR);
+    $prepare_fg->bindValue(3, '3', PDO::PARAM_STR);
+    $prepare_fg->bindValue(4, $date, PDO::PARAM_STR);
+    $prepare_fg->bindValue(5, 'FG', PDO::PARAM_STR);
+    $prepare_fg->bindValue(6, $one_person_id, PDO::PARAM_STR);
+    $prepare_fg->execute();
+    foreach ($prepare_fg as $row) {
         $sum_voted_FG[] =
         ($row['rank1_num'] * 3) +
         ($row['rank2_num'] * 2) +
@@ -110,7 +138,9 @@ EOM;
     }
   }
 
-  // 投票が終わった人の集計
+  /**
+   * 投票が終わった人数の集計
+   */
   $sql = <<< EOM
     SELECT DISTINCT voter_person_id
     FROM {$tbname_1}
@@ -124,8 +154,10 @@ EOM;
       $finish_vote_num = count($forSum);
   }
 
-  // リセットボタン用
-  if ($_POST['submit2']) {
+  /**
+   * POST（リセット）が押された際の処理
+   */
+  if ($_POST['delete_result']) {
     $sql = <<< EOM
       DELETE
       FROM {$tbname_1}
@@ -176,8 +208,8 @@ header('Content-Type: text/html; charset=utf-8');
   <tr>
     <td>
       <table border="1" style="background:#F0F8FF">
-        <caption align='left'>　　　　　　プレゼン
-          <?php for ($i = 0; $i < count($hoge); ++$i) { ?>
+        <caption align='left'>プレゼン
+          <?php for ($i = 0; $i < count($id_order); ++$i) { ?>
             <tr>
               <td style="background:white">
                 <?=h($attendee_studentname[$i])?>
@@ -199,13 +231,19 @@ header('Content-Type: text/html; charset=utf-8');
         </caption>
       </table>
     </td>
+    <td>
+      ＜＜＜
+    </td>
 
     <td>
       <table border="1" style="background:#F5F5F5">
         <caption>ファシグラ
           <tr>
-            <?php for ($i = 0; $i < count($hoge); ++$i) { ?>
+            <?php for ($i = 0; $i < count($id_order_fg); ++$i) { ?>
             <tr>
+              <td style="background:white">
+                <?=h($attendee_studentname_fg[$i])?>
+              </td>
               <td>
                 <table>
                   <tr>
@@ -236,7 +274,7 @@ header('Content-Type: text/html; charset=utf-8');
 <br><br><br><br><br><br><br><br><br><br>
 
 <form method="post" action="resultVis.php">
-  <input type="submit" name="submit2" value="※押すな※　本日の投票データを全て削除　※">
+  <input type="submit" name="delete_result" value="※押すな※　本日の投票データを全て削除　※">
 </form>
 <p>
   <font color="red">管理人のつぶやき「なんか，全体的に殺風景だ……」</font>
