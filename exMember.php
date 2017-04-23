@@ -92,12 +92,12 @@ EOM;
   $prepare_memberinfo_fg->execute();
 
   /**
-   *  POSTが降ってきたら．
+   *  POST（ランダムで決める）が降ってきた際の処理
    */
   //if (isset($_POST['sort'])) {
-  if (!isset($_POST['sort'])) {
+  if (!isset($_POST['sort_pr'])) {
       $errors[] = '送信されていません';
-  } elseif ($_POST['sort'] === '') {
+  } elseif ($_POST['sort_pr'] === '') {
       $errors[] = '入力されていません';
   }else {
     // if (!isset($_POST['cn'])) {
@@ -111,7 +111,7 @@ EOM;
     // $attendee_person_id = filter_input(INPUT_POST, 'cn');
     // if (is_string($attendee_person_id)) {
       /* 文字列として送信されてきた場合のみ実行したい処理 */
-      $attendee_person_id = $_POST['cn'];
+      $attendee_person_id = $_POST['cn_pr'];
       srand(time()); //乱数列初期化．冗長の可能性あり．
       shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
 
@@ -135,6 +135,35 @@ EOM;
       }
     }
   // }
+
+  if (!isset($_POST['sort_fg'])) {
+      $errors[] = '送信されていません';
+  } elseif ($_POST['sort_fg'] === '') {
+      $errors[] = '入力されていません';
+  }else {
+      /* 文字列として送信されてきた場合のみ実行したい処理 */
+      $attendee_person_id = $_POST['cn_fg'];
+      srand(time()); //乱数列初期化．冗長の可能性あり．
+      shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
+
+      // すでにその日の発表順が入っている場合は，それをまずDELETEする．
+      $sql = 'DELETE FROM '.$tbname_4.' WHERE date = ?';
+      $prepare = $dbh->prepare($sql);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->execute();
+
+      // 発表順を入れる．
+      for ($i = 0; $i < count($attendee_person_id); $i++) {
+        $j = $i + 1;
+        $sql = 'INSERT INTO '.$tbname_4.'(date, time, attendee_person_id, order_of_fg) VALUES (?, ?, ?, ?)';
+        $prepare = $dbh->prepare($sql);
+        $prepare->bindValue(1, $date, PDO::PARAM_STR);
+        $prepare->bindValue(2, $time, PDO::PARAM_STR);
+        $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
+        $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+        $prepare->execute();
+      }
+    }
 
   /**
    * 現在の順番をDBから吸い出す．
@@ -174,6 +203,9 @@ header('Content-Type: text/html; charset=utf-8');
 </head>
 <body>
   <h2>○研究室所属メンバーの中から，選んでください</h2>
+  <p>
+    ※何も選択せずボタンを押した場合，本日の順番データが全て削除されます．
+  </p>
   <!-- <table>
     <tr>
         <td>機能を選択してください</td>
@@ -200,7 +232,7 @@ header('Content-Type: text/html; charset=utf-8');
               <?php $name   = $row['studentname'];?>
               <?php $id = $row['person_id'];?>
             <label>
-              <input type='checkbox' name='cn_pr[]' value='<?=h($id)?>' checked><?=h($name)?>
+              <input type='checkbox' name='cn_pr[]' value='<?=h($id)?>'><?=h($name)?>
               <br><br>
             </label>
             <?php endforeach; ?>
@@ -219,7 +251,7 @@ header('Content-Type: text/html; charset=utf-8');
               <?php $name   = $row['studentname'];?>
               <?php $id = $row['person_id'];?>
             <label>
-              <input type='checkbox' name='cn_fg[]' value='<?=h($id)?>' checked><?=h($name)?>
+              <input type='checkbox' name='cn_fg[]' value='<?=h($id)?>'><?=h($name)?>
               <br><br>
             </label>
             <?php endforeach; ?>
