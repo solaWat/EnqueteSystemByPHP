@@ -8,6 +8,7 @@ $password = 'root';//各々の環境で変わります．
 $tbname_1   = 'test_vote';
 $tbname_2   = 'test_lab_member_info';
 $tbname_3   = 'test_order_of_presentation';
+$tbname_4   = 'test_order_of_fg';
 $fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -15,7 +16,9 @@ $date = date('Y-m-d');
 $time = date('H:i:s');
 
 try {
-
+  /**
+   * セッション関係の処理
+   */
   ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
   ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
   session_start();
@@ -32,6 +35,9 @@ try {
   $token = $_SESSION['token'];
   $fromSession = $_SESSION['my_id'];
 
+  /**
+   * DBと接続する
+   */
   $dbh = new PDO( // tableがなければ作る．
     $dsn,
     $user,
@@ -42,14 +48,15 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
-
+  /**
+   * セッションを読み込んで，idと名前を照合し，保持する．
+   */
   $sql = <<< EOM
     SELECT studentname
     FROM {$tbname_2}
     WHERE person_id = ?
     AND   fiscal_year = ?
 EOM;
-
   $prepare = $dbh->prepare($sql);
   $prepare->bindValue(1, $fromSession, PDO::PARAM_STR);
   $prepare->bindValue(2, $fiscalyear, PDO::PARAM_STR);
@@ -58,8 +65,11 @@ EOM;
   foreach ($prepare as $row) {
       $masters_name = $row['studentname'];
   }
-
-  $sql_for_vote = <<< EOM
+  /**
+   * 現在の順番をDBから吸い出す．
+   */
+  // プレゼン用
+  $sql_vote = <<< EOM
     SELECT studentname, person_id
     FROM  {$tbname_2}
     LEFT JOIN {$tbname_3}
@@ -71,39 +81,61 @@ EOM;
       WHERE date = ? )
     ORDER BY {$tbname_3}.order_of_presen;
 EOM;
+  $prepare_order_pr = $dbh->prepare($sql_vote);
+  $prepare_order_pr->bindValue(1, $date, PDO::PARAM_STR);
+  $prepare_order_pr->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare_order_pr->execute();
 
-  $prepare_presen_order = $dbh->prepare($sql_for_vote);
-  $prepare_presen_order->bindValue(1, $date, PDO::PARAM_STR);
-  $prepare_presen_order->bindValue(2, $date, PDO::PARAM_STR);
-  $prepare_presen_order->execute();
-
-  foreach ($prepare_presen_order as $key => $row) {
+  foreach ($prepare_order_pr as $key => $row) {
     $name_text_PRESEN[$key]      = $row['studentname'];
     $id_text_PRESEN[$key]        = $row['person_id'];
   }
 
+  // ファシグラ用
+  $sql_vote_fg = <<< EOM
+    SELECT studentname, person_id
+    FROM  {$tbname_2}
+    LEFT JOIN {$tbname_4}
+    ON {$tbname_2}.person_id = {$tbname_4}.attendee_person_id
+    WHERE {$tbname_4}.date = ?
+    AND   time = (
+      SELECT MAX(time)
+      FROM {$tbname_4}
+      WHERE date = ? )
+    ORDER BY {$tbname_4}.order_of_fg;
+EOM;
+  $prepare_order_fg = $dbh->prepare($sql_vote_fg);
+  $prepare_order_fg->bindValue(1, $date, PDO::PARAM_STR);
+  $prepare_order_fg->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare_order_fg->execute();
 
-  function change_order_for_FG($array)
-  {
-    $person_fg  = $array;
-    $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-    $person_two = $person_fg[1];
-    for ($i = 0; $i < count($person_fg); ++$i) {
-        if (($person_fg[$i + 2]) == null) {
-            if ($person_fg[$i + 1] == null) {
-                $person_fg[$i] = $person_two;
-            } else {
-                $person_fg[$i] = $person_one;
-            }
-        } else {
-            $person_fg[$i] = $person_fg[$i + 2];
-        }
-    }
-    return $person_fg;
+  foreach ($prepare_order_fg as $key => $row) {
+    $name_text_FG[$key]      = $row['studentname'];
+    $id_text_FG[$key]        = $row['person_id'];
   }
 
-  $name_text_FG = change_order_for_FG($name_text_PRESEN);
-  $id_text_FG   = change_order_for_FG($id_text_PRESEN);
+  //
+  // function change_order_for_FG($array)
+  // {
+  //   $person_fg  = $array;
+  //   $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
+  //   $person_two = $person_fg[1];
+  //   for ($i = 0; $i < count($person_fg); ++$i) {
+  //       if (($person_fg[$i + 2]) == null) {
+  //           if ($person_fg[$i + 1] == null) {
+  //               $person_fg[$i] = $person_two;
+  //           } else {
+  //               $person_fg[$i] = $person_one;
+  //           }
+  //       } else {
+  //           $person_fg[$i] = $person_fg[$i + 2];
+  //       }
+  //   }
+  //   return $person_fg;
+  // }
+  //
+  // $name_text_FG = change_order_for_FG($name_text_PRESEN);
+  // $id_text_FG   = change_order_for_FG($id_text_PRESEN);
 
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
