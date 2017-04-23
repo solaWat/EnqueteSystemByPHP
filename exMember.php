@@ -113,7 +113,7 @@ EOM;
       /* 文字列として送信されてきた場合のみ実行したい処理 */
       $attendee_person_id = $_POST['cn_pr'];
       srand(time()); //乱数列初期化．冗長の可能性あり．
-      shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
+      shuffle($attendee_person_id); //　参加者をランダムソートにかけ，発表順を決める．
 
       // すでにその日の発表順が入っている場合は，それをまずDELETEする．
       $sql = 'DELETE FROM '.$tbname_3.' WHERE date = ?';
@@ -141,29 +141,99 @@ EOM;
   } elseif ($_POST['sort_fg'] === '') {
       $errors[] = '入力されていません';
   }else {
-      /* 文字列として送信されてきた場合のみ実行したい処理 */
-      $attendee_person_id = $_POST['cn_fg'];
-      srand(time()); //乱数列初期化．冗長の可能性あり．
-      shuffle($attendee_person_id); //　出席者をランダムソートにかけ，発表順を決める．
+    $attendee_person_id = $_POST['cn_fg'];
+    srand(time()); //乱数列初期化．冗長の可能性あり．
+    shuffle($attendee_person_id); //　参加者をランダムソートにかけ，順番を決める．
 
-      // すでにその日の発表順が入っている場合は，それをまずDELETEする．
-      $sql = 'DELETE FROM '.$tbname_4.' WHERE date = ?';
+    // すでにその日の順番が入っている場合は，それをまずDELETEする．
+    $sql = 'DELETE FROM '.$tbname_4.' WHERE date = ?';
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->execute();
+
+    // ファシグラの順番を入れる．
+    for ($i = 0; $i < count($attendee_person_id); $i++) {
+      $j = $i + 1;
+      $sql = 'INSERT INTO '.$tbname_4.'(date, time, attendee_person_id, order_of_fg) VALUES (?, ?, ?, ?)';
       $prepare = $dbh->prepare($sql);
       $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->bindValue(2, $time, PDO::PARAM_STR);
+      $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
+      $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
       $prepare->execute();
-
-      // 発表順を入れる．
-      for ($i = 0; $i < count($attendee_person_id); $i++) {
-        $j = $i + 1;
-        $sql = 'INSERT INTO '.$tbname_4.'(date, time, attendee_person_id, order_of_fg) VALUES (?, ?, ?, ?)';
-        $prepare = $dbh->prepare($sql);
-        $prepare->bindValue(1, $date, PDO::PARAM_STR);
-        $prepare->bindValue(2, $time, PDO::PARAM_STR);
-        $prepare->bindValue(3, $attendee_person_id[$i], PDO::PARAM_STR);
-        $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
-        $prepare->execute();
-      }
     }
+  }
+
+  /**
+   * POST（発表順をアレンジしてファシグラ順に）が降ってきた際の処理
+   */
+  if (!isset($_POST['arrange'])) {
+    $errors[] = '送信されていません';
+  } elseif ($_POST['arrange'] === '') {
+    $errors[] = '入力されていません';
+  }else {
+
+    // すでにその日のファシグラ担当順が入っている場合は，それをまずDELETEする
+    $sql = 'DELETE FROM '.$tbname_4.' WHERE date = ?';
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->execute();
+
+    $sql_for_arrange = <<< EOM
+      SELECT studentname, person_id
+      FROM  {$tbname_2}
+      LEFT JOIN {$tbname_3}
+      ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
+      WHERE {$tbname_3}.date = ?
+      AND   time = (
+        SELECT MAX(time)
+        FROM {$tbname_3}
+        WHERE date = ? )
+      ORDER BY {$tbname_3}.order_of_presen;
+EOM;
+    $prepare_presen_order = $dbh->prepare($sql_for_arrange);
+    $prepare_presen_order->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare_presen_order->bindValue(2, $date, PDO::PARAM_STR);
+    $prepare_presen_order->execute();
+
+    foreach ($prepare_presen_order as $key => $row) {
+      // $name_text_PRESEN[$key]      = $row['studentname'];
+      $order_id_PRESEN[$key]        = $row['person_id'];
+    }
+
+    function change_order_for_FG($array){
+      $person_fg  = $array;
+      $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
+      $person_two = $person_fg[1];
+      for ($i = 0; $i < count($person_fg); ++$i) {
+          if (($person_fg[$i + 2]) == null) {
+              if ($person_fg[$i + 1] == null) {
+                  $person_fg[$i] = $person_two;
+              } else {
+                  $person_fg[$i] = $person_one;
+              }
+          } else {
+              $person_fg[$i] = $person_fg[$i + 2];
+          }
+      }
+      return $person_fg;
+    }
+
+    // $name_text_FG = change_order_for_FG($name_text_PRESEN);
+    $order_id_FG   = change_order_for_FG($order_id_PRESEN);
+
+    // 発表順を入れる．
+    for ($i = 0; $i < count($order_id_FG); $i++) {
+      $j = $i + 1;
+      $sql = 'INSERT INTO '.$tbname_4.'(date, time, attendee_person_id, order_of_fg) VALUES (?, ?, ?, ?)';
+      $prepare = $dbh->prepare($sql);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->bindValue(2, $time, PDO::PARAM_STR);
+      $prepare->bindValue(3, $order_id_FG[$i], PDO::PARAM_STR);
+      $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+      $prepare->execute();
+    }
+  }
 
   /**
    * 現在の順番をDBから吸い出す．
@@ -312,9 +382,11 @@ header('Content-Type: text/html; charset=utf-8');
         </table>
       </td>
     </tr>
-  </table>
+  </table><br /><br />
 
-
+  <form method="post" action="exMember.php">
+    <input type="submit" name="arrange" value="　発表順の2つ先の名前を，ファシグラ担当にする　" />
+  </form>
   <br>
   <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
   <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
