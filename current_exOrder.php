@@ -37,7 +37,10 @@ try {
     LEFT JOIN {$tbname_3}
     ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
     WHERE {$tbname_3}.date = ?
-     AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ?)
+     AND time = (
+       SELECT MAX(time)
+       FROM {$tbname_3}
+       WHERE date = ?)
     ORDER BY {$tbname_3}.order_of_presen;
 EOM;
   $prepare = $dbh->prepare($sql);
@@ -52,7 +55,10 @@ EOM;
     LEFT JOIN {$tbname_4}
     ON {$tbname_2}.person_id = {$tbname_4}.attendee_person_id
     WHERE {$tbname_4}.date = ?
-     AND time = (SELECT MAX(time) FROM {$tbname_4} WHERE date = ? )
+     AND time = (
+       SELECT MAX(time)
+       FROM {$tbname_4}
+       WHERE date = ? )
     ORDER BY {$tbname_4}.order_of_fg;
 EOM;
   $prepare_fg = $dbh->prepare($sql_fg);
