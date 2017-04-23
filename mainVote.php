@@ -114,29 +114,6 @@ EOM;
     $id_text_FG[$key]        = $row['person_id'];
   }
 
-  //
-  // function change_order_for_FG($array)
-  // {
-  //   $person_fg  = $array;
-  //   $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
-  //   $person_two = $person_fg[1];
-  //   for ($i = 0; $i < count($person_fg); ++$i) {
-  //       if (($person_fg[$i + 2]) == null) {
-  //           if ($person_fg[$i + 1] == null) {
-  //               $person_fg[$i] = $person_two;
-  //           } else {
-  //               $person_fg[$i] = $person_one;
-  //           }
-  //       } else {
-  //           $person_fg[$i] = $person_fg[$i + 2];
-  //       }
-  //   }
-  //   return $person_fg;
-  // }
-  //
-  // $name_text_FG = change_order_for_FG($name_text_PRESEN);
-  // $id_text_FG   = change_order_for_FG($id_text_PRESEN);
-
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
   echo 'エラー!: '.$e->getMessage().'<br/>';
@@ -356,21 +333,16 @@ if ($_POST['submit']) {
   echo "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
 
   try {
-
     $sql = <<< EOM
       DELETE
       FROM {$tbname_1}
       where date = ?
       AND voter_person_id = ?
 EOM;
-
     $prepare = $dbh->prepare($sql);
     $prepare->bindValue(1, $date, PDO::PARAM_STR);
     $prepare->bindValue(2, $fromSession, PDO::PARAM_STR);
     $prepare->execute();
-
-      // $st  = $dbh->prepare($sql);
-      // $st->execute();
 
     $sql_insert_vote = <<< EOM
       INSERT INTO {$tbname_1}
@@ -382,10 +354,8 @@ EOM;
         voted_person_id )
       VALUES (?, ?, ?, ?, ?, ?)
 EOM;
-
     for ($i = 1; $i < 4 ; ++$i) {
       $voted_person_id = $_POST["cn$i"];
-
       $prepare = $dbh->prepare($sql_insert_vote);
       $prepare->bindValue(1, $date, PDO::PARAM_STR);
       $prepare->bindValue(2, $time, PDO::PARAM_STR);
@@ -393,13 +363,10 @@ EOM;
       $prepare->bindValue(4, 'P', PDO::PARAM_STR);
       $prepare->bindValue(5, $i, PDO::PARAM_STR);
       $prepare->bindValue(6, $voted_person_id, PDO::PARAM_INT);
-
       $prepare->execute();
     }
-
     for ($i = 1; $i < 4 ; ++$i) {
       $voted_person_id = $_POST["co$i"];
-
       $prepare = $dbh->prepare($sql_insert_vote);
       $prepare->bindValue(1, $date, PDO::PARAM_STR);
       $prepare->bindValue(2, $time, PDO::PARAM_STR);
@@ -407,7 +374,6 @@ EOM;
       $prepare->bindValue(4, 'FG', PDO::PARAM_STR);
       $prepare->bindValue(5, $i, PDO::PARAM_STR);
       $prepare->bindValue(6, $voted_person_id, PDO::PARAM_INT);
-
       $prepare->execute();
     }
   } catch (Exception $e) {
