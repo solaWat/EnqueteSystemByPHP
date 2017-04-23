@@ -8,6 +8,7 @@ $password = 'root';//各々の環境で変わります．
 $tbname_1   = 'test_vote';
 $tbname_2   = 'test_lab_member_info';
 $tbname_3   = 'test_order_of_presentation';
+$tbname_4   = 'test_order_of_fg';
 $fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -15,7 +16,10 @@ $date = date('Y-m-d');
 $time = date('H:i:s');
 
 try {
-  $pre_dbh = new PDO( // databaseがなければ作る．
+  /**
+   * まず，DBを登録する．
+   */
+  $pre_dbh = new PDO(
     $pre_dsn,
     $user,
     $password,
@@ -27,7 +31,10 @@ try {
   );
   $pre_dbh->exec('CREATE DATABASE IF NOT EXISTS '.$dbname);
 
-  $dbh = new PDO( // tableがなければ作る．
+  /**
+   * DBに，TABLEを4つ登録する．
+   */
+  $dbh = new PDO(
     $dsn,
     $user,
     $password,
@@ -37,41 +44,56 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
-$col_set_tb1 = <<< EOM
-  date  date  COMMENT'年月日',
-  time  time  COMMENT'時間',
-  voter_person_id  varchar(100)  COMMENT'投票者のID',
-  types_of_votes  varchar(30)  COMMENT'P or FG ?',
-  rank  tinyint unsigned  COMMENT'順位',
-  voted_person_id  varchar(100)  COMMENT'被投票者のID'
+  $col_set_tb1 = <<< EOM
+    date  date  COMMENT'年月日',
+    time  time  COMMENT'時間',
+    voter_person_id  varchar(100)  COMMENT'投票者のID',
+    types_of_votes  varchar(30)  COMMENT'P or FG ?',
+    rank  tinyint unsigned  COMMENT'順位',
+    voted_person_id  varchar(100)  COMMENT'被投票者のID'
+EOM;
+  $col_set_tb2 = <<< EOM
+    fiscal_year  year  COMMENT'登録年度',
+    studentname  nvarchar(100)  COMMENT'ゼミ所属学生の名前',
+    person_id  varchar(100)  COMMENT'ID(年度が異なっても，この値が同じなら，同一人物)'
+EOM;
+  $col_set_tb3 = <<< EOM
+    date  date  COMMENT'年月日',
+    time  time  COMMENT'時間',
+    attendee_person_id  varchar(100)  COMMENT'参加者のID',
+    order_of_presen  tinyint unsigned  COMMENT'発表順'
+EOM;
+  $col_set_tb4 = <<< EOM
+    date  date  COMMENT'年月日',
+    time  time  COMMENT'時間',
+    attendee_person_id  varchar(100)  COMMENT'参加者のID',
+    order_of_fg  tinyint unsigned  COMMENT'担当順'
 EOM;
   $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_1.'('.$col_set_tb1.');');
-
-$col_set_tb2 = <<< EOM
-  fiscal_year  year  COMMENT'登録年度',
-  studentname  nvarchar(100)  COMMENT'ゼミ所属学生の名前',
-  person_id  varchar(100)  COMMENT'ID(年度が異なっても，この値が同じなら，同一人物)'
-EOM;
   $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_2.'('.$col_set_tb2.');');
-
-$col_set_tb3 = <<< EOM
-  date  date  COMMENT'年月日',
-  time  time  COMMENT'時間',
-  attendee_person_id  varchar(100)  COMMENT'出席者のID',
-  order_of_presen  tinyint unsigned  COMMENT'発表順'
-EOM;
   $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_3.'('.$col_set_tb3.');');
+  $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_4.'('.$col_set_tb4.');');
 
-  // 研究室所属メンバーを表示する．
-  $sql = 'SELECT * FROM '.$tbname_2.' WHERE fiscal_year = ? ';
+  /**
+   * 研究室所属メンバーを表示する．
+   */
+  // $sql = 'SELECT * FROM '.$tbname_2.' WHERE fiscal_year = ? ';
+  $sql = <<< EOM
+    SELECT studentname, person_id
+    FROM {$tbname_2}
+    WHERE fiscal_year = ?
+EOM;
   $prepare_memberinfo = $dbh->prepare($sql);
-  //$prepare->bindValue(1, $tbname_2, PDO::PARAM_STR);
   $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
   $prepare_memberinfo->execute();
 
+  $prepare_memberinfo_fg = $dbh->prepare($sql);
+  $prepare_memberinfo_fg->bindValue(1, $fiscalyear, PDO::PARAM_STR);
+  $prepare_memberinfo_fg->execute();
 
-
-  // POSTが降ってきたら．
+  /**
+   *  POSTが降ってきたら．
+   */
   //if (isset($_POST['sort'])) {
   if (!isset($_POST['sort'])) {
       $errors[] = '送信されていません';
@@ -114,15 +136,18 @@ EOM;
     }
   // }
 
+  /**
+   * 現在の順番をDBから吸い出す．
+   */
   // これで済むはずなのに……　<?php include 'current_exOrder.php';
-$sql = <<< EOM
-  SELECT studentname
-  FROM  {$tbname_2}
-  LEFT JOIN {$tbname_3}
-  ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
-  WHERE {$tbname_3}.date = ?
-   AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ? )
-  ORDER BY {$tbname_3}.order_of_presen;
+  $sql = <<< EOM
+    SELECT studentname
+    FROM  {$tbname_2}
+    LEFT JOIN {$tbname_3}
+    ON {$tbname_2}.person_id = {$tbname_3}.attendee_person_id
+    WHERE {$tbname_3}.date = ?
+     AND time = (SELECT MAX(time) FROM {$tbname_3} WHERE date = ? )
+    ORDER BY {$tbname_3}.order_of_presen;
 EOM;
   $prepare = $dbh->prepare($sql);
   $prepare->bindValue(1, $date, PDO::PARAM_STR);
@@ -148,32 +173,75 @@ header('Content-Type: text/html; charset=utf-8');
   <div style="background-color: #cff;">
 </head>
 <body>
-  <form method="post" action="exMember.php">
-  <h2>○出席者を選んでください</h2>
-  <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-<?php foreach ($prepare_memberinfo as $row): ?>
-<?php $name   = $row['studentname'];?>
-<?php $id = $row['person_id'];?>
-    <label>
-      <input type='checkbox' name='cn[]' value='<?=h($id)?>' checked><?=h($name)?>
-      <br><br>
-    </label>
-<?php endforeach; ?>
-  </div><br>
-  <input type="submit" name="sort" value="　発表順を決める　" >
-  </form>
+  <h2>○研究室所属メンバーの中から，選んでください</h2>
+  <!-- <table>
+    <tr>
+        <td>機能を選択してください</td>
+        <form action="A.php">
+        <td>
+            <input type="submit" value="機能A" />
+        </td>
+        </form>
+        <form action="B.php">
+        <td>
+            <input type="submit" value="機能B" />
+        </td>
+        </form>
+    </tr>
+  </table> -->
+
+  <table>
+    <tr>
+      <td>
+        プレゼンテーション
+        <form method="post" action="exMember.php">
+          <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
+            <?php foreach ($prepare_memberinfo as $row): ?>
+              <?php $name   = $row['studentname'];?>
+              <?php $id = $row['person_id'];?>
+            <label>
+              <input type='checkbox' name='cn_pr[]' value='<?=h($id)?>' checked><?=h($name)?>
+              <br><br>
+            </label>
+            <?php endforeach; ?>
+          </div><br>
+          <input type="submit" name="sort_pr" value="　pランダムで決める　" >
+        </form>
+      </td>
+      <td>
+        　　
+      </td>
+      <td>
+        ファシグラ
+        <form method="post" action="exMember.php">
+          <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
+            <?php foreach ($prepare_memberinfo_fg as $row): ?>
+              <?php $name   = $row['studentname'];?>
+              <?php $id = $row['person_id'];?>
+            <label>
+              <input type='checkbox' name='cn_fg[]' value='<?=h($id)?>' checked><?=h($name)?>
+              <br><br>
+            </label>
+            <?php endforeach; ?>
+          </div><br>
+          <input type="submit" name="sort_fg" value="　fランダムで決める　" >
+          </form>
+      </td>
+    </tr>
+  </table>
+
   <h2>○今日の発表順はこちら</h2>
 
   <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
   <table border='1' cellpadding='5' style='background:#F0F8FF'>
-<?php $i = 1; ?>
-<?php foreach ($prepare as $row): ?>
-    <tr>
-      <td><?=h($i) ?></td>
-      <td><?=h($row['studentname'])?></td>
-    </tr>
-<?php $i = $i + 1; ?>
-<?php endforeach; ?>
+    <?php $i = 1; ?>
+    <?php foreach ($prepare as $row): ?>
+      <tr>
+        <td><?=h($i) ?></td>
+        <td><?=h($row['studentname'])?></td>
+      </tr>
+      <?php $i = $i + 1; ?>
+    <?php endforeach; ?>
   </table>
   <br>
   <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
