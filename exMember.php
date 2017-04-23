@@ -169,6 +169,7 @@ EOM;
    * 現在の順番をDBから吸い出す．
    */
   // これで済むはずなのに……　<?php include 'current_exOrder.php';
+  // プレゼン用
   $sql = <<< EOM
     SELECT studentname
     FROM  {$tbname_2}
@@ -182,6 +183,21 @@ EOM;
   $prepare->bindValue(1, $date, PDO::PARAM_STR);
   $prepare->bindValue(2, $date, PDO::PARAM_STR);
   $prepare->execute();
+
+  // ファシグラ用（プレゼン用との違いは，tablenameだけ．）
+  $sql_fg = <<< EOM
+    SELECT studentname
+    FROM  {$tbname_2}
+    LEFT JOIN {$tbname_4}
+    ON {$tbname_2}.person_id = {$tbname_4}.attendee_person_id
+    WHERE {$tbname_4}.date = ?
+     AND time = (SELECT MAX(time) FROM {$tbname_4} WHERE date = ? )
+    ORDER BY {$tbname_4}.order_of_fg;
+EOM;
+  $prepare_fg = $dbh->prepare($sql_fg);
+  $prepare_fg->bindValue(1, $date, PDO::PARAM_STR);
+  $prepare_fg->bindValue(2, $date, PDO::PARAM_STR);
+  $prepare_fg->execute();
 
 } catch (Exception $e) {
   header('Content-Type: text/plain; charset=UTF-8', true, 500);
@@ -237,7 +253,7 @@ header('Content-Type: text/html; charset=utf-8');
             </label>
             <?php endforeach; ?>
           </div><br>
-          <input type="submit" name="sort_pr" value="　pランダムで決める　" >
+          <input type="submit" name="sort_pr" value="　pランダムで順番を決める　" >
         </form>
       </td>
       <td>
@@ -256,29 +272,53 @@ header('Content-Type: text/html; charset=utf-8');
             </label>
             <?php endforeach; ?>
           </div><br>
-          <input type="submit" name="sort_fg" value="　fランダムで決める　" >
+          <input type="submit" name="sort_fg" value="　fランダムで順番で決める　" >
           </form>
       </td>
     </tr>
   </table>
 
   <h2>○今日の発表順はこちら</h2>
-
-  <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
-  <table border='1' cellpadding='5' style='background:#F0F8FF'>
-    <?php $i = 1; ?>
-    <?php foreach ($prepare as $row): ?>
-      <tr>
-        <td><?=h($i) ?></td>
-        <td><?=h($row['studentname'])?></td>
-      </tr>
-      <?php $i = $i + 1; ?>
-    <?php endforeach; ?>
+  <table>
+    <tr>
+      <td>
+        プレゼンテーション
+        <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
+        <table border='1' cellpadding='5' style='background:#F0F8FF'>
+          <?php $i = 1; ?>
+          <?php foreach ($prepare as $row): ?>
+            <tr>
+              <td><?=h($i) ?></td>
+              <td><?=h($row['studentname'])?></td>
+            </tr>
+            <?php $i = $i + 1; ?>
+          <?php endforeach; ?>
+        </table>
+      </td>
+      <td>
+        　　
+      </td>
+      <td>
+        ファシグラ
+        <table border='1' cellpadding='5' style='background:#F5F5F5'>
+          <?php $i = 1; ?>
+          <?php foreach ($prepare_fg as $row): ?>
+            <tr>
+              <td><?=h($i) ?></td>
+              <td><?=h($row['studentname'])?></td>
+            </tr>
+            <?php $i = $i + 1; ?>
+          <?php endforeach; ?>
+        </table>
+      </td>
+    </tr>
   </table>
+
+
   <br>
   <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
   <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
-  <h4><a href= request_exOrder.php ><font color="blue"> 発表順を編集 </font>
+  <h4><a href= request_exOrder.php ><font color="blue"> 順番を細かく編集 </font>
   <h4><a href= index.html ><font color="green"> TOP </font>
   </a><h4>
   <br><br><br>
