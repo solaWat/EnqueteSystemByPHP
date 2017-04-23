@@ -113,14 +113,15 @@ EOM;
           // foreach ($st as $row) {
           //     $newOrder[] = $row['attendee_person_id'];
           // }
-
-  if ($_POST['add']) { // 追加が押されたら．
-
+  /**
+   * POST（名前を追加する）が押された際の処理
+   */
+  // プレゼン用
+  if ($_POST['add']) {
     if ($_POST['my_id'] == null) {
       exit(名前が選択されていません．);
     }
     $addname_id = $_POST['my_id'];
-
     $dbh = new PDO(
       $dsn,
       $user,
@@ -130,7 +131,7 @@ EOM;
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
       )
-      );
+    );
     $sql = <<< EOM
       SELECT attendee_person_id
       FROM {$tbname_3}
@@ -149,8 +150,7 @@ EOM;
     foreach ($prepare as $row) {
         $newOrder[] = $row['attendee_person_id'];
     }
-
-    // 最後に一つ，追加する．
+    // 現在の順番の最後に，一つ追加する．
     $newOrder[] = $addname_id;
 
     for ($i = 0; $i < count($newOrder); ++$i) {
@@ -168,9 +168,63 @@ EOM;
     }
   }
 
+  // ファシグラ用
+  if ($_POST['add_fg']) {
+    if ($_POST['my_id_fg'] == null) {
+      exit(名前が選択されていません．);
+    }
+    $addname_id = $_POST['my_id_fg'];
+    $dbh = new PDO(
+      $dsn,
+      $user,
+      $password,
+      array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+      )
+    );
+    $sql = <<< EOM
+      SELECT attendee_person_id
+      FROM {$tbname_4}
+      WHERE date = ?
+      AND   time = (
+        SELECT MAX(time)
+        FROM {$tbname_4}
+        WHERE date = ?
+        );
+EOM;
+    $prepare = $dbh->prepare($sql);
+    $prepare->bindValue(1, $date, PDO::PARAM_STR);
+    $prepare->bindValue(2, $date, PDO::PARAM_STR);
+    $prepare->execute();
+
+    foreach ($prepare as $row) {
+        $newOrder[] = $row['attendee_person_id'];
+    }
+    // 現在の順番の最後に，一つ追加する．
+    $newOrder[] = $addname_id;
+
+    for ($i = 0; $i < count($newOrder); ++$i) {
+      $j   = $i + 1;
+      $sql_insert_fg = <<< EOM
+        INSERT INTO {$tbname_4} (date, time, attendee_person_id, order_of_fg)
+        VALUES (?, ?, ?, ?) ;
+EOM;
+      $prepare = $dbh->prepare($sql_insert_fg);
+      $prepare->bindValue(1, $date, PDO::PARAM_STR);
+      $prepare->bindValue(2, $time, PDO::PARAM_STR);
+      $prepare->bindValue(3, $newOrder[$i], PDO::PARAM_STR);
+      $prepare->bindValue(4, (int)$j, PDO::PARAM_INT);
+      $prepare->execute();
+    }
+  }
+
           // $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
           //
-
+  /**
+   * 以下は続く処理で使う
+   */
   $dbh = new PDO(
     $dsn,
     $user,
@@ -182,11 +236,11 @@ EOM;
     )
     );
 
-    /**
-     * 研究室所属者の名簿データから，
-     * 本日の参加者として登録してる人の名前を引いて，
-     * 残りを求める．
-     */
+  /**
+   * 研究室所属者の名簿データから，
+   * 本日の参加者として登録してる人の名前を引いて，
+   * 残りを求める．
+   */
   // プレゼン用
   $sql_search_attendee = <<< EOM
     SELECT studentname, person_id
