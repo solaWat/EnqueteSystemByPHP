@@ -395,7 +395,7 @@ header('Content-Type: text/html; charset=utf-8');
   </tr>
 </table><br>
 
-<h2>＜現在の設定＞</h2>
+<h2>＜現在の順番＞</h2>
 
 <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
 <table>

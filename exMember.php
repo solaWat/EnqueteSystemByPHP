@@ -314,7 +314,7 @@ header('Content-Type: text/html; charset=utf-8');
             </label>
             <?php endforeach; ?>
           </div><br>
-          <input type="submit" name="sort_pr" value="　pランダムで順番を決める　" >
+          <input type="submit" name="sort_pr" value="　ランダムで順番を決める　" >
         </form>
       </td>
       <td>
@@ -333,7 +333,7 @@ header('Content-Type: text/html; charset=utf-8');
             </label>
             <?php endforeach; ?>
           </div><br>
-          <input type="submit" name="sort_fg" value="　fランダムで順番で決める　" >
+          <input type="submit" name="sort_fg" value="　ランダムで順番で決める　" >
           </form>
       </td>
     </tr>

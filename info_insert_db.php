@@ -8,6 +8,7 @@ $password = 'root';//各々の環境で変わります．
 $tbname_1   = 'test_vote';
 $tbname_2   = 'test_lab_member_info';
 $tbname_3   = 'test_order_of_presentation';
+$tbname_4   = 'test_order_of_fg';
 $fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
 
 date_default_timezone_set('Asia/Tokyo');
@@ -25,7 +26,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
       )
     );
-  
+
     $insert_info_sql = <<< EOM
       INSERT IGNORE INTO `test_lab_member_info` (fiscal_year, studentname, person_id) VALUES
       (2017, 'Ghita Athalina', '1701g'),

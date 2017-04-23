@@ -157,7 +157,7 @@ EOM;
   /**
    * POST（リセット）が押された際の処理
    */
-  if ($_POST['submit2']) {
+  if ($_POST['delete_result']) {
     $sql = <<< EOM
       DELETE
       FROM {$tbname_1}
@@ -232,7 +232,7 @@ header('Content-Type: text/html; charset=utf-8');
       </table>
     </td>
     <td>
-      ＝＞
+      ＜＜＜
     </td>
 
     <td>
@@ -274,7 +274,7 @@ header('Content-Type: text/html; charset=utf-8');
 <br><br><br><br><br><br><br><br><br><br>
 
 <form method="post" action="resultVis.php">
-  <input type="submit" name="submit2" value="※押すな※　本日の投票データを全て削除　※">
+  <input type="submit" name="delete_result" value="※押すな※　本日の投票データを全て削除　※">
 </form>
 <p>
   <font color="red">管理人のつぶやき「なんか，全体的に殺風景だ……」</font>
