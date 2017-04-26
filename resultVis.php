@@ -231,10 +231,6 @@ header('Content-Type: text/html; charset=utf-8');
       </table>
     </td>
     <td>
-      ＜＜＜
-    </td>
-
-    <td>
       <table border="1" style="background:#F5F5F5">
         <caption>ファシグラ
           <tr>
