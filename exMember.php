@@ -4,7 +4,7 @@ include ('var_conf.php');
 
 try {
   /**
-   * まず，DBを登録する．
+   * まず，本プログラムで使用するDBを作成する．
    */
   $pre_dbh = new PDO(
     $pre_dsn,
@@ -19,7 +19,7 @@ try {
   $pre_dbh->exec('CREATE DATABASE IF NOT EXISTS '.$dbname);
 
   /**
-   * DBに，TABLEを4つ登録する．
+   * DBに，4つのTABLEを作成する．
    */
   $dbh = new PDO(
     $dsn,
@@ -62,9 +62,10 @@ EOM;
   $dbh->exec('CREATE TABLE IF NOT EXISTS '.$tbname_4.'('.$col_set_tb4.');');
 
   /**
-   * 研究室所属メンバーを表示する．
+   * 研究室所属メンバーを
+   * プレゼン用とファシグラ用に
+   * それぞれDBから取ってくる．
    */
-  // $sql = 'SELECT * FROM '.$tbname_2.' WHERE fiscal_year = ? ';
   $sql = <<< EOM
     SELECT studentname, person_id
     FROM {$tbname_2}
@@ -79,7 +80,9 @@ EOM;
   $prepare_memberinfo_fg->execute();
 
   /**
-   *  POST（ランダムで決める）が降ってきた際の処理
+   *  POST（ランダムで決める）が降ってきた際の処理．
+   *  プレゼン欄で選択された人のシャッフルして，
+   *  プレゼン順を提案する．
    */
   //if (isset($_POST['sort'])) {
   if (!isset($_POST['sort_pr'])) {
@@ -123,6 +126,11 @@ EOM;
     }
   // }
 
+  /**
+   *  POST（ランダムで決める）が降ってきた際の処理．
+   *  ファシグラ欄で選択された人のシャッフルして，
+   *  ファシグラ順を提案する．
+   */
   if (!isset($_POST['sort_fg'])) {
       $errors[] = '送信されていません';
   } elseif ($_POST['sort_fg'] === '') {
@@ -153,6 +161,8 @@ EOM;
 
   /**
    * POST（発表順をアレンジしてファシグラ順に）が降ってきた際の処理
+   * 発表順（プレゼン順）を参考にして，ファシグラ順を提案する．
+   * 現在の設定は，発表者の2つ後の発表者が，ファシグラを担当する．
    */
   if (!isset($_POST['arrange'])) {
     $errors[] = '送信されていません';
@@ -188,6 +198,12 @@ EOM;
       $order_id_PRESEN[$key]        = $row['person_id'];
     }
 
+    /**
+     * 入ってきた配列の順番を入れ替えるための関数．
+     * i 番目の値に，i+2 番目の値を入れるようになっている．
+     * @param  array $array 入力配列
+     * @return array $person_fg 出力配列
+     */
     function change_order_for_FG($array){
       $person_fg  = $array;
       $person_one = $person_fg[0];//ファシグラは，発表者の2つ後の順番の人が担当する．
@@ -223,7 +239,8 @@ EOM;
   }
 
   /**
-   * 現在の順番をDBから吸い出す．
+   * 現在の順番をプレゼンとファシグラ，
+   * それぞれDBから吸い出す．
    */
   // これで済むはずなのに……　<?php include 'current_exOrder.php';
   // プレゼン用
