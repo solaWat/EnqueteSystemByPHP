@@ -1,21 +1,7 @@
 <?php
-$dbname   = 'enquete_main_2';//各々の環境で変わります．
-$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
-$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
-$user     = 'root';//各々の環境で変わります．
-$password = 'root';//各々の環境で変わります．
+// 基本的な変数は var_conf ファイルを参照のこと．
+include ('var_conf.php');
 
-$tbname_1   = 'test_vote';
-$tbname_2   = 'test_lab_member_info';
-$tbname_3   = 'test_order_of_presentation';
-$tbname_4   = 'test_order_of_fg';
-$fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
-
-date_default_timezone_set('Asia/Tokyo');
-$date = date('Y-m-d');
-$time = date('H:i:s');
-
-// mysql:host=127.0.0.1;dbname=enquete_main;charset=utf8
 try {
   $dbh = new PDO(
     $dsn,
@@ -27,10 +13,11 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
+
   /**
-   * 現在の順番をDBから吸い出す．
+   * 現在の順番を，DBにアクセスして保持する．
+   * プレゼン用
    */
-  // プレゼン用
   $sql = <<< EOM
     SELECT studentname
     FROM  {$tbname_2}
@@ -48,7 +35,11 @@ EOM;
   $prepare->bindValue(2, $date, PDO::PARAM_STR);
   $prepare->execute();
 
-  // ファシグラ用（プレゼン用との違いは，tablenameだけ．）
+  /**
+   * 現在の順番を，DBにアクセスして保持する．
+   * ファシグラ用
+   * （プレゼン用との違いは，基本的に tbnameだけ．）
+   */
   $sql_fg = <<< EOM
     SELECT studentname
     FROM  {$tbname_2}

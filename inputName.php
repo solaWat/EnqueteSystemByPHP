@@ -1,21 +1,12 @@
 <?php
-$dbname   = 'enquete_main_2';//各々の環境で変わります．
-$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
-$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
-$user     = 'root';//各々の環境で変わります．
-$password = 'root';//各々の環境で変わります．
-
-$tbname_1   = 'test_vote';
-$tbname_2   = 'test_lab_member_info';
-$tbname_3   = 'test_order_of_presentation';
-$tbname_4   = 'test_order_of_fg';
-$fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
-
-date_default_timezone_set('Asia/Tokyo');
-$date = date('Y-m-d');
-$time = date('H:i:s');
+// 基本的な変数は var_conf ファイルを参照のこと．
+include ('var_conf.php');
 
 try {
+
+  /**
+   * セッションクッキーの設定やトークンの付与など
+   */
   ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
   ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
   session_start(); // session_start() は、セッションを作成します。 もしくは、リクエスト上で GET, POST またはクッキーにより渡されたセッション ID に基づき現在のセッションを復帰します。
@@ -25,11 +16,16 @@ try {
   // トークンをセッションに保存
   $_SESSION['token'] = $token;
 
-  if (isset($_SESSION['my_id'])) { // 以前のセッション登録したことがある場合
-      header('Location: mainVote.php'); // 即，投票ページに飛ぶ．
+  // 以前にセッション登録したことがある場合，
+  // 即，投票ページ(mainVote.php)に飛ぶ．
+  if (isset($_SESSION['my_id'])) {
+      header('Location: mainVote.php');
       exit();
   }
 
+  /**
+   * 後の処理で使い回す $dbh を作る．
+   */
   $dbh = new PDO(
     $dsn,
     $user,
@@ -41,13 +37,14 @@ try {
     )
   );
 
-  // 研究室所属メンバーを表示する．
+  /**
+  * 研究室現所属者の情報を，DBにアクセスして保持する．
+  */
   $sql = <<< EOM
    SELECT studentname, person_id
    FROM {$tbname_2}
    WHERE fiscal_year = ?
 EOM;
-
   $prepare_memberinfo = $dbh->prepare($sql);
   $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
   $prepare_memberinfo->execute();

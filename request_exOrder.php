@@ -1,26 +1,14 @@
 <?php
-$dbname   = 'enquete_main_2';//各々の環境で変わります．
-$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
-$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
-$user     = 'root';//各々の環境で変わります．
-$password = 'root';//各々の環境で変わります．
-
-$tbname_1   = 'test_vote';
-$tbname_2   = 'test_lab_member_info';
-$tbname_3   = 'test_order_of_presentation';
-$tbname_4   = 'test_order_of_fg';
-$fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
-
-
-date_default_timezone_set('Asia/Tokyo');
-$date = date('Y-m-d');
-$time = date('H:i:s');
+// 基本的な変数は var_conf ファイルを参照のこと．
+include ('var_conf.php');
 
 try {
   /**
    * POST（名前を削除する）が押された際の処理
+   * 現在の順番の一番最後にある名前を，
+   * 順番から取り除く．その後，新しい順番をDBに登録する．
+   * プレゼン用
    */
-  // プレゼン用
   if ($_POST['delete']) {
     $dbh = new PDO(
       $dsn,
@@ -64,7 +52,12 @@ EOM;
     }
   }
 
-  // ファシグラ用
+  /**
+   * POST（名前を削除する）が押された際の処理
+   * 現在の順番の一番最後にある名前を，
+   * 順番から取り除く．その後，新しい順番をDBに登録する．
+   * ファシグラ用
+   */
   if ($_POST['delete_fg']) {
     $dbh = new PDO(
       $dsn,
@@ -115,8 +108,10 @@ EOM;
           // }
   /**
    * POST（名前を追加する）が押された際の処理
+   * 選択された1名を現在の順番の最後に付け加える．
+   * その後，新しい順番をDBに登録する．
+   * プレゼン用
    */
-  // プレゼン用
   if ($_POST['add']) {
     if ($_POST['my_id'] == null) {
       exit(名前が選択されていません．);
@@ -168,7 +163,12 @@ EOM;
     }
   }
 
-  // ファシグラ用
+  /**
+   * POST（名前を追加する）が押された際の処理
+   * 選択された1名を現在の順番の最後に付け加える．
+   * その後，新しい順番をDBに登録する．
+   * ファシグラ用
+   */
   if ($_POST['add_fg']) {
     if ($_POST['my_id_fg'] == null) {
       exit(名前が選択されていません．);
@@ -223,7 +223,7 @@ EOM;
           // $query = "SELECT order_of_presen FROM TestA_3_order_of_presen WHERE date = '$date' ORDER BY order_of_presen desc LIMIT 1";
           //
   /**
-   * 以下は続く処理で使う
+   * 後の処理で使い回す $dbh を作る．
    */
   $dbh = new PDO(
     $dsn,
@@ -237,11 +237,12 @@ EOM;
     );
 
   /**
-   * 研究室所属者の名簿データから，
+   * あらかじめ登録しておいた
+   * 研究室現所属者の名簿データベースから，
    * 本日の参加者として登録してる人の名前を引いて，
-   * 残りを求める．
+   * 差分をを保持する．
+   * プレゼン用
    */
-  // プレゼン用
   $sql_search_attendee = <<< EOM
     SELECT studentname, person_id
     FROM  {$tbname_2}
@@ -261,7 +262,13 @@ EOM;
   $prepare_attendee->bindValue(3, $fiscalyear, PDO::PARAM_STR);
   $prepare_attendee->execute();
 
-  // ファシグラ用
+  /**
+   * あらかじめ登録しておいた
+   * 研究室現所属者の名簿データベースから，
+   * 本日の参加者として登録してる人の名前を引いて，
+   * 差分をを保持する．
+   * ファシグラ用
+   */
   $sql_search_attendee_fg = <<< EOM
     SELECT studentname, person_id
     FROM  {$tbname_2}
@@ -282,9 +289,9 @@ EOM;
   $prepare_attendee_fg->execute();
 
   /**
-   * 現在の順番をDBから吸い出す．
+   * 現在の順番を，DBにアクセスして保持する．
+   * プレゼン用
    */
-  // プレゼン用
   // これで済むはずなのに……　<?php include 'current_exOrder.php';
   $sql = <<< EOM
     SELECT studentname
@@ -303,7 +310,11 @@ EOM;
   $prepare_order_pr->bindValue(2, $date, PDO::PARAM_STR);
   $prepare_order_pr->execute();
 
-  // ファシグラ用（プレゼン用との違いは，tablenameだけ．）
+  /**
+   * 現在の順番を，DBにアクセスして保持する．
+   * ファシグラ用
+   * （プレゼン用との違いは，基本的に tbnameだけ．）
+   */
   $sql_fg = <<< EOM
     SELECT studentname
     FROM  {$tbname_2}
