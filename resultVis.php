@@ -1,21 +1,12 @@
 <?php
-$dbname   = 'enquete_main_2';//各々の環境で変わります．
-$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
-$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';//各々の環境で変わります．
-$user     = 'root';//各々の環境で変わります．
-$password = 'root';//各々の環境で変わります．
-
-$tbname_1   = 'test_vote';
-$tbname_2   = 'test_lab_member_info';
-$tbname_3   = 'test_order_of_presentation';
-$tbname_4   = 'test_order_of_fg';
-$fiscalyear = '2017'; // 今の所はとりあえず，年度に関しては，ベタ打ちとする．
-
-date_default_timezone_set('Asia/Tokyo');
-$date = date('Y-m-d');
-$time = date('H:i:s');
+// 基本的な変数は var_conf ファイルを参照のこと．
+include ('var_conf.php');
 
 try {
+
+  /**
+   * 後の処理で使い回す $dbh を作る．
+   */
   $dbh = new PDO(
     $dsn,
     $user,
@@ -26,10 +17,11 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
+
   /**
-   * 現在の順番をDBから吸い出す
+   * 現在の順番を，DBにアクセスして保持する．
+   * プレゼン用
    */
-  // プレゼン用
   $sql = <<< EOM
     SELECT studentname, person_id
     FROM {$tbname_2}
@@ -54,7 +46,10 @@ EOM;
   // PRでもFGでもどちらでもいいが，発表の回数を保持しておく
   $attendee_person_number = count($attendee_studentname);
 
-  // ファシグラ用
+  /**
+   * 現在の順番を，DBにアクセスして保持する．
+   * ファシグラ用
+   */
   $sql_fg = <<< EOM
     SELECT studentname, person_id
     FROM {$tbname_2}
@@ -78,7 +73,9 @@ EOM;
   }
 
   /**
-   * 投票の集計を行う．
+   * データベースにアクセスして，
+   * 投票データを抽出し，
+   * 集計を行う．
    */
   // P票の集計
   for ($i = 0; $i < count($id_order); ++$i) {
@@ -140,6 +137,7 @@ EOM;
 
   /**
    * 投票が終わった人数の集計
+   * vote テーブルの投票者のユニーク数を数える．
    */
   $sql = <<< EOM
     SELECT DISTINCT voter_person_id
@@ -156,6 +154,7 @@ EOM;
 
   /**
    * POST（リセット）が押された際の処理
+   * その日の vote テーブルのデータを全て削除．
    */
   if ($_POST['delete_result']) {
     $sql = <<< EOM
