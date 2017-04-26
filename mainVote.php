@@ -4,14 +4,16 @@ include ('var_conf.php');
 
 try {
   /**
-   * セッション関係の処理
+   * セッション関係の処理．
+   * 特筆すべきは session_regenerate_id(); の処理．
    */
   ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
   ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
   session_start();
   session_regenerate_id(); // セキュリティ向上のため，セッションIDを振り直している．
 
-  if (isset($_POST['my_id'])) { // 「inputName.php」で選ばれた名前を抽出．
+  // inputName.php」で選ばれた名前を保持．
+  if (isset($_POST['my_id'])) {
       $_SESSION['my_id'] = $_POST['my_id'];
   }
   // これがあると，セッションがとってあった場合，exitになってしまう．
@@ -23,7 +25,7 @@ try {
   $fromSession = $_SESSION['my_id'];
 
   /**
-   * DBと接続する
+   * 後の処理で使い回す $dbh を作る．
    */
   $dbh = new PDO( // tableがなければ作る．
     $dsn,
@@ -35,6 +37,7 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
+
   /**
    * セッションを読み込んで，idと名前を照合し，保持する．
    */
@@ -52,10 +55,11 @@ EOM;
   foreach ($prepare as $row) {
       $masters_name = $row['studentname'];
   }
+
   /**
-   * 現在の順番をDBから吸い出す．
+   * 現在の順番を，DBにアクセスして保持する．
+   * プレゼン用
    */
-  // プレゼン用
   $sql_vote = <<< EOM
     SELECT studentname, person_id
     FROM  {$tbname_2}
@@ -78,7 +82,10 @@ EOM;
     $id_text_PRESEN[$key]        = $row['person_id'];
   }
 
-  // ファシグラ用
+  /**
+   * 現在の順番を，DBにアクセスして保持する．
+   * ファシグラ用
+   */
   $sql_vote_fg = <<< EOM
     SELECT studentname, person_id
     FROM  {$tbname_2}

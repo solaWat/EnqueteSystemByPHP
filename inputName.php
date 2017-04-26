@@ -3,6 +3,10 @@
 include ('var_conf.php');
 
 try {
+
+  /**
+   * セッションクッキーの設定やトークンの付与など
+   */
   ini_set('session.gc_maxlifetime', 60 * 60 * 24 * 30);
   ini_set('session.cookie_lifetime', 60 * 60 * 24 * 30); // クッキーを発行してから，(約？)30日間の有効期限を設定．
   session_start(); // session_start() は、セッションを作成します。 もしくは、リクエスト上で GET, POST またはクッキーにより渡されたセッション ID に基づき現在のセッションを復帰します。
@@ -12,11 +16,16 @@ try {
   // トークンをセッションに保存
   $_SESSION['token'] = $token;
 
-  if (isset($_SESSION['my_id'])) { // 以前のセッション登録したことがある場合
-      header('Location: mainVote.php'); // 即，投票ページに飛ぶ．
+  // 以前にセッション登録したことがある場合，
+  // 即，投票ページ(mainVote.php)に飛ぶ．
+  if (isset($_SESSION['my_id'])) {
+      header('Location: mainVote.php');
       exit();
   }
 
+  /**
+   * 後の処理で使い回す $dbh を作る．
+   */
   $dbh = new PDO(
     $dsn,
     $user,
@@ -28,13 +37,14 @@ try {
     )
   );
 
-  // 研究室所属メンバーを表示する．
+  /**
+  * 研究室現所属者の情報を，DBにアクセスして保持する．
+  */
   $sql = <<< EOM
    SELECT studentname, person_id
    FROM {$tbname_2}
    WHERE fiscal_year = ?
 EOM;
-
   $prepare_memberinfo = $dbh->prepare($sql);
   $prepare_memberinfo->bindValue(1, $fiscalyear, PDO::PARAM_STR);
   $prepare_memberinfo->execute();

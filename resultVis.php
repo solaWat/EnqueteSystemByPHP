@@ -3,6 +3,10 @@
 include ('var_conf.php');
 
 try {
+
+  /**
+   * 後の処理で使い回す $dbh を作る．
+   */
   $dbh = new PDO(
     $dsn,
     $user,
@@ -13,10 +17,11 @@ try {
       PDO::ATTR_EMULATE_PREPARES => false,
     )
   );
+
   /**
-   * 現在の順番をDBから吸い出す
+   * 現在の順番を，DBにアクセスして保持する．
+   * プレゼン用
    */
-  // プレゼン用
   $sql = <<< EOM
     SELECT studentname, person_id
     FROM {$tbname_2}
@@ -41,7 +46,10 @@ EOM;
   // PRでもFGでもどちらでもいいが，発表の回数を保持しておく
   $attendee_person_number = count($attendee_studentname);
 
-  // ファシグラ用
+  /**
+   * 現在の順番を，DBにアクセスして保持する．
+   * ファシグラ用
+   */
   $sql_fg = <<< EOM
     SELECT studentname, person_id
     FROM {$tbname_2}
@@ -65,7 +73,9 @@ EOM;
   }
 
   /**
-   * 投票の集計を行う．
+   * データベースにアクセスして，
+   * 投票データを抽出し，
+   * 集計を行う．
    */
   // P票の集計
   for ($i = 0; $i < count($id_order); ++$i) {
@@ -127,6 +137,7 @@ EOM;
 
   /**
    * 投票が終わった人数の集計
+   * vote テーブルの投票者のユニーク数を数える．
    */
   $sql = <<< EOM
     SELECT DISTINCT voter_person_id
@@ -143,6 +154,7 @@ EOM;
 
   /**
    * POST（リセット）が押された際の処理
+   * その日の vote テーブルのデータを全て削除．
    */
   if ($_POST['delete_result']) {
     $sql = <<< EOM
