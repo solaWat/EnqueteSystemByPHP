@@ -260,6 +260,9 @@ header('Content-Type: text/html; charset=utf-8');
 
   </tr>
 </table>
+<p>
+  総投票者数：<?=h($finish_vote_num)?> 名（ユニーク）
+</p>
 <br><br>
 <p>
   <font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてください．(mac)</font>
