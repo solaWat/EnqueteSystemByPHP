@@ -261,7 +261,7 @@ header('Content-Type: text/html; charset=utf-8');
   </tr>
 </table>
 <p>
-  総投票者数：<?=h($finish_vote_num)?> 名（ユニーク）
+  総投票者数：<?=h($finish_vote_num)?> 名（unique）
 </p>
 <br><br>
 <p>
