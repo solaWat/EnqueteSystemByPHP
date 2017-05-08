@@ -129,15 +129,72 @@ header('Content-Type: text/html; charset=utf-8');
 <body>
 
 <h4>こんにちは <font color='#696969'><big><?=h($masters_name)?></big></font> さん</h4>
-<p>○こちらの2つの表から，それぞれ投票を行ってください．</p>
+
+<!-- ゼミにおいて，投票の際に意識する評価指標の項目を列挙する -->
 <p>
-  ○投票の際，以下のポイントに留意してください．<br />
-  <font color=red>　＜プレゼンテーション＞</font><br />
-  <font color=red>　・その論文を読んでみたくなったか．</font><br />
-  <font color=red>　・ etc... </font><br />
-  <font color=red>　＜ファシとグラ＞</font><br />
-  <font color=red>　・ etc... </font><br />
+  ○投票の際，以下のポイントを意識してください．<br />
+
+<table>
+  <tr>
+    <td>
+      <font color=red><b>　＜プレゼンテーション＞</font>
+    </td>
+    <td>
+      <font color=red><b>　＜ファシとグラ＞</font>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <font color=red><b>　・制限時間が守られていたか（過ぎた後，発表を続けていないか）　</font>
+    </td>
+    <td>
+      <font color=red><b>　・意見（「発表」を含む）の整理ができていたか　</font>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <font color=red><b>　・意見・質問に対して，根拠ある返答がはっきりとなされていたか　</font>
+    </td>
+    <td>
+      <font color=red><b>　　　（例．発言の補足のための深掘り・見やすいグラフィック（色，字，文，絵）・意見の書き出し）　</font>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <font color=red><b>　・発表内容に対して興味深いと思える点が1つでもあったか　</font>
+    </td>
+    <td>
+      <font color=red><b>　・場に対して，討論が発生するような問題（議題）提起ができていたか　</font>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <font color=red><b>　・発表者の態度を心がけていたか（例．貧乏ゆすり・うつむき・表情）　</font>
+    </td>
+    <td>
+      <font color=red><b>　・討論の切れ目が見極められていたか　</font>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <font color=red><b>　・声が大きく，抑揚がついていたか　</font>
+    </td>
+    <td>
+      <font color=red><b>　・（グラフィックにおいて，フレームワークが活用できていたか）　</font>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <font color=red><b>　・話にリズム・キレ・ストーリー性があったか　</font>
+    </td>
+    <td>
+      <font color=red><b>　　</font>
+    </td>
+  </tr>
+</table>
 </p>
+
+<p>○こちらの2つの表から，それぞれ投票を行ってください．</p>
 <form method="post" action="mainVote.php">
 
 <!-- 2つのテーブルを並列させるための透明テーブル． -->
