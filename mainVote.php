@@ -133,12 +133,7 @@ header('Content-Type: text/html; charset=utf-8');
 <!-- ゼミにおいて，投票の際に意識する評価指標の項目を列挙する -->
 <p>
   ○投票の際，以下のポイントを意識してください．<br />
-  <!-- <font color=red>　＜プレゼンテーション＞</font><br />
-  <font color=red>　・その論文を読んでみたくなったか．</font><br />
-  <font color=red>　・ etc... </font><br />
-  <font color=red>　＜ファシとグラ＞</font><br />
-  <font color=red>　・ etc... </font><br /> -->
-<!-- </p> -->
+
 <table>
   <tr>
     <td>
