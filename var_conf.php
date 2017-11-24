@@ -3,7 +3,7 @@
  * このプログラムが接続するデータベースの名前
  * @var string
  */
-$dbname   = 'enquete_main_2';
+$dbname   = 'enquetesystembyphp_test';
 
 
 /**
@@ -11,7 +11,8 @@ $dbname   = 'enquete_main_2';
  * これを使って，$dbname のデータベースを作る．
  * @var string
  */
-$pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
+// $pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
+$pre_dsn  = 'mysql:host=localhost;charset=utf8';
 
 
 /**
@@ -19,7 +20,8 @@ $pre_dsn  = 'mysql:host=127.0.0.1;charset=utf8';
  * これを使ってデータベースにアクセスする．
  * @var string
  */
-$dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';
+// $dsn      = 'mysql:host=127.0.0.1;dbname='.$dbname.';charset=utf8mb4';
+$dsn      = 'mysql:host=localhost;dbname='.$dbname.';charset=utf8mb4';
 
 
 /**
@@ -41,10 +43,10 @@ $password = 'root';
  * @var string
  * @var string
  */
-$tbname_1   = 'test_vote';
-$tbname_2   = 'test_lab_member_info';
-$tbname_3   = 'test_order_of_presentation';
-$tbname_4   = 'test_order_of_fg';
+$tbname_1   = 'vote';
+$tbname_2   = 'lab_member_info';
+$tbname_3   = 'order_of_presentation';
+$tbname_4   = 'order_of_fg';
 
 
 /**
