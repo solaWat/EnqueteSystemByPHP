@@ -15,7 +15,7 @@ try {
     );
 
     $insert_info_sql = <<< EOM
-      INSERT IGNORE INTO `test_lab_member_info` (fiscal_year, studentname, person_id) VALUES
+      INSERT IGNORE INTO `lab_member_info` (fiscal_year, studentname, person_id) VALUES
       (2017, 'Ghita Athalina', '1701g'),
       (2017, '安保　建朗', '1702a'),
       (2017, '森田　和貴', '1703m'),
@@ -53,7 +53,7 @@ function h($str)
 </p>
 <p>
   失敗した時のコピペ
-   DELETE FROM `test_lab_member_info` WHERE `fiscal_year` = '2017'
+   DELETE FROM `lab_member_info` WHERE `fiscal_year` = '2017'
 </p>
 <a href= index.html > TOP </a>
 </body>
