@@ -176,6 +176,8 @@ EOM;
     $prepare->bindValue(1, $date, PDO::PARAM_STR);
     $prepare->execute();
 
+    // 発表順を参照して，所属メンバーから本日のゼミ参加者情報を引っ張ってくる．
+    // 発表順は，その日かつ最新の時間，の物を取ってくる．
     $sql_for_arrange = <<< EOM
       SELECT studentname, person_id
       FROM  {$tbname_2}
