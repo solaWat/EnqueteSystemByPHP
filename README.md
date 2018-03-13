@@ -30,18 +30,19 @@ sudo chmod 777 var_conf.php
 vim var_conf.php
 sudo chmod 644 var_conf.php
 ```
-※ここで，var_conf.phpは．
+※ここで，var_conf.php内にて，$dbnameを，
 ```
 $dbname = 'enquetesystembyphp_test';
 ↓
 $dbname = 'enquetesystembyphp';
 ```
-および，「$pre_dsn・$dsnのコメントアウトの入れ替え」を行う．
+のように書き換える．また，「$pre_dsn・$dsnのコメントアウトの入れ替え（ファイル内を見ればわかる）」を行う．これで開発テスト環境から本番環境で動くっぽくなる．
 
-基本的にはこれで動くと思う．
+基本的には以上で動くようになると思う．
 
 ### （おまけ）投票結果など（データベース(MySQL)の中身）をファイルにして保存する
-参考：　[MySQL 5.6 リファレンスマニュアル  /  ...  /  mysqldump — データベースバックアッププログラム](https://dev.mysql.com/doc/refman/5.6/ja/mysqldump.html)
+参考：[MySQL 5.6 リファレンスマニュアル  /  ...  /  mysqldump — データベースバックアッププログラム](https://dev.mysql.com/doc/refman/5.6/ja/mysqldump.html)
+
 （リモートにて）（MySQLのユーザ名「root」の場合）（sqlファイルの名前はなんでもいい）
 ```
 cd ~
@@ -50,10 +51,10 @@ mysqldump -uroot -p enquetesystembyphp > hsymlab_rbrk.sql
 ### （おまけ）ローカルにおけるSQLファイル扱いのススメ
 * Macで便利なやつ
 
-[PHPMyAdminよりも便利なSequel Proの使い方！MacでMySQLの管理が出来る！](https://iritec.jp/web_service/6065/)
+　[PHPMyAdminよりも便利なSequel Proの使い方！MacでMySQLの管理が出来る！](https://iritec.jp/web_service/6065/)
 
-* ローカルでの開発環境構築にはMAMP（https://www.mamp.info/en/）が楽チン
+* ローカルでの開発環境構築にはMAMP（https://www.mamp.info/en/） が楽チン
 
-[Sequel Pro と MAMP を繋げる](https://sequelpro.com/docs/get-started/get-connected/mamp)
+　[Sequel Pro と MAMP を繋げる](https://sequelpro.com/docs/get-started/get-connected/mamp)
 
 
