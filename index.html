@@ -14,27 +14,77 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- BootstrapのJS読み込み -->
     <script src="bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+    <!-- iconの読み込み　外部サイト：「Font Awesome」-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
 </head>
 
 <body>
-	<h1>何をするか，選んでください．</h1><br>
+	<div class="jumbotron">
+  		<h1>投票集計（アンケート）システム</h1> 
+  		<p>PHP言語で書かれているwebアプリケーションです．見た目だけは「BootStrap」使ってます．</p>
+  		<p>学会やゼミなどの発表の場で，発表者を評価するための投票・集計システムとして使用されることを想定しています．</p> 
+  		<p>※ログイン機能を実装する予定はありません。（いちいちログインするのは面倒くさいと思うので。。。）良識を持って運用してください。</p> 
+	</div>
+	
+	<dic class="row">
+		<div class="col">
+			
+		</div>
+		<div class="col">
+			<div class="card-deck">
+				<a href=exMember.php class="btn card border-danger text-danger">
+					<div class="card-body">
+						<div class="card-header"><i class="fas fa-user"></i> 代表者</div>
+						<p></p>
+						<p class="card-text"><i class="fas fa-user-edit"></i> 出席者を登録する</p>
+						<p class="card-text"><i class="fas fa-list-ol"></i> 発表順を決める</p>
+					</div>
+				</a>
+			    <a href=inputName.php class="btn card border-success text-success">
+					<div class="card-body">
+						<div class="card-header"><i class="fas fa-users"></i> 投票者</div>
+						<p></p>
+						<p class="card-text"><i class="fas fa-vote-yea"></i> 投票をする</p>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="col">
+			
+		</div>
+	</dic>
+	
+	<div class="row">
+		a
+	</div>
+	
+	<dic class="row">
+		<div class="col">
+			
+		</div>
+		<div class="col">
+			<div class="card-deck">
+				<a href=deleteSess.php class="btn card border-primary text-primary">
+					<div class="card-body">
+						<div class="card-header"><i class="fas fa-tools"></i></div>
+						<p></p>
+						<p class="card-text"><i class="fas fa-eraser"></i> セッションCookieを消去する</p>
+					</div>
+				</a>
+			    <a href=resultVis.php class="btn card border-info text-info">
+					<div class="card-body">
+						<div class="card-header"><i class="far fa-eye"></i></div>
+						<p></p>
+						<p class="card-text"><i class="fas fa-poll-h"></i></i> 集計結果だけ見る</p>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="col">
+			
+		</div>
+	</dic>
 
-	<div style="background: #FFE4E1; width:300px; border: 1px double #CC0000; height:88px; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-		<h4><a href=exMember.php > ・出席者を登録し，発表順を決める </a></h4>
-		<p>
-			<font color="red">※原則，代表者一人のみが訪問すること</font>
-		</p>
-	</div><br><br><br><br>
-
-	<div style="background: #98FB98; width:500px; border: 1px double #CC0000; height:150px; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-		<h2><a href=inputName.php > ・投票をする</a></h2>
-		<h3><font color="green">※多くの人が，こちらへ進むことになる．</font></h3>
-	</div><br><br><br><br><br>
-	<p><a href=deleteSess.php> セッションCookieを消去する</a></p>
-	<br><br><br><br><br>
-	<p><a href=resultVis.php> 集計結果ページに行く</a></p>
-	<br><br><br>
-	<h4><font color="red">※UIUX改善策，考え中</font></h4>
 </body>
 
 </html>
