@@ -296,100 +296,265 @@ header('Content-Type: text/html; charset=utf-8');
 <html lang="ja">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>発表順</title>
-  <div style="background-color: #cff;">
+  <!-- UTF-8 or Shift_JIS or EUC-JP -->
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>発表順</title>
+  <!-- BootstrapのCSS読み込み -->
+  <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery読み込み -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- BootstrapのJS読み込み -->
+  <script src="bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+  <!-- iconの読み込み　外部サイト：「Font Awesome」-->
+  <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+  <!--<div style="background-color: #cff;">-->
 </head>
 <body>
-  <h2>○研究室所属メンバーの中から，選んでください</h2>
-  <p>
-    ※何も選択せずボタンを押した場合，本日の順番データが全て削除されます．
-  </p>
+  
+  <!--<h2>○研究室所属メンバーの中から，選んでください</h2>-->
+  <!--<p>-->
+  <!--  ※何も選択せずボタンを押した場合，本日の順番データが全て削除されます．-->
+  <!--</p>-->
+  
+  <!--<div class="card border-info">-->
+  <!--  <div class="card-header"><h4>シャッフルで順番を決める</h4></div>-->
+  <!--  <div class="card-body">Content</div> -->
+    <!--<div class="card-footer">Footer</div>-->
+  <!--</div>-->
+  
+  <div class="row">
+    <div class="col text-left">
+      <h2>シャッフルで順番を決める</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      
+    </div>
+    <div class="col-5 text-center btn border-danger">
+      <h3>出席者を選択する</h3>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-header">プレゼンテーション</div>
+          <div class="card-body" style="background: #ddf;">
+            <form method="post" action="exMember.php">
+              <!--<div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">-->
+              <?php foreach ($prepare_memberinfo as $row): ?>
+                <?php $name   = $row['studentname'];?>
+                <?php $id = $row['person_id'];?>
+                <div class="form-check text-left pl-5">
+                  <label class="form-check-label m-1">
+                    <h5>
+                      <input type='checkbox' class="form-check-input" name='cn_pr[]' value='<?=h($id)?>'><?=h($name)?>
+                    </h5>
+                    
+                  </label>
+                </div>
+              <?php endforeach; ?>
+              <input type="submit" class="btn bg-primary text-white mt-3" name="sort_pr" value="ランダムで順番を決める" >
+            </form>
+          </div> 
+        </div>
+        <div class="card">
+          <div class="card-header">ファシグラ</div>
+          <div class="card-body" style="background: #ddf;">
+            <form method="post" action="exMember.php">
+              <!--<div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">-->
+              <?php foreach ($prepare_memberinfo_fg as $row): ?>
+                <?php $name   = $row['studentname'];?>
+                <?php $id = $row['person_id'];?>
+                <div class="form-check text-left pl-5">
+                  <label class="form-check-label m-1">
+                    <h5>
+                      <input type='checkbox' class="form-check-input" name='cn_fg[]' value='<?=h($id)?>'><?=h($name)?>
+                    </h5>
+                  </label>
+                </div>
+              <?php endforeach; ?>
+              <input type="submit" class="btn bg-primary text-white mt-3" name="sort_fg" value="ランダムで順番を決める" >
+            </form>
+          </div> 
+        </div>
+      </div>
+      <h3>※何も選択せずボタンを押した場合，本日の順番データが全て削除されます．</h3>
+    </div>
+    <div class="col">
+      
+    </div>
+    
+    <div class="col-5 text-center btn border-danger">
+      <h3>現在の発表順</h3>
+      <div class="card-deck">
+        <div class="card border-info">
+          <div class="card-header">プレゼンテーション</div>
+          <div class="card-body">
+            <table border='1' cellpadding='5' style='background:#F0F8FF'>
+              <?php $i = 1; ?>
+              <?php foreach ($prepare as $row): ?>
+                <tr>
+                  <td><?=h($i) ?></td>
+                  <td><?=h($row['studentname'])?></td>
+                </tr>
+                <?php $i = $i + 1; ?>
+              <?php endforeach; ?>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">ファシグラ</div>
+          <div class="card-body">
+            <table border='1' cellpadding='5' style='background:#F5F5F5'>
+              <?php $i = 1; ?>
+              <?php foreach ($prepare_fg as $row): ?>
+                <tr>
+                  <td><?=h($i) ?></td>
+                  <td><?=h($row['studentname'])?></td>
+                </tr>
+                <?php $i = $i + 1; ?>
+              <?php endforeach; ?>
+            </table>
+          </div> 
+        </div>
+      </div>
+      <form method="post" action="exMember.php">
+        <input type="submit" class="btn bg-primary text-white mt-3" name="arrange" value="発表順の2つ先の名前を，ファシグラ担当にする" />
+      </form>
+    </div>
+    <div class="col">
+      
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col text-left">
+      <h2>手入力で順番を決める</h2>
+    </div>
+  </div>
+  <h4><a href= request_exOrder.php ><font color="blue"> 順番を細かく編集 </font></a></h4>
+    
+  
+  <!--<div class="row">-->
+  <!--  <h4>シャッフルで順番を決める</h4>-->
+  <!--  <div class="col">-->
+  <!--    出席者を選択する-->
+  <!--    <div class="row">-->
+  <!--      <div class="col">-->
+  <!--        プレゼンテーション-->
+  <!--      </div>-->
+  <!--      <div class="col">-->
+  <!--        ファシグラ-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--  <div class="col">-->
+  <!--    現在の発表順-->
+  <!--    <div class="row">-->
+  <!--      <div class="col">-->
+  <!--        プレゼンテーション-->
+  <!--      </div>-->
+  <!--      <div class="col">-->
+  <!--        ファシグラ-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--</div>-->
+  
+  <!--<div class="row">-->
+  <!--  <p>手入力で順番を決める</p>-->
+  <!--  ※リンクを貼る-->
+  <!--</div>-->
 
-  <table>
-    <tr>
-      <td>
-        プレゼンテーション
-        <form method="post" action="exMember.php">
-          <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-            <?php foreach ($prepare_memberinfo as $row): ?>
-              <?php $name   = $row['studentname'];?>
-              <?php $id = $row['person_id'];?>
-            <label>
-              <input type='checkbox' name='cn_pr[]' value='<?=h($id)?>'><?=h($name)?>
-              <br><br>
-            </label>
-            <?php endforeach; ?>
-          </div><br>
-          <input type="submit" name="sort_pr" value="　ランダムで順番を決める　" >
-        </form>
-      </td>
-      <td>
+  <!--<table>-->
+  <!--  <tr>-->
+  <!--    <td>-->
+  <!--      プレゼンテーション-->
+  <!--      <form method="post" action="exMember.php">-->
+  <!--        <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">-->
+         
+            
+  <!--          <?php foreach ($prepare_memberinfo as $row): ?>-->
+  <!--            <?php $name   = $row['studentname'];?>-->
+  <!--            <?php $id = $row['person_id'];?>-->
+  <!--            <div class="form-check">-->
+  <!--              <label class="form-check-label">-->
+  <!--                <input type='checkbox' class="form-check-input" name='cn_pr[]' value='<?=h($id)?>'><?=h($name)?>-->
+  <!--                <br><br>-->
+  <!--              </label>-->
+  <!--            </div>-->
+  <!--          <?php endforeach; ?>-->
+            <!--</label>-->
+          
+          <!--</div><br>-->
+  <!--        <input type="submit" name="sort_pr" value="　ランダムで順番を決める　" >-->
+  <!--      </form>-->
+  <!--    </td>-->
+  <!--    <td>-->
         　　
-      </td>
-      <td>
-        ファシグラ
-        <form method="post" action="exMember.php">
-          <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">
-            <?php foreach ($prepare_memberinfo_fg as $row): ?>
-              <?php $name   = $row['studentname'];?>
-              <?php $id = $row['person_id'];?>
-            <label>
-              <input type='checkbox' name='cn_fg[]' value='<?=h($id)?>'><?=h($name)?>
-              <br><br>
-            </label>
-            <?php endforeach; ?>
-          </div><br>
-          <input type="submit" name="sort_fg" value="　ランダムで順番で決める　" >
-          </form>
-      </td>
-    </tr>
-  </table>
+  <!--    </td>-->
+  <!--    <td>-->
+  <!--      ファシグラ-->
+  <!--      <form method="post" action="exMember.php">-->
+  <!--        <div style="background: #ddf; width:200px; border: 1px double #CC0000; height:100％; padding-left:10px; padding-right:10px; padding-top:10px; padding-bottom:10px;">-->
+  <!--          <?php foreach ($prepare_memberinfo_fg as $row): ?>-->
+  <!--            <?php $name   = $row['studentname'];?>-->
+  <!--            <?php $id = $row['person_id'];?>-->
+  <!--          <label>-->
+  <!--            <input type='checkbox' name='cn_fg[]' value='<?=h($id)?>'><?=h($name)?>-->
+  <!--            <br><br>-->
+  <!--          </label>-->
+  <!--          <?php endforeach; ?>-->
+  <!--        </div><br>-->
+  <!--        <input type="submit" name="sort_fg" value="　ランダムで順番で決める　" >-->
+  <!--        </form>-->
+  <!--    </td>-->
+  <!--  </tr>-->
+  <!--</table>-->
 
-  <h2>○今日の発表順はこちら</h2>
-  <table>
-    <tr>
-      <td>
-        プレゼンテーション
+  <!--<h2>○今日の発表順はこちら</h2>-->
+  <!--<table>-->
+  <!--  <tr>-->
+  <!--    <td>-->
+  <!--      プレゼンテーション-->
         <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
-        <table border='1' cellpadding='5' style='background:#F0F8FF'>
-          <?php $i = 1; ?>
-          <?php foreach ($prepare as $row): ?>
-            <tr>
-              <td><?=h($i) ?></td>
-              <td><?=h($row['studentname'])?></td>
-            </tr>
-            <?php $i = $i + 1; ?>
-          <?php endforeach; ?>
-        </table>
-      </td>
-      <td>
+  <!--      <table border='1' cellpadding='5' style='background:#F0F8FF'>-->
+  <!--        <?php $i = 1; ?>-->
+  <!--        <?php foreach ($prepare as $row): ?>-->
+  <!--          <tr>-->
+  <!--            <td><?=h($i) ?></td>-->
+  <!--            <td><?=h($row['studentname'])?></td>-->
+  <!--          </tr>-->
+  <!--          <?php $i = $i + 1; ?>-->
+  <!--        <?php endforeach; ?>-->
+  <!--      </table>-->
+  <!--    </td>-->
+  <!--    <td>-->
         　　
-      </td>
-      <td>
-        ファシグラ
-        <table border='1' cellpadding='5' style='background:#F5F5F5'>
-          <?php $i = 1; ?>
-          <?php foreach ($prepare_fg as $row): ?>
-            <tr>
-              <td><?=h($i) ?></td>
-              <td><?=h($row['studentname'])?></td>
-            </tr>
-            <?php $i = $i + 1; ?>
-          <?php endforeach; ?>
-        </table>
-      </td>
-    </tr>
-  </table><br /><br />
+  <!--    </td>-->
+  <!--    <td>-->
+  <!--      ファシグラ-->
+  <!--      <table border='1' cellpadding='5' style='background:#F5F5F5'>-->
+  <!--        <?php $i = 1; ?>-->
+  <!--        <?php foreach ($prepare_fg as $row): ?>-->
+  <!--          <tr>-->
+  <!--            <td><?=h($i) ?></td>-->
+  <!--            <td><?=h($row['studentname'])?></td>-->
+  <!--          </tr>-->
+  <!--          <?php $i = $i + 1; ?>-->
+  <!--        <?php endforeach; ?>-->
+  <!--      </table>-->
+  <!--    </td>-->
+  <!--  </tr>-->
+  <!--</table><br /><br />-->
 
-  <form method="post" action="exMember.php">
-    <input type="submit" name="arrange" value="　発表順の2つ先の名前を，ファシグラ担当にする　" />
-  </form>
+  <!--<form method="post" action="exMember.php">-->
+  <!--  <input type="submit" name="arrange" value="　発表順の2つ先の名前を，ファシグラ担当にする　" />-->
+  <!--</form>-->
   <br>
   <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
   <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
-  <h4><a href= request_exOrder.php ><font color="blue"> 順番を細かく編集 </font>
-  <h4><a href= index.html ><font color="green"> TOP </font>
-  </a><h4>
+  <h4><a href= index.html ><font color="green"> TOP </font></a><h4>
   <br><br><br>
 </body>
 </html
