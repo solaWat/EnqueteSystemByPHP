@@ -312,9 +312,30 @@ header('Content-Type: text/html; charset=utf-8');
   <!--<div style="background-color: #cff;">-->
 </head>
 <body>
+  <nav class="navbar navbar-expand-sm bg-light navbar-light border-secondary">
+    <ul class="navbar-nav mr-auto">
+      <li class="navbar-brand">
+        <a class="nav-link" href=index.html>
+          <i class="fas fa-tag"></i> EnqueteSystemByPHP
+        </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item justify-content-end">
+        <a class="nav-link text-warning" href=withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間>
+          <i class="fas fa-clock"></i> 発表用タイマーを起動する
+        </a>
+      </li>
+      <li class="nav-item justify-content-end">
+        <a class="nav-link text-secondary" href=index.html>
+          <i class="fas fa-home"></i> TOP
+        </a>
+      </li>
+    </ul>
+  </nav>
   <div class="row">
     <div class="col text-left">
-      <h2>シャッフルで順番を決める</h2>
+      <h2>順番をシャッフルで指定する</h2>
     </div>
   </div>
   <div class="row">
@@ -340,8 +361,8 @@ header('Content-Type: text/html; charset=utf-8');
                   </label>
                 </div>
               <?php endforeach; ?>
-              <button type="button" class="btn bg-primary text-white mt-3" data-toggle="modal" data-target="#myModal_pr">
-                シャッフルで順番を決める
+              <button type="button" class="btn bg-info text-white mt-3" data-toggle="modal" data-target="#myModal_pr">
+                <i class="fas fa-random"></i> シャッフルで順番を決める
               </button>
               
               <!-- The Modal -->
@@ -383,8 +404,8 @@ header('Content-Type: text/html; charset=utf-8');
                   </label>
                 </div>
               <?php endforeach; ?>
-              <button type="button" class="btn bg-primary text-white mt-3" data-toggle="modal" data-target="#myModal_fg">
-                シャッフルで順番を決める
+              <button type="button" class="btn bg-info text-white mt-3" data-toggle="modal" data-target="#myModal_fg">
+                <i class="fas fa-random"></i> シャッフルで順番を決める
               </button>
               
               <!-- The Modal -->
@@ -453,7 +474,9 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
       </div>
       <form method="post" action="exMember.php">
-        <input type="submit" class="btn bg-primary text-white mt-3" name="arrange" value="発表順の2つ先の名前を，ファシグラ担当にする" />
+        <button type="submit" class="btn bg-primary text-white mt-3" name="arrange" value="発表順の2つ先の名前を，ファシグラ担当にする" >
+          <i class="fas fa-tools"></i> 発表順の2つ先の名前を，ファシグラ担当にする
+        </button>
       </form>
     </div>
     <div class="col">
@@ -461,17 +484,32 @@ header('Content-Type: text/html; charset=utf-8');
     </div>
   </div>
   
-  <div class="row">
+  <div class="row mt-3">
     <div class="col text-left">
-      <h2>手入力で順番を決める</h2>
+      <h2>順番を任意に指定する</h2>
     </div>
   </div>
-  <h4><a href= request_exOrder.php ><font color="blue"> 順番を細かく編集 </font></a></h4></a></h4>
-    
-  <br>
-  <!-- 直下のurlをいじると，ベルの時間とテキストのデフォルト表示を変えられる．ベルの時間の実際に鳴る時間は，コードもいじる必要がある． -->
-  <h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
-  <h4><a href= index.html ><font color="green"> TOP </font></a><h4>
-  <br><br><br>
+  <div class="row">
+    <div class="col-1">
+      
+    </div>
+    <div class="col">
+			<div class="card-deck">
+			    <a href=request_exOrder.php class="btn card border-danger text-danger shadow-sm">
+					<div class="card-body">
+						<div class="card-header"><i class="fas fa-user"></i> 代表者</div>
+						<p></p>
+						<p class="card-text"><i class="far fa-hand-point-up"></i> 順番を手入力で編集</p>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="col-7">
+      
+    </div>
+  </div>
+	<div class="jumbotron text-center mt-3" style="margin-bottom:0">
+    <a href='https://github.com/solaWat/EnqueteSystemByPHP'><i class="fab fa-github"></i> https://github.com/solaWat/EnqueteSystemByPHP</a>
+  </div>
 </body>
 </html
