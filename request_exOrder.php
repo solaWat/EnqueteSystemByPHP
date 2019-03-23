@@ -347,104 +347,158 @@ header('Content-Type: text/html; charset=utf-8');
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>発表順の編集</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- UTF-8 or Shift_JIS or EUC-JP -->
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>発表順の編集</title>
+	<!-- BootstrapのCSS読み込み -->
+  <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery読み込み -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- BootstrapのJS読み込み -->
+  <script src="bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+  <!-- iconの読み込み　外部サイト：「Font Awesome」-->
+  <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
 </head>
 <body>
-<h2>＜編集＞</h2>
+    <nav class="navbar navbar-expand-sm bg-light navbar-light border-secondary">
+    <ul class="navbar-nav mr-auto">
+      <li class="navbar-brand">
+        <a class="nav-link" href=index.html>
+          <i class="fas fa-tag"></i> EnqueteSystemByPHP
+        </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item justify-content-end">
+        <a class="nav-link text-warning" href=withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間>
+          <i class="fas fa-clock"></i> 発表用タイマーを起動する
+        </a>
+      </li>
+      <li class="nav-item justify-content-end">
+        <a class="nav-link text-secondary" href=index.html>
+          <i class="fas fa-home"></i> TOP
+        </a>
+      </li>
+    </ul>
+  </nav>
+  
+  <div class="row">
+    <div class="col text-left">
+      <h2>順番を任意に指定する</h2>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+      
+    </div>
+    <div class="col-5 text-center btn shadow">
+      <h3>未選択の所属者一覧</h3>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-header">プレゼンテーション</div>
+          <div class="card-body">
+            <form method="post" action="request_exOrder.php">
+              <?php foreach ($prepare_attendee as $row): ?>
+                <?php $name = $row['studentname'];?>
+                <?php $id = $row['person_id'];?>
+                <div class="form-check text-left pl-5">
+                  <label class="form-check-label m-1">
+                    <h5>
+                      <input type='radio' class="form-check-input" name='my_id' value=<?=h($id)?> checked /><?=h($name)?>
+                    </h5>
+                  </label>
+                </div>
+              <?php endforeach; ?>
+              <button type="submit" class="btn bg-primary text-white mt-3" name="add" value="追加する">
+                <i class="fas fa-user-plus"></i> 一番下に追加
+              </button>
+            </form>
+          </div> 
+        </div>
+        <div class="card">
+          <div class="card-header">ファシグラ</div>
+          <div class="card-body">
+            <form method="post" action="request_exOrder.php">
+              <?php foreach ($prepare_attendee_fg as $row): ?>
+                <?php $name = $row['studentname']; ?>
+                <?php $id = $row['person_id']; ?>
+                <div class="form-check text-left pl-5">
+                  <label class="form-check-label m-1">
+                    <h5>
+                      <input type='radio' name='my_id_fg' value=<?=h($id)?> checked /><?=h($name)?>
+                    </h5>
+                  </label>
+                </div>
+              <?php endforeach; ?>
+              <button type="submit" class="btn bg-primary text-white mt-3" name="add_fg" value="追加する">
+                <i class="fas fa-user-plus"></i> 一番下に追加
+              </button>
+            </form>
+          </div> 
+        </div>
+      </div>
+    </div>
 
-<table>
-  <tr>
-    <td>
-      プレゼンテーション
-      <!-- addname form -->
-      <h3>[名前を追加する]</h3>
-      <form method="post" action="request_exOrder.php">
-      <?php foreach ($prepare_attendee as $row): ?>
-        <?php $name = $row['studentname'];?>
-        <?php $id = $row['person_id'];?>
-        <label>
-          <input type='radio' name='my_id' value=<?=h($id)?> checked /><?=h($name)?>
-          <br /><br />
-        </label>
-      <?php endforeach; ?>
-      <input type="submit" name="add" value=" 追加する " >
-      </form>
-
-      <!-- delete form -->
-      <br><h3>[名前を削除する]（※一名ずつ）</h3>
-      <form method="post" action="request_exOrder.php">
-      <input type="submit" name="delete" value=" 削除する " >
-      </form>
-    </td>
-    <td>
-      　　
-    </td>
-    <td>
-      ファシグラ
-      <!-- addname form -->
-      <h3>[名前を追加する]</h3>
-      <form method="post" action="request_exOrder.php">
-      <?php foreach ($prepare_attendee_fg as $row): ?>
-        <?php $name = $row['studentname']; ?>
-        <?php $id = $row['person_id']; ?>
-        <label>
-          <input type='radio' name='my_id_fg' value=<?=h($id)?> checked /><?=h($name)?>
-          <br /><br />
-        </label>
-      <?php endforeach; ?>
-      <input type="submit" name="add_fg" value=" 追加する " >
-      </form>
-
-      <!-- delete form -->
-      <br><h3>[名前を削除する]（※一名ずつ）</h3>
-      <form method="post" action="request_exOrder.php">
-      <input type="submit" name="delete_fg" value=" 削除する " >
-      </form>
-
-    </td>
-  </tr>
-</table><br>
-
-<h2>＜現在の順番＞</h2>
-
-<!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
-<table>
-  <tr>
-    <td>
-      プレゼンテーション
-      <!-- これで済むはずなのに…… include 'current_exOrder.php'; -->
-      <table border='1' cellpadding='5' style='background:#F0F8FF'>
-        <?php $i = 1; ?>
-        <?php foreach ($prepare_order_pr as $row): ?>
-          <tr>
-            <td><?=h($i) ?></td>
-            <td><?=h($row['studentname'])?></td>
-          </tr>
-          <?php $i = $i + 1; ?>
-        <?php endforeach; ?>
-      </table>
-    </td>
-    <td>
-      　　　　
-    </td>
-    <td>
-      ファシグラ
-      <table border='1' cellpadding='5' style='background:#F5F5F5'>
-        <?php $i = 1; ?>
-        <?php foreach ($prepare_order_fg as $row): ?>
-          <tr>
-            <td><?=h($i) ?></td>
-            <td><?=h($row['studentname'])?></td>
-          </tr>
-          <?php $i = $i + 1; ?>
-        <?php endforeach; ?>
-      </table>
-    </td>
-  </tr>
-</table>
-
-<h3><a href= withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間><font color="orange"> 発表用タイマー </font></a></h3>
-<p><a href= index.html > TOP </a></p><br><br>
+    <div class="col">
+      
+    </div>
+    
+    <div class="col-5 text-center btn">
+      <h3>現在の発表順</h3>
+      <div class="card-deck">
+        <div class="card border-info">
+          <div class="card-header">プレゼンテーション</div>
+          <div class="card-body">
+            <table border='1' cellpadding='5' style='background:#F0F8FF'>
+              <?php $i = 1; ?>
+              <?php foreach ($prepare_order_pr as $row): ?>
+                <tr>
+                  <td><?=h($i) ?></td>
+                  <td><?=h($row['studentname'])?></td>
+                </tr>
+                <?php $i = $i + 1; ?>
+              <?php endforeach; ?>
+            </table>
+            <form method="post" action="request_exOrder.php">
+              <button type="submit" class="btn bg-danger text-white mt-3" name="delete" value=" 削除する " >
+                <i class="fas fa-user-minus"></i> 一番下を削除
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="card border-secondary">
+          <div class="card-header">ファシグラ</div>
+          <div class="card-body">
+            <table border='1' cellpadding='5' style='background:#F5F5F5'>
+              <?php $i = 1; ?>
+              <?php foreach ($prepare_order_fg as $row): ?>
+                <tr>
+                  <td><?=h($i) ?></td>
+                  <td><?=h($row['studentname'])?></td>
+                </tr>
+                <?php $i = $i + 1; ?>
+              <?php endforeach; ?>
+            </table>
+            <form method="post" action="request_exOrder.php">
+              <button type="submit" class="btn bg-danger text-white mt-3" name="delete_fg" value=" 削除する " >
+                <i class="fas fa-user-minus"></i> 一番下を削除
+              </button>
+            </form>
+          </div> 
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      
+    </div>
+  </div>
+  <h1>TODO:ボタンの連打対策</h1>
+  <div class="jumbotron text-center mt-3" style="margin-bottom:0">
+    <a href='https://github.com/solaWat/EnqueteSystemByPHP'><i class="fab fa-github"></i> https://github.com/solaWat/EnqueteSystemByPHP</a>
+  </div>
 </body>
 </html>
