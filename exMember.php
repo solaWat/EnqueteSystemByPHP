@@ -300,7 +300,7 @@ header('Content-Type: text/html; charset=utf-8');
 	
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>発表順</title>
+	<title>発表順をシャッフルで指定</title>
   <!-- BootstrapのCSS読み込み -->
   <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- jQuery読み込み -->
