@@ -400,12 +400,12 @@ header('Content-Type: text/html; charset=utf-8');
       <div class="card-deck">
         <div class="card">
           <div class="card-header">プレゼンテーション</div>
-          <div class="card-body">
+          <div class="card-body mx-auto">
             <form method="post" action="request_exOrder.php">
               <?php foreach ($prepare_attendee as $row): ?>
                 <?php $name = $row['studentname'];?>
                 <?php $id = $row['person_id'];?>
-                <div class="form-check text-left pl-5">
+                <div class="form-check text-left">
                   <label class="form-check-label m-1">
                     <h5>
                       <input type='radio' class="form-check-input" name='my_id' value=<?=h($id)?> checked /><?=h($name)?>
@@ -421,15 +421,15 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
         <div class="card">
           <div class="card-header">ファシグラ</div>
-          <div class="card-body">
+          <div class="card-body mx-auto">
             <form method="post" action="request_exOrder.php">
               <?php foreach ($prepare_attendee_fg as $row): ?>
                 <?php $name = $row['studentname']; ?>
                 <?php $id = $row['person_id']; ?>
-                <div class="form-check text-left pl-5">
+                <div class="form-check text-left">
                   <label class="form-check-label m-1">
                     <h5>
-                      <input type='radio' name='my_id_fg' value=<?=h($id)?> checked /><?=h($name)?>
+                      <input type='radio' class="form-check-input" name='my_id_fg' value=<?=h($id)?> checked /><?=h($name)?>
                     </h5>
                   </label>
                 </div>
@@ -452,7 +452,7 @@ header('Content-Type: text/html; charset=utf-8');
       <div class="card-deck">
         <div class="card border-info">
           <div class="card-header">プレゼンテーション</div>
-          <div class="card-body">
+          <div class="card-body mx-auto">
             <table border='1' cellpadding='5' style='background:#F0F8FF'>
               <?php $i = 1; ?>
               <?php foreach ($prepare_order_pr as $row): ?>

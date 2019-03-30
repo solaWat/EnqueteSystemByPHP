@@ -347,7 +347,7 @@ header('Content-Type: text/html; charset=utf-8');
       <div class="card-deck">
         <div class="card">
           <div class="card-header">プレゼンテーション</div>
-          <div class="card-body">
+          <div class="card-body mx-auto">
             <form method="post" action="exMember.php">
               <?php foreach ($prepare_memberinfo as $row): ?>
                 <?php $name   = $row['studentname'];?>
@@ -391,7 +391,7 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
         <div class="card">
           <div class="card-header">ファシグラ</div>
-          <div class="card-body">
+          <div class="card-body mx-auto">
             <form method="post" action="exMember.php">
               <?php foreach ($prepare_memberinfo_fg as $row): ?>
                 <?php $name   = $row['studentname'];?>
