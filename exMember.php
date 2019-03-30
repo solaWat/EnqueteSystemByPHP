@@ -342,12 +342,12 @@ header('Content-Type: text/html; charset=utf-8');
     <div class="col">
       
     </div>
-    <div class="col-5 text-center btn border-danger shadow">
+    <div class="col-5 text-center btn shadow">
       <h3>所属者一覧</h3>
       <div class="card-deck">
         <div class="card">
           <div class="card-header">プレゼンテーション</div>
-          <div class="card-body" style="background: #ddf;">
+          <div class="card-body">
             <form method="post" action="exMember.php">
               <?php foreach ($prepare_memberinfo as $row): ?>
                 <?php $name   = $row['studentname'];?>
@@ -391,7 +391,7 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
         <div class="card">
           <div class="card-header">ファシグラ</div>
-          <div class="card-body" style="background: #ddf;">
+          <div class="card-body">
             <form method="post" action="exMember.php">
               <?php foreach ($prepare_memberinfo_fg as $row): ?>
                 <?php $name   = $row['studentname'];?>
@@ -439,7 +439,7 @@ header('Content-Type: text/html; charset=utf-8');
       
     </div>
     
-    <div class="col-5 text-center btn border-danger">
+    <div class="col-5 text-center btn">
       <h3>現在の発表順</h3>
       <div class="card-deck">
         <div class="card border-info">
