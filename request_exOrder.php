@@ -496,7 +496,9 @@ header('Content-Type: text/html; charset=utf-8');
       
     </div>
   </div>
-  <h1>TODO:ボタンの連打対策</h1>
+  
+  <!--<h1>TODO:ボタンの連打対策</h1>-->
+  
   <div class="jumbotron text-center mt-3" style="margin-bottom:0">
     <a href='https://github.com/solaWat/EnqueteSystemByPHP'><i class="fab fa-github"></i> https://github.com/solaWat/EnqueteSystemByPHP</a>
   </div>
