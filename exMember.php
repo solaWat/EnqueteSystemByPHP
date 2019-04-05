@@ -312,27 +312,8 @@ header('Content-Type: text/html; charset=utf-8');
   <!--<div style="background-color: #cff;">-->
 </head>
 <body>
-  <nav class="navbar navbar-expand-sm bg-light navbar-light border-secondary">
-    <ul class="navbar-nav mr-auto">
-      <li class="navbar-brand">
-        <a class="nav-link" href=index.html>
-          <i class="fas fa-tag"></i> EnqueteSystemByPHP
-        </a>
-      </li>
-    </ul>
-    <ul class="navbar-nav">
-      <li class="nav-item justify-content-end">
-        <a class="nav-link text-warning" href=withTimer.php#t1=5:00&t2=10:00&t3=20:00&m=論文輪講%20発表時間>
-          <i class="fas fa-clock"></i> 発表用タイマーを起動する
-        </a>
-      </li>
-      <li class="nav-item justify-content-end">
-        <a class="nav-link text-secondary" href=index.html>
-          <i class="fas fa-home"></i> TOP
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <?php include ('header_general.php'); ?>
+  
   <div class="row">
     <div class="col text-left">
       <h2>順番をシャッフルで指定する</h2>
@@ -508,8 +489,6 @@ header('Content-Type: text/html; charset=utf-8');
       
     </div>
   </div>
-	<div class="jumbotron text-center mt-3" style="margin-bottom:0">
-    <a href='https://github.com/solaWat/EnqueteSystemByPHP'><i class="fab fa-github"></i> https://github.com/solaWat/EnqueteSystemByPHP</a>
-  </div>
+  <?php include ('footer_general.php'); ?>
 </body>
 </html
