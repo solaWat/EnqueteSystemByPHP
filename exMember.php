@@ -425,8 +425,8 @@ header('Content-Type: text/html; charset=utf-8');
       <div class="card-deck">
         <div class="card border-info">
           <div class="card-header">プレゼンテーション</div>
-          <div class="card-body">
-            <table border='1' cellpadding='5' style='background:#F0F8FF'>
+          <div class="card-body mx-auto">
+            <table class="table table-bordered text-center" style='background:#F0F8FF'>
               <?php $i = 1; ?>
               <?php foreach ($prepare as $row): ?>
                 <tr>
@@ -440,8 +440,8 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
         <div class="card border-secondary">
           <div class="card-header">ファシグラ</div>
-          <div class="card-body">
-            <table border='1' cellpadding='5' style='background:#F5F5F5'>
+          <div class="card-body mx-auto">
+            <table class="table table-bordered text-center" style='background:#F5F5F5'>
               <?php $i = 1; ?>
               <?php foreach ($prepare_fg as $row): ?>
                 <tr>
