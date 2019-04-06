@@ -337,7 +337,6 @@ header('Content-Type: text/html; charset=utf-8');
     <div class="row">
       <div class="col text-center">
         <input type="hidden" name="token" value="<?=$token?>">
-        <!--<input type="submit" name="submit" value="投票する" >-->
         <button type="submit" class="btn btn-primary" name="submit" value="投票する">投票する</button>
       </div>
     </div>
@@ -427,31 +426,8 @@ if ($_POST['submit']) {
       echo '<div class="alert alert-success fade show text-center">
               <strong>Success!</strong> 投票に成功しました．集計結果を見に行きましょう．
             </div>';
-    }
-    
-    echo '<div class="row">
-            <div class="col-4">
-              
-            </div>
-            <div class="col">
-        			<div class="card-deck">
-        		    <a href=resultVis.php class="btn card border-info text-info shadow-sm">
-        					<div class="card-body">
-        						<div class="card-header"><i class="far fa-eye"></i></div>
-        						<p></p>
-        						<p class="card-text"><i class="fas fa-poll-h"></i></i> 集計結果を見る</p>
-        					</div>
-        				</a>
-        			</div>
-        		</div>
-        		<div class="col-4">
-              
-            </div>
-          </div>';
-  }
-  
-  
-
+            
+// 投票結果をDBへ入れ込む処理。
   try {
     $sql = <<< EOM
       DELETE
@@ -501,6 +477,33 @@ EOM;
     echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
   }
+
+
+    }
+    
+    echo '<div class="row">
+            <div class="col-4">
+              
+            </div>
+            <div class="col">
+        			<div class="card-deck">
+        		    <a href=resultVis.php class="btn card border-info text-info shadow-sm">
+        					<div class="card-body">
+        						<div class="card-header"><i class="far fa-eye"></i></div>
+        						<p></p>
+        						<p class="card-text"><i class="fas fa-poll-h"></i></i> 集計結果を見る</p>
+        					</div>
+        				</a>
+        			</div>
+        		</div>
+        		<div class="col-4">
+              
+            </div>
+          </div>';
+  }
+  
+  
+
 }
 ?>
 
