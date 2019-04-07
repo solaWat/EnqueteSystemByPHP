@@ -12,6 +12,8 @@
 <!-- ↑ -->
 <link href="./timekeeper-gh-pages/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="./timekeeper-gh-pages/css/timekeeper.css" rel="stylesheet">
+<!-- iconの読み込み　外部サイト：「Font Awesome」-->
+  <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
 <!-- ここまで，編集． -->
 
 </head>
@@ -38,13 +40,27 @@
           </div>
         </form>
         <!-- ここから，追記．リンクを追加 -->
-        <h4><a href= request_exOrder.php ><font color="blue"> [順番を編集] </font>
+        <ul class="nav navbar-nav">
+          <li>
+            <a href=request_exOrder.php>
+              <p class="text-danger">
+                <i class="far fa-hand-point-up"></i> 順番を手入力で編集
+              </p>
+            </a>
+          </li>
+        </ul>
         <!-- ここまで，追記． -->
         <ul class="nav navbar-nav navbar-right">
-          <!-- ここから，追記．ホームへのリンクを追加． -->
-          <a href= index.html ><font color="orange">[ TOPに戻る]</font></a>
-          <!-- ここまで，追記 -->
           <li id="soundcheck"><a href="#soundcheck" data-toggle="tooltip" data-placement="bottom" title="Sound Check"><span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> <span class="hidden-xs hidden-sm">Sound Check</span></a></li>
+          <!-- ここから，追記．ホームへのリンクを追加． -->
+          <li>
+            <a href=index.html>
+              <p class="text-secondary">
+                <i class="fas fa-home"></i> TOP
+              </p>
+            </a>
+          </li>
+          <!-- ここまで，追記 -->
         </ul>
     </div><!-- /.container-fluid -->
   </nav>

@@ -60,21 +60,91 @@ function h($str)
 }
 header('Content-Type: text/html; charset=utf-8');
 ?>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>名前を選択</title>
-<h3>あなたの名前を教えてください．</h3>
-
-<!-- 自分の名前の登録は，遷移先で行われる． -->
-<form action="mainVote.php" method="post">
-  <?php foreach ($prepare_memberinfo as $row): ?>
-  <?php $name   = $row['studentname'];?>
-  <?php $id = $row['person_id'];?>
-      <label>
-        <input type='radio' name='my_id' value='<?=h($id)?>' checked><?=h($name)?>
-        <br><br>
-      </label>
-  <?php endforeach; ?>
-
-<input type="submit" value="送信する" onClick="return confirm('名前を再度確認したのち，[OK]を押してください．')" />
-</form><br><br><br>
-<p><a href="./index.html">TOP</a></p>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- UTF-8 or Shift_JIS or EUC-JP -->
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>名前を選択</title>
+	<!-- BootstrapのCSS読み込み -->
+  <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery読み込み -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- BootstrapのJS読み込み -->
+  <script src="bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+  <!-- iconの読み込み　外部サイト：「Font Awesome」-->
+  <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+</head>
+<body>
+  <?php include ('header_general.php'); ?>
+  
+  <div class="row">
+    <div class="col text-left">
+      <!--<h2>あなたの名前を教えてください</h2>-->
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+      
+    </div>
+    <div class="col-4 text-center btn">
+      <h2>あなたの名前を教えてください</h2>
+      <div class="card-deck">
+        <div class="card">
+          <div class="card-header">所属者一覧</div>
+          <div class="card-body mx-auto">
+            
+            <!-- 自分の名前の登録は，遷移先で行われる． -->
+            <form method="post" action="mainVote.php">
+              <?php foreach ($prepare_memberinfo as $row): ?>
+                <?php $name = $row['studentname'];?>
+                <?php $id = $row['person_id'];?>
+                <div class="form-check text-left">
+                  <label class="form-check-label m-1">
+                    <h5>
+                      <input type='radio' class="form-check-input" name='my_id' value=<?=h($id)?> checked /><?=h($name)?>
+                    </h5>
+                  </label>
+                </div>
+              <?php endforeach; ?>
+              <button type="button" class="btn bg-primary text-white mt-3" data-toggle="modal" data-target="#Modal_give_cokkie">
+                送信
+              </button>
+              
+              <!-- The Modal -->
+              <div class="modal" id="Modal_give_cokkie">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                      <h4 class="modal-title text-white">注意</h4>
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body text-left">
+                      <p>名前を再度確認したのち，「続行」を押してください．</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">中止</button>
+                      <button type="submit" class="btn btn-primary"  value="送信する">続行</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- The Modal -->
+              
+            </form>
+          </div> 
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      
+    </div>
+  </div>
+  
+  <?php include ('footer_general.php'); ?>
+</body>
+</html>

@@ -122,241 +122,270 @@ header('Content-Type: text/html; charset=utf-8');
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="ja">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<div style="background: #F0FFF0;">
-<title>投票システム</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<div style="background: #F0FFF0;">
+  <title>メイン投票ページ</title>
+	<!-- BootstrapのCSS読み込み -->
+  <link href="bootstrap-4.3.1-dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery読み込み -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- BootstrapのJS読み込み -->
+  <script src="bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+  <!-- iconの読み込み　外部サイト：「Font Awesome」-->
+  <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
 </head>
 <body>
+  <?php include ('header_general.php'); ?>
+  
+  <div>
+    <h4>こんにちは <font class="text-secondary"><big><?=h($masters_name)?></big></font> さん</h4>
+  </div>
+  
 
-<h4>こんにちは <font color='#696969'><big><?=h($masters_name)?></big></font> さん</h4>
+  <!-- ゼミにおいて，投票の際に意識する評価指標の項目を列挙する -->
+  <div class="row">
+    <div class="col text-left">
+      <h5>⚪︎投票の際，以下のポイントを意識してください</h5>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-1">
+      
+    </div>
+    <div class="col  text-left text-danger">
+      <div id="accordionPresen">
+        <div class="card  font-weight-bold border border-0" style="background: #F0FFF0;">
+          <a class="card-link btn" data-toggle="collapse" href="#collapsePresen">
+            <div class="card-header bg-light text-danger font-weight-bold">
+              ＜プレゼンテーション <i class="fas fa-user-graduate"></i>＞
+            </div>
+          </a>
+          <div id="collapsePresen" class="collapse bg-white" data-parent="#accordionPresen">
+            <div class="card-body">
+              <dd>- 制限時間が守られていたか（過ぎた後，発表を続けていないか）</dd>
+              <dd>- 意見・質問に対して，根拠ある返答がはっきりとなされていたか</dd>
+              <dd>- 発表内容に対して興味深いと思える点が1つでもあったか</dd>
+              <dd>- 発表者の態度を心がけていたか（例．貧乏ゆすり・うつむき・表情）</dd>
+              <dd>- 声が大きく，抑揚がついていたか</dd>
+              <dd>- 話にリズム・キレ・ストーリー性があったか</dd>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col  text-left text-danger">
+      <div id="accordionFG">
+        <div class="card  font-weight-bold border border-0" style="background: #F0FFF0;">
+          <a class="card-link btn" data-toggle="collapse" href="#collapseFG">
+            <div class="card-header bg-light text-danger font-weight-bold">
+              ＜ファシとグラ <i class="fas fa-chalkboard-teacher"></i>＞
+            </div>
+          </a>
+          <div id="collapseFG" class="collapse bg-white" data-parent="#accordionFG">
+            <div class="card-body">
+              <dd>- 意見（「発表」を含む）の整理ができていたか</dd>
+              <dd>   （例．発言の補足のための深掘り・見やすいグラフィック（色，字，文，絵）・意見の書き出し）</dd>
+              <dd>- 場に対して，討論が発生するような問題（議題）提起ができていたか</dd>
+              <dd>- 討論の切れ目が見極められていたか</dd>
+              <dd>- （グラフィックにおいて，フレームワークが活用できていたか）</dd>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-1">
+      
+    </div>
+  </div>
 
-<!-- ゼミにおいて，投票の際に意識する評価指標の項目を列挙する -->
-<p>
-  ○投票の際，以下のポイントを意識してください．<br />
+  <div class="row mt-5">
+    <div class="col text-center">
+      <h5>それぞれの表の中から選択し、投票してください．</h5>
+    </div>
+  </div>
 
-<table>
-  <tr>
-    <td>
-      <font color=red><b>　＜プレゼンテーション＞</font>
-    </td>
-    <td>
-      <font color=red><b>　＜ファシとグラ＞</font>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <font color=red><b>　・制限時間が守られていたか（過ぎた後，発表を続けていないか）　</font>
-    </td>
-    <td>
-      <font color=red><b>　・意見（「発表」を含む）の整理ができていたか　</font>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <font color=red><b>　・意見・質問に対して，根拠ある返答がはっきりとなされていたか　</font>
-    </td>
-    <td>
-      <font color=red><b>　　　（例．発言の補足のための深掘り・見やすいグラフィック（色，字，文，絵）・意見の書き出し）　</font>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <font color=red><b>　・発表内容に対して興味深いと思える点が1つでもあったか　</font>
-    </td>
-    <td>
-      <font color=red><b>　・場に対して，討論が発生するような問題（議題）提起ができていたか　</font>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <font color=red><b>　・発表者の態度を心がけていたか（例．貧乏ゆすり・うつむき・表情）　</font>
-    </td>
-    <td>
-      <font color=red><b>　・討論の切れ目が見極められていたか　</font>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <font color=red><b>　・声が大きく，抑揚がついていたか　</font>
-    </td>
-    <td>
-      <font color=red><b>　・（グラフィックにおいて，フレームワークが活用できていたか）　</font>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <font color=red><b>　・話にリズム・キレ・ストーリー性があったか　</font>
-    </td>
-    <td>
-      <font color=red><b>　　</font>
-    </td>
-  </tr>
-</table>
-</p>
+  <form method="post" action="mainVote.php">
 
-<p>○こちらの2つの表から，それぞれ投票を行ってください．</p>
-<form method="post" action="mainVote.php">
-
-<!-- 2つのテーブルを並列させるための透明テーブル． -->
-<table>
-  <tr>
-    <td>
-      <table border='1' cellpadding='8' style='background:#F0F8FF'>
-        <caption>
-          プレゼンテーション
-        </caption>
-        <tr>
-          <th>
-            1位
-          </th>
-          <th>
-            2位
-          </th>
-          <th>
-            3位
-          </th>
-          <th>
-
-          </th>
-        </tr>
-        <?php $j = 0; $k = 0;?>
-        <?php foreach ($name_text_PRESEN as $row): ?>
-          <?php $j = $j + 1; ?>
-          <?php if (strpos($id_text_PRESEN[$k], $fromSession) !== false) { ?>
-          <tr>
-            <?php for ($h = 1; $h < 3; ++$h) { ?>
-            <td>
-              &nbsp
-              <input type = 'radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
-            </td>
-            <?php } ?>
-            <td>
-              &nbsp
-              <input type='radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
-            </td>
-            <td>
-              <?=h($j)?>.<?=h($name_text_PRESEN[$k])?>
-            </td>
-          </tr>
-          <?php } else { ?>
-          <tr>
-            <?php for ($h = 1; $h < 3; ++$h) { ?>
-            <td>
-              &nbsp
-              <input type = 'radio' name='cn<?=$h?>' value=<?=$id_text_PRESEN[$k] ?> >
-            </td>
-            <?php } ?>
-            <td>
-              &nbsp
-              <input type='radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> >
-            </td>
-            <td>
-              <?=h($j)?>.<?=h($name_text_PRESEN[$k])?>
-            </td>
-          </tr>
-          <?php } ?>
-          <?php $k = $k + 1; ?>
-        <?php endforeach; ?>
-      </table>
-    </td>
-
-    <td>
-      <table border="1" cellpadding="8" style="background:#F5F5F5">
-        <caption>
-          ファシとグラ
-        </caption>
-        <tr>
-          <th>
-
-          </th>
-          <th>
-            1位
-          </th>
-          <th>
-            2位
-          </th>
-          <th>
-            3位
-          </th>
-        </tr>
-        <?php $k = 0;?>
-        <?php foreach ($name_text_FG as $row): ?>
-
-          <?php if (strpos($id_text_FG[$k], $fromSession) !== false) { ?>
-          <tr>
-            <td>
-              <?=h($name_text_FG[$k])?>
-            </td>
-            <?php for ($h = 1; $h < 3; ++$h) { ?>
-            <td>
-              &nbsp
-              <input type = 'radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> disabled>
-            </td>
-            <?php } ?>
-            <td>
-              &nbsp
-              <input type='radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> disabled>
-            </td>
-          </tr>
-          <?php } else { ?>
-          <tr>
-            <td>
-              <?=h($name_text_FG[$k])?>
-            </td>
-            <?php for ($h = 1; $h < 3; ++$h) { ?>
-            <td>
-              &nbsp
-              <input type = 'radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> >
-            </td>
-            <?php } ?>
-            <td>
-              &nbsp
-              <input type='radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> >
-            </td>
-          </tr>
-          <?php } ?>
-          <?php $k = $k + 1; ?>
-        <?php endforeach; ?>
-      </table>
-    </td>
-  </tr>
-</table>
-
-<br>
-<input type="hidden" name="token" value="<?=$token?>">
-<input type="submit" name="submit" value="投票する" >
-</form>
-
-<!-- フォームを並列したい時に使うもの．
-<div style="display:inline-flex">
-<form><input type="text"><input type="submit"></form>
-<form><input type="text"><input type="submit"></form>
-</div> -->
+    <div class="row">
+      <div class="col-2">
+        
+      </div>
+      <div class="col text-center">
+        <div class="card-deck">
+          <div class="card border border-0" style="background: #F0FFF0;">
+            <table class="table table-bordered" style='background:#F0F8FF'>
+              <thead>
+                <tr>
+                  <th>
+                    1位
+                  </th>
+                  <th>
+                    2位
+                  </th>
+                  <th>
+                    3位
+                  </th>
+                  <th>
+                    プレゼンテーション <i class="fas fa-user-graduate"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <?php $k = 0;?>
+                <?php foreach ($name_text_PRESEN as $row): ?>
+                  <?php if (strpos($id_text_PRESEN[$k], $fromSession) !== false) { ?>
+                  <tr>
+                    <?php for ($h = 1; $h < 3; ++$h) { ?>
+                    <td>
+                      <input type = 'radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
+                    </td>
+                    <?php } ?>
+                    <td>
+                      <input type='radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> disabled>
+                    </td>
+                    <td>
+                      <?=h($name_text_PRESEN[$k])?>
+                    </td>
+                  </tr>
+                  <?php } else { ?>
+                  <tr class="mx-auto">
+                    <?php for ($h = 1; $h < 3; ++$h) { ?>
+                    <td>
+                      <input type = 'radio' name='cn<?=$h?>' value=<?=$id_text_PRESEN[$k] ?> >
+                    </td>
+                    <?php } ?>
+                    <td>
+                      <input type='radio' name='cn<?=$h ?>' value=<?=$id_text_PRESEN[$k] ?> >
+                    </td>
+                    <td>
+                      <?=h($name_text_PRESEN[$k])?>
+                    </td>
+                  </tr>
+                  <?php } ?>
+                  <?php $k = $k + 1; ?>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+      
+          <div class="card border border-0" style="background: #F0FFF0;">
+            <table class="table table-bordered" style="background:#F5F5F5">
+              <thead>
+                <tr>
+                  <th>
+                    ファシとグラ <i class="fas fa-chalkboard-teacher"></i>
+                  </th>
+                  <th>
+                    1位
+                  </th>
+                  <th>
+                    2位
+                  </th>
+                  <th>
+                    3位
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <?php $k = 0;?>
+                <?php foreach ($name_text_FG as $row): ?>
+        
+                  <?php if (strpos($id_text_FG[$k], $fromSession) !== false) { ?>
+                  <tr>
+                    <td>
+                      <?=h($name_text_FG[$k])?>
+                    </td>
+                    <?php for ($h = 1; $h < 3; ++$h) { ?>
+                    <td>
+                      <input type = 'radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> disabled>
+                    </td>
+                    <?php } ?>
+                    <td>
+                      <input type='radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> disabled>
+                    </td>
+                  </tr>
+                  <?php } else { ?>
+                  <tr>
+                    <td>
+                      <?=h($name_text_FG[$k])?>
+                    </td>
+                    <?php for ($h = 1; $h < 3; ++$h) { ?>
+                    <td>
+                      <input type = 'radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> >
+                    </td>
+                    <?php } ?>
+                    <td>
+                      <input type='radio' name='co<?= $h ?>' value=<?= $id_text_FG[$k] ?> >
+                    </td>
+                  </tr>
+                  <?php } ?>
+                  <?php $k = $k + 1; ?>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-2">
+        
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col text-center">
+        <input type="hidden" name="token" value="<?=$token?>">
+        <button type="submit" class="btn btn-primary" name="submit" value="投票する">投票する</button>
+      </div>
+    </div>
+    
+  </form>
 
 <?php
 // 投票ボタン
 if ($_POST['submit']) {
+  
+  $isVoteSuccess = true;
+  $isVoteTwice = false;
 
   //ラジオボタン選択のエラー表示用
   if ($_POST['cn1'] == null or $_POST['cn2'] == null or $_POST['cn3'] == null) {
-      $error_msg = "<h4><font color='red'>※プレゼンテーションの全ての順位を埋めてください</font></h4>";
+      // $error_msg = "<h4><font color='red'>※プレゼンテーションの全ての順位を埋めてください</font></h4>";
+      $error_msg = '<div class="alert alert-danger fade show text-center">
+                      <strong>Error!</strong> 「プレゼンテーション  <i class="fas fa-user-graduate"></i>」の表の中で、選択されていない順位があります
+                    </div>';
       echo $error_msg;
-      exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
+      // exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
+      $isVoteSuccess = false;
   }
   if ($_POST['co1'] == null or $_POST['co2'] == null or $_POST['co3'] == null) {
-      $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
+      // $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
+      $error_msg = '<div class="alert alert-danger fade show text-center">
+                      <strong>Error!</strong> 「ファシとグラ <i class="fas fa-chalkboard-teacher"></i>」の表の中で、選択されていない順位があります
+                    </div>';
       echo $error_msg;
-      exit; //die関数にしてもいいかも．
+      // exit; //die関数にしてもいいかも．
+      $isVoteSuccess = false;
   }
   if ($_POST['cn1'] == $_POST['cn2'] || $_POST['cn2'] == $_POST['cn3'] || $_POST['cn1'] == $_POST['cn3']) {
-      $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（プレゼンテーション）</font></h4>";
+      // $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（プレゼンテーション）</font></h4>";
+      $error_msg = '<div class="alert alert-danger fade show text-center">
+                      <strong>Error!</strong> 「プレゼンテーション  <i class="fas fa-user-graduate"></i>」の表の中で、一つの投票先に複数の異なる順位が選択されています
+                    </div>';
       echo $error_msg;
-      exit;
+      // exit;
+      $isVoteSuccess = false;
   }
   if ($_POST['co1'] == $_POST['co2'] || $_POST['co2'] == $_POST['co3'] || $_POST['co1'] == $_POST['co3']) {
-      $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（ファシとグラ）</font></h4>";
+      // $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（ファシとグラ）</font></h4>";
+      $error_msg = '<div class="alert alert-danger fade show text-center">
+                      <strong>Error!</strong> 「ファシとグラ <i class="fas fa-chalkboard-teacher"></i>」の表の中で、一つの投票先に複数の異なる順位が選択されています
+                    </div>';
       echo $error_msg;
-      exit;
+      // exit;
+      $isVoteSuccess = false;
   }
 
   // セッションを開始する
@@ -370,19 +399,35 @@ if ($_POST['submit']) {
 
   // トークンがない場合は不正扱い
   if ($token === '') {
-      echo '<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>';
-      die("<h4><font color='red'>（※多重投票が検知されました．初回の投票以外は，集計に反映されません．）</font></h4>");
+      // echo '<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>';
+      // die("<h4><font color='red'>（※多重投票が検知されました．初回の投票以外は，集計に反映されません．）</font></h4>");
+      $error_msg = '<div class="alert alert-warning fade show text-center">
+                      <strong>Warning!</strong> （※多重投票が検知されました．初回の投票以外は，集計に反映されません．）
+                    </div>';
+      echo $error_msg;
+      $isVoteTwice = true;
   }
   // セッションに入れたトークンとPOSTされたトークンの比較
   if ($token !== $session_token) {
-      echo '<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>';
-      die("<h4><font color='red'>（※多重投票が検知されました．初回の投票以外は，集計に反映されません．）</font></h4>");
+      // echo '<br><h3><a href= resultVis.php > 集計結果を見る </a></h3>';
+      // die("<h4><font color='red'>（※多重投票が検知されました．初回の投票以外は，集計に反映されません．）</font></h4>");
+      $error_msg = '<div class="alert alert-warning fade show text-center">
+                      <strong>Warning!</strong> （※多重投票が検知されました．初回の投票以外は，集計に反映されません．）
+                    </div>';
+      echo $error_msg;
+      $isVoteTwice = true;
   }
-  // セッションに保存しておいたトークンの削除
-  unset($_SESSION['token']);
-
-  echo "<h3><font color='blue'>投票に成功しました．集計結果を見に行きましょう．</font></h3>";
-
+  
+  if ($isVoteSuccess) {
+    // セッションに保存しておいたトークンの削除
+    unset($_SESSION['token']);
+    
+    if (!$isVoteTwice) {
+      echo '<div class="alert alert-success fade show text-center">
+              <strong>Success!</strong> 投票に成功しました．集計結果を見に行きましょう．
+            </div>';
+            
+// 投票結果をDBへ入れ込む処理。
   try {
     $sql = <<< EOM
       DELETE
@@ -432,11 +477,36 @@ EOM;
     echo 'エラー!: '.$e->getMessage().'<br/>';
     die();
   }
+
+
+    }
+    
+    echo '<div class="row">
+            <div class="col-4">
+              
+            </div>
+            <div class="col">
+        			<div class="card-deck">
+        		    <a href=resultVis.php class="btn card border-info text-info shadow-sm">
+        					<div class="card-body">
+        						<div class="card-header"><i class="far fa-eye"></i></div>
+        						<p></p>
+        						<p class="card-text"><i class="fas fa-poll-h"></i></i> 集計結果を見る</p>
+        					</div>
+        				</a>
+        			</div>
+        		</div>
+        		<div class="col-4">
+              
+            </div>
+          </div>';
+  }
+  
+  
+
 }
 ?>
 
-<br>
-<h3><a href= resultVis.php > 集計結果を見る </a></h3><br><br>
-<a href= index.html > TOP </a>
-</body></div>
+  <?php include ('footer_general.php'); ?>
+</body>
 </html>
