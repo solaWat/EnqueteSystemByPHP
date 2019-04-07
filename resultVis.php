@@ -203,13 +203,13 @@ header('Content-Type: text/html; charset=utf-8');
   <?php include ('header_general.php'); ?>
   
   <div class="media border p-3">
-    <img src="rest_nobita.jpg" alt="rest_nobita" class="mr-3 mt-3" style="width:120px;">
-    <div class="media-body">
-      <h5>お疲れ様でした．投票結果は自動的に更新されます</h5>
+    <!--<img src="rest_nobita.jpg" alt="rest_nobita" class="mr-3 mt-3" style="width:120px;">-->
+    <div class="media-body text-center">
+      <h5><i class="fas fa-mug-hot"></i> お疲れ様でした．投票結果は自動的に更新されます</h5>
     </div>
   </div>
   
-  <div class="row">
+  <div class="row mt-3">
     <div class="col">
       
     </div>
@@ -306,92 +306,43 @@ header('Content-Type: text/html; charset=utf-8');
     </div>
   </div>
   
+  <div class="row mt-5">
+    <div class="col">
+      
+    </div>
+    <div class="col-3">
+      <form method="post" action="resultVis.php">
+        <!--<input type="submit" name="delete_result" value="※押すな※　本日の投票データを全て削除　※">-->
+        <button type="button" class="btn bg-danger text-white mt-3" data-toggle="modal" data-target="#Modal_delete_resVote">
+          ※押すな※　本日の投票データを全て削除　※
+        </button>
+      
+      
+        <!-- The Modal -->
+        <div class="modal" id="Modal_delete_resVote">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-danger">
+                <h4 class="modal-title text-white">警告</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body text-left">
+                <p>本日の投票データが全て削除されます．それでもよろしければ「続行」を押してください．</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">中止</button>
+                <button type="submit" class="btn btn-danger" name="delete_result" value="※押すな※　本日の投票データを全て削除　※">続行</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- The Modal -->
+      
+      </form>
+      
+    </div>
+  </div>
   
-  
-<!-- 休憩してて良いことを示す画像 -->
-<!--<img src="rest_nobita.jpg"></img><br><br><br>-->
-
-<!--<p>-->
-<!--  現在，『 <?=h($finish_vote_num)?> 人 』の投票が終わっています.-->
-<!--</p>-->
-<!--<p>-->
-<!--  （発表した人の数は <?=h($attendee_person_number)?> 人です．）-->
-<!--</p>-->
-<!--<br><br>-->
-
-<!-- 2つのテーブルと並列表示させるための透明テーブル -->
-<table>
-  <caption>
-    投票結果（ <?=h($date)?> )
-  </caption>
-  <tr>
-    <td>
-      <table border="1" style="background:#F0F8FF">
-        <caption align='left'>プレゼン
-          <?php for ($i = 0; $i < count($id_order); ++$i) { ?>
-            <tr>
-              <td style="background:white">
-                <?=h($attendee_studentname[$i])?>
-              </td>
-              <td>
-                <table>
-                  <tr>
-                    <?php $w = $sum_voted_P[$i] * 10; ?>
-                    <td width=<?= $w ?> bgcolor='green'>
-                    </td>
-                    <td>
-                      <?=h($sum_voted_P[$i])?> 票
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          <?php } ?>
-        </caption>
-      </table>
-    </td>
-    <td>
-      <table border="1" style="background:#F5F5F5">
-        <caption>ファシグラ
-          <tr>
-            <?php for ($i = 0; $i < count($id_order_fg); ++$i) { ?>
-            <tr>
-              <td style="background:white">
-                <?=h($attendee_studentname_fg[$i])?>
-              </td>
-              <td>
-                <table>
-                  <tr>
-                    <?php $w = $sum_voted_FG[$i] * 10; ?>
-                    <td width=<?= $w ?> bgcolor='green'>
-                    </td>
-                    <td>
-                      <?=h($sum_voted_FG[$i])?> 票
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </tr>
-        <?php } ?>
-
-      </table>
-    </td>
-
-  </tr>
-</table>
-<p>
-  総投票者数：<?=h($finish_vote_num)?> 名（unique）
-</p>
-<br><br>
-<p>
-  <font color="brue">「shift」+「command」+「4」で，範囲を指定して，投票結果をスクリーンショットしてください．(macの場合)</font>
-</p>
-
-<form method="post" action="resultVis.php">
-  <input type="submit" name="delete_result" value="※押すな※　本日の投票データを全て削除　※">
-</form>
-
   <?php include ('footer_general.php'); ?>
 
 </body>
