@@ -234,14 +234,14 @@ header('Content-Type: text/html; charset=utf-8');
   </div>
   
   <div class="row mt-5">
-    <div class="col">
+    <!--<div class="col-1">-->
       
-    </div>
-    <div class="col-8 text-center shadow">
+    <!--</div>-->
+    <div class="col text-center">
       <div class="col text-center p-3">
         <h3>投票結果（ <?=h($date)?> )</h3>
         <div class="card-deck">
-          <div class="card table-responsive border border-info">
+          <div class="card border border-info shadow">
             <div class="card-header">プレゼンテーション</div>
             <div class="card-body mx-auto">
               <table class="table table-bordered" style='background:#F0F8FF'>
@@ -255,7 +255,7 @@ header('Content-Type: text/html; charset=utf-8');
                     <td>
                       <table class="table table-sm table-borderless my-auto">
                         <tr>
-                          <?php $w = $sum_voted_P[$i] * 10; ?>
+                          <?php $w = 1 + $sum_voted_P[$i] * 20; ?>
                           <td width=<?= $w ?> class="shadow" bgcolor='green'>
                           </td>
                           <td>
@@ -270,7 +270,7 @@ header('Content-Type: text/html; charset=utf-8');
             </div>
           </div>
       
-          <div class="card responsive border border-secondary">
+          <div class="card border border-secondary shadow">
             <div class="card-header">ファシグラ</div>
             <div class="card-body mx-auto">
               <table class="table table-bordered" style="background:#F5F5F5">
@@ -284,7 +284,7 @@ header('Content-Type: text/html; charset=utf-8');
                     <td>
                       <table class="table table-sm table-borderless my-auto">
                         <tr>
-                          <?php $w = $sum_voted_FG[$i] * 10; ?>
+                          <?php $w = 1 + $sum_voted_FG[$i] * 20; ?>
                           <td width=<?= $w ?> class="shadow" bgcolor='green'>
                           </td>
                           <td>
@@ -301,9 +301,9 @@ header('Content-Type: text/html; charset=utf-8');
         </div>
       </div>
     </div>
-    <div class="col">
+    <!--<div class="col-1">-->
       
-    </div>
+    <!--</div>-->
   </div>
   
   <div class="row mt-5">
