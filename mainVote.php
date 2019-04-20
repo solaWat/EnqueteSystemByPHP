@@ -350,44 +350,6 @@ if ($_POST['submit']) {
   $isVoteSuccess = true;
   $isVoteTwice = false;
 
-  //ラジオボタン選択のエラー表示用
-  if ($_POST['cn1'] == null or $_POST['cn2'] == null or $_POST['cn3'] == null) {
-      // $error_msg = "<h4><font color='red'>※プレゼンテーションの全ての順位を埋めてください</font></h4>";
-      $error_msg = '<div class="alert alert-danger fade show text-center">
-                      <strong>Error!</strong> 「プレゼンテーション  <i class="fas fa-user-graduate"></i>」の表の中で、選択されていない順位があります
-                    </div>';
-      echo $error_msg;
-      // exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
-      $isVoteSuccess = false;
-  }
-  if ($_POST['co1'] == null or $_POST['co2'] == null or $_POST['co3'] == null) {
-      // $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
-      $error_msg = '<div class="alert alert-danger fade show text-center">
-                      <strong>Error!</strong> 「ファシとグラ <i class="fas fa-chalkboard-teacher"></i>」の表の中で、選択されていない順位があります
-                    </div>';
-      echo $error_msg;
-      // exit; //die関数にしてもいいかも．
-      $isVoteSuccess = false;
-  }
-  if ($_POST['cn1'] == $_POST['cn2'] || $_POST['cn2'] == $_POST['cn3'] || $_POST['cn1'] == $_POST['cn3']) {
-      // $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（プレゼンテーション）</font></h4>";
-      $error_msg = '<div class="alert alert-danger fade show text-center">
-                      <strong>Error!</strong> 「プレゼンテーション  <i class="fas fa-user-graduate"></i>」の表の中で、一つの投票先に複数の異なる順位が選択されています
-                    </div>';
-      echo $error_msg;
-      // exit;
-      $isVoteSuccess = false;
-  }
-  if ($_POST['co1'] == $_POST['co2'] || $_POST['co2'] == $_POST['co3'] || $_POST['co1'] == $_POST['co3']) {
-      // $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（ファシとグラ）</font></h4>";
-      $error_msg = '<div class="alert alert-danger fade show text-center">
-                      <strong>Error!</strong> 「ファシとグラ <i class="fas fa-chalkboard-teacher"></i>」の表の中で、一つの投票先に複数の異なる順位が選択されています
-                    </div>';
-      echo $error_msg;
-      // exit;
-      $isVoteSuccess = false;
-  }
-
   // セッションを開始する
   if (!isset($_SESSION)) {
       session_start();
@@ -416,6 +378,48 @@ if ($_POST['submit']) {
                     </div>';
       echo $error_msg;
       $isVoteTwice = true;
+  }
+
+  if (!$isVoteTwice) {
+
+    //ラジオボタン選択のエラー表示用
+    if ($_POST['cn1'] == null or $_POST['cn2'] == null or $_POST['cn3'] == null) {
+        // $error_msg = "<h4><font color='red'>※プレゼンテーションの全ての順位を埋めてください</font></h4>";
+        $error_msg = '<div class="alert alert-danger fade show text-center">
+                        <strong>Error!</strong> 「プレゼンテーション  <i class="fas fa-user-graduate"></i>」の表の中で、選択されていない順位があります
+                      </div>';
+        echo $error_msg;
+        // exit; // エラーを検知すると，投票はデータベースに書き込まれず，集計結果も見に行けなくなる．
+        $isVoteSuccess = false;
+    }
+    if ($_POST['co1'] == null or $_POST['co2'] == null or $_POST['co3'] == null) {
+        // $error_msg = "<h4><font color='red'>※ファシリテーション＆グラフィックスの全ての順位を埋めてください</font></h4>";
+        $error_msg = '<div class="alert alert-danger fade show text-center">
+                        <strong>Error!</strong> 「ファシとグラ <i class="fas fa-chalkboard-teacher"></i>」の表の中で、選択されていない順位があります
+                      </div>';
+        echo $error_msg;
+        // exit; //die関数にしてもいいかも．
+        $isVoteSuccess = false;
+    }
+    if ($_POST['cn1'] == $_POST['cn2'] || $_POST['cn2'] == $_POST['cn3'] || $_POST['cn1'] == $_POST['cn3']) {
+        // $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（プレゼンテーション）</font></h4>";
+        $error_msg = '<div class="alert alert-danger fade show text-center">
+                        <strong>Error!</strong> 「プレゼンテーション  <i class="fas fa-user-graduate"></i>」の表の中で、一つの投票先に複数の異なる順位が選択されています
+                      </div>';
+        echo $error_msg;
+        // exit;
+        $isVoteSuccess = false;
+    }
+    if ($_POST['co1'] == $_POST['co2'] || $_POST['co2'] == $_POST['co3'] || $_POST['co1'] == $_POST['co3']) {
+        // $error_msg = "<h4><font color='red'>※一人に重複して投票することはできません（ファシとグラ）</font></h4>";
+        $error_msg = '<div class="alert alert-danger fade show text-center">
+                        <strong>Error!</strong> 「ファシとグラ <i class="fas fa-chalkboard-teacher"></i>」の表の中で、一つの投票先に複数の異なる順位が選択されています
+                      </div>';
+        echo $error_msg;
+        // exit;
+        $isVoteSuccess = false;
+    }
+
   }
   
   if ($isVoteSuccess) {
